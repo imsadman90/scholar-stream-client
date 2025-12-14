@@ -19,7 +19,9 @@
     "date-fns": "^4.1.0",
     "firebase": "^12.6.0",
     "framer-motion": "^12.23.25",
+    "lucide-react": "^0.559.0",
     "react": "^19.2.0",
+    "react-confetti": "^6.4.0",
     "react-dom": "^19.2.0",
     "react-hook-form": "^7.68.0",
     "react-hot-toast": "^2.6.0",
@@ -28,6 +30,7 @@
     "react-router-dom": "^7.10.1",
     "react-spinners": "^0.17.0",
     "react-toastify": "^11.0.5",
+    "react-use": "^17.6.0",
     "recharts": "^3.5.1",
     "sweetalert2": "^11.26.3"
   },

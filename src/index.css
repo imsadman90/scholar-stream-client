@@ -1,2 +1,15 @@
-@import 'tailwindcss';
-@plugin "daisyui";
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap");
+
+@import "tailwindcss";
+
+@plugin "daisyui" {
+  themes: light --default, dark --prefersdark;
+}
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+* {
+  font-family: "Noto Sans", sans-serif;
+  font-optical-sizing: auto;
+}
+
