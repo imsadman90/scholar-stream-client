@@ -1,5 +1,5 @@
 // src/pages/AllScholarships.jsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../hooks/useAxiosSecure";
 
@@ -11,13 +11,10 @@ const AllScholarships = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterCategory, setFilterCategory] = useState("");
   const [filterDegree, setFilterDegree] = useState("");
-  const [sortBy, setSortBy] = useState("applicationFees"); // default sort
-
-  const {
-    data: scholarships = [],
-    isLoading,
-    error,
-  } = useQuery({
+  const [sortBy, setSortBy] = useState("applicationFees");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
+  const { data: scholarships = [], isLoading } = useQuery({
     queryKey: ["scholarships"],
     queryFn: async () => {
       const res = await axiosSecure.get("/scholarships");
@@ -25,7 +22,6 @@ const AllScholarships = () => {
     },
   });
 
-  // Filtering & Searching
   const filtered = scholarships
     .filter((s) => {
       const matchesSearch =
@@ -48,6 +44,15 @@ const AllScholarships = () => {
       return 0;
     });
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, filterCategory, filterDegree]);
+
+  const totalPages = Math.ceil(filtered.length / itemsPerPage);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filtered.slice(indexOfFirstItem, indexOfLastItem);
+
   if (isLoading)
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -56,66 +61,64 @@ const AllScholarships = () => {
     );
 
   return (
-    <>
-      <div className="container mx-auto px-4 py-12 mt-20">
-        <h1 className="text-4xl font-bold text-center mb-10 text-primary">
-          All Scholarships ({filtered.length})
-        </h1>
+    <div className="container mx-auto px-4 py-12 mt-20">
+      <h1 className="text-4xl font-bold text-center mb-10 text-primary">
+        All Scholarships ({filtered.length})
+      </h1>
 
-        {/* Filters & Search */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <input
-              type="text"
-              placeholder="Search by scholarship or university..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="input input-bordered"
-            />
+      <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <input
+            type="text"
+            placeholder="Search by scholarship or university..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="input input-bordered"
+          />
 
-            <select
-              value={filterCategory}
-              onChange={(e) => setFilterCategory(e.target.value)}
-              className="select select-bordered"
-            >
-              <option value="">All Categories</option>
-              <option>Full fund</option>
-              <option>Partial</option>
-              <option>Self-fund</option>
-            </select>
+          <select
+            value={filterCategory}
+            onChange={(e) => setFilterCategory(e.target.value)}
+            className="select select-bordered"
+          >
+            <option value="">All Categories</option>
+            <option>Full fund</option>
+            <option>Partial</option>
+            <option>Self-fund</option>
+          </select>
 
-            <select
-              value={filterDegree}
-              onChange={(e) => setFilterDegree(e.target.value)}
-              className="select select-bordered"
-            >
-              <option value="">All Degrees</option>
-              <option>Bachelor</option>
-              <option>Masters</option>
-              <option>PhD</option>
-              <option>Diploma</option>
-            </select>
+          <select
+            value={filterDegree}
+            onChange={(e) => setFilterDegree(e.target.value)}
+            className="select select-bordered"
+          >
+            <option value="">All Degrees</option>
+            <option>Bachelor</option>
+            <option>Masters</option>
+            <option>PhD</option>
+            <option>Diploma</option>
+          </select>
 
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="select select-bordered"
-            >
-              <option value="applicationFees">Sort: Lowest Fee First</option>
-              <option value="deadline">Sort: Deadline Soonest</option>
-              <option value="rank">Sort: Best Rank</option>
-            </select>
-          </div>
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className="select select-bordered"
+          >
+            <option value="applicationFees">Sort: Lowest Fee First</option>
+            <option value="deadline">Sort: Deadline Soonest</option>
+            <option value="rank">Sort: Best Rank</option>
+          </select>
         </div>
+      </div>
 
-        {/* Scholarships Grid */}
-        {filtered.length === 0 ? (
-          <div className="text-center py-20 bg-gray-50 rounded-xl">
-            <p className="text-2xl text-gray-600">No scholarships found</p>
-          </div>
-        ) : (
+      {filtered.length === 0 ? (
+        <div className="text-center py-20 bg-gray-50 rounded-xl">
+          <p className="text-2xl text-gray-600">No scholarships found</p>
+        </div>
+      ) : (
+        <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filtered.map((scholarship) => (
+            {currentItems.map((scholarship) => (
               <div
                 key={scholarship._id}
                 className="card bg-white shadow-xl hover:shadow-2xl transition"
@@ -162,9 +165,31 @@ const AllScholarships = () => {
               </div>
             ))}
           </div>
-        )}
-      </div>
-    </>
+
+          <div className="flex justify-center gap-2  mt-8">
+            <button
+              className="join-item btn btn-outline"
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1 || isLoading}
+            >
+              Previous page
+            </button>
+            <button
+              className="join-item btn btn-outline"
+              onClick={() =>
+                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+              }
+              disabled={currentPage === totalPages || isLoading}
+            >
+              Next page
+            </button>
+          </div>
+          <p className="text-center mt-2">
+            Page {currentPage} of {totalPages}
+          </p>
+        </>
+      )}
+    </div>
   );
 };
 

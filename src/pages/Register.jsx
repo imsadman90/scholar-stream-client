@@ -83,7 +83,7 @@ const Register = () => {
       };
 
       await saveUser(userData);
-     toast.success('Registration Successful')
+      toast.success("Registration Successful");
       navigate(from, { replace: true });
     } catch (err) {
       console.error("Registration error:", err);
@@ -101,7 +101,6 @@ const Register = () => {
       const result = await signInWithGoogle();
       const googleUser = result.user;
 
-
       const userData = {
         name: googleUser?.displayName || "Unknown User",
         email: googleUser?.email,
@@ -110,7 +109,6 @@ const Register = () => {
         createdAt: new Date().toISOString(),
       };
 
-      
       await axios.post(`${import.meta.env.VITE_API_URL}/users`, userData);
 
       toast.success("Google Login Successful!");

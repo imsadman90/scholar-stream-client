@@ -14,7 +14,6 @@ const useAxiosSecure = () => {
 
   useEffect(() => {
     if (!loading && user) {
-
       const requestInterceptor = axiosInstance.interceptors.request.use(
         (config) => {
           if (token) {

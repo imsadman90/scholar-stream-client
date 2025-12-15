@@ -25,10 +25,8 @@ import DashboardHome from "../components/dashboard/DashboardHome";
 import ApplyForScholarship from "../components/Form/ApplyForScholarship";
 import PaymentForScholarship from "../components/Payment/PayForScholarship";
 
-
 const router = createBrowserRouter([
   {
-    
     path: "/",
     element: <MainLayout />,
     errorElement: <ErrorPage />,
