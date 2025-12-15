@@ -78,7 +78,7 @@ const Register = () => {
         name: name,
         email: email,
         photoURL: photo,
-        role: "Student", // Default role
+        role: "Student",
         createdAt: new Date().toISOString(),
       };
 
@@ -105,7 +105,7 @@ const Register = () => {
         name: googleUser?.displayName || "Unknown User",
         email: googleUser?.email,
         photoURL: googleUser?.photoURL || "",
-        role: "Student",
+        role: "student",
         createdAt: new Date().toISOString(),
       };
 

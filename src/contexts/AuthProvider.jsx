@@ -12,11 +12,9 @@ import {
 import app from "../firebase/firebase.config.js";
 import { AuthContext } from "./AuthContext.jsx";
 import toast from "react-hot-toast";
-import axios from "axios";
 
 const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
-googleProvider.addScope("email");
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -39,7 +37,6 @@ const AuthProvider = ({ children }) => {
 
   const logOut = () => {
     setLoading(true);
-    localStorage.removeItem("jwtToken");
     toast.success("Log Out Successfully");
     return signOut(auth);
   };
@@ -52,7 +49,7 @@ const AuthProvider = ({ children }) => {
       });
 
       setUser({
-        ...auth.currentUser,
+        currentUser,
         displayName: name,
         photoURL: photo,
       });
@@ -64,39 +61,10 @@ const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
-
-      if (currentUser?.email) {
-        try {
-          await axios.post(`${import.meta.env.VITE_API_URL}/users`, {
-            name: currentUser.displayName || "Unknown User",
-            email: currentUser.email,
-            photoURL: currentUser.photoURL || "",
-            role: "student",
-          });
-
-          // Get JWT token from backend (no auth needed for login endpoint)
-          const { data } = await axios.post(
-            `${import.meta.env.VITE_API_URL}/auth/login`,
-            {
-              email: currentUser.email,
-            }
-          );
-
-          // Store backend JWT token
-          localStorage.setItem("jwtToken", data.token);
-        } catch (error) {
-          console.error("Failed to authenticate:", error);
-        }
-      } else {
-        // Remove token when user logs out
-        localStorage.removeItem("jwtToken");
-      }
-
       setLoading(false);
     });
-
     return () => unsubscribe();
   }, []);
 
@@ -116,4 +84,4 @@ const AuthProvider = ({ children }) => {
   );
 };
 
-export { AuthProvider, AuthContext };
+export default AuthProvider;
