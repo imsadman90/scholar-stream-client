@@ -32,12 +32,12 @@ const Footer = () => {
   const links = [
     { name: "Home", href: "/" },
     { name: "Scholarships", href: "/scholarships" },
-    { name: "FAQ", href: "/faq" },
-    { name: "Contact", href: "/contact" },
+    { name: "FAQ", href: "/#faq" },
+    { name: "Contact", href: "/#contact" },
   ];
 
   return (
-    <footer className="bg-slate-100 py-12">
+    <footer className="bg-slate-200 py-12">
       <div className="container mx-auto px-6 sm:px-8 lg:px-16">
         {/* Top Section: Logo + Links + Social */}
         <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-8 md:gap-0">
@@ -60,7 +60,7 @@ const Footer = () => {
                 <li key={link.name}>
                   <a
                     href={link.href}
-                    className="text-gray-600 hover:text-white transition-colors duration-200"
+                    className="text-gray-600 hover:text-black transition-colors duration-200"
                   >
                     {link.name}
                   </a>

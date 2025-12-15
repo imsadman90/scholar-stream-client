@@ -2,36 +2,37 @@ import { Link, Navigate, useLocation, useNavigate } from "react-router";
 import LoadingSpinner from "../components/shared/Loading";
 import useAuth from "../hooks/useAuth";
 import { FcGoogle } from "react-icons/fc";
-import { TbFidgetSpinner } from "react-icons/tb";
+import toast from "react-hot-toast";
 import ScholarshipImage from "/close-up-hands-holding-diplomas-caps.jpg";
 import axios from "axios";
-import toast from "react-hot-toast";
 
 const Login = () => {
   const { signIn, signInWithGoogle, loading, user, setLoading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state || "/";
+  const from = location.state?.from?.pathname || "/";
 
   if (loading) return <LoadingSpinner />;
-  if (user) return <Navigate to={from} replace={true} />;
+  if (user) return <Navigate to={from} replace />;
 
+  // Save or update user AND get JWT token
   const saveOrUpdateUser = async (userData) => {
     try {
-      await axios.post(`${import.meta.env.VITE_API_URL}/users`, {
-        name: userData.name || "Unknown User",
-        email: userData.email,
-        photoURL: userData.image || userData.photoURL || "",
-        role: "student",
-      });
+      const { data } = await axios.post(
+        `${import.meta.env.VITE_API_URL}/users`,
+        { email: userData.email }
+      );
+      console.log("Login response:", data);
     } catch (error) {
       console.error(
-        "Failed to save user (Login):",
+        "Failed to authenticate:",
         error.response?.data || error.message
       );
+      toast.error(error);
     }
   };
 
+  // Form Login
   const handleSubmit = async (event) => {
     event.preventDefault();
     const form = event.target;
@@ -51,21 +52,22 @@ const Login = () => {
       toast.success("Login Successful");
       navigate(from, { replace: true });
     } catch (err) {
-      console.log(err);
+      console.error(err);
       toast.error(err?.message || "Login failed");
       setLoading(false);
     }
   };
 
+  // Google Login
   const handleGoogleSignIn = async () => {
     try {
       setLoading(true);
       const result = await signInWithGoogle();
 
       await saveOrUpdateUser({
-        name: result.user?.displayName,
-        email: result.user?.email,
-        image: result.user?.photoURL,
+        name: result.user?.displayName || "not okay",
+        email: result.user?.email || "not okay",
+        image: result.user?.photoURL || "not okay",
       });
 
       toast.success("Google Login Successful!");
@@ -78,12 +80,12 @@ const Login = () => {
   };
 
   return (
-    <div className="flex items-center justify-center px-4 sm:px-6 md:px-[5%] min-h-screen bg-white">
-      <div className="flex flex-col md:flex-row w-full max-w-6xl gap-6 mt-16 md:mt-[10%] mb-10">
+    <div className="flex items-center justify-center px-[5%] min-h-screen bg-white">
+      <div className="flex w-full max-w-6xl gap-6 mt-[10%] mb-[5%]">
         {/* Form Section */}
-        <div className="w-full md:w-[55%] p-6 sm:p-8 rounded-md bg-gray-100 text-gray-900">
+        <div className="w-[55%] p-8 rounded-md bg-gray-100 text-gray-900">
           <div className="text-center">
-            <h1 className="my-3 text-3xl sm:text-4xl font-bold">Log In</h1>
+            <h1 className="my-3 text-4xl font-bold">Log In</h1>
             <p className="text-sm text-gray-400">
               Sign in to access your account
             </p>
@@ -101,7 +103,7 @@ const Login = () => {
                   id="email"
                   required
                   placeholder="Enter Your Email Here"
-                  className="w-full px-3 py-2 border rounded-md border-gray-300 bg-gray-200 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#CBAD8D]"
+                  className="w-full px-3 py-2 border rounded-md border-gray-300 bg-gray-200 text-gray-900"
                 />
               </div>
               <div>
@@ -114,7 +116,7 @@ const Login = () => {
                   id="password"
                   required
                   placeholder="*******"
-                  className="w-full px-3 py-2 border rounded-md border-gray-300 bg-gray-200 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#CBAD8D]"
+                  className="w-full px-3 py-2 border rounded-md border-gray-300 bg-gray-200 text-gray-900"
                 />
               </div>
             </div>
@@ -122,10 +124,10 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="bg-[#CBAD8D] w-full rounded-md py-3 text-white hover:bg-[#b89a7a] disabled:opacity-60 flex justify-center items-center"
+              className="bg-[#CBAD8D] w-full rounded-md py-3 text-white hover:bg-[#b89a7a] disabled:opacity-60"
             >
               {loading ? (
-                <TbFidgetSpinner className="animate-spin text-xl" />
+                <TbFidgetSpinner className="animate-spin m-auto text-xl" />
               ) : (
                 "Continue"
               )}
@@ -161,9 +163,9 @@ const Login = () => {
         </div>
 
         {/* Image Section */}
-        <div className="w-full md:w-[45%] mt-6 md:mt-0">
+        <div className="w-[45%]">
           <img
-            className="w-full h-64 sm:h-96 md:h-[560px] object-cover rounded-lg shadow-lg"
+            className="w-full h-[560px] object-cover rounded-lg shadow-lg"
             src={ScholarshipImage}
             alt="Scholarship"
           />

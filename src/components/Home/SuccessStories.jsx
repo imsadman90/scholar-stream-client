@@ -198,17 +198,21 @@ const SuccessStories = () => {
                   key={story.id}
                   className="flex-none w-full sm:w-96 md:w-80 lg:w-96 snap-start"
                 >
-                  <div className="rounded-2xl shadow-xl overflow-hidden h-full bg-white flex flex-col">
-                    <img
-                      src={story.image}
-                      alt={story.name}
-                      className="w-full h-48 object-cover"
-                    />
+                  <div className="rounded-2xl shadow-xl overflow-hidden h-full bg-gray-100 p-5 flex flex-col">
+                    <div className="flex justify-start gap-5 items-center">
+                      <img
+                        src={story.image}
+                        alt={story.name}
+                        className="w-20 h-20 rounded-full object-cover ml-3"
+                      />
+                      <div>
+                        <h3 className="text-xl font-bold text-gray-900">
+                          {story.name}
+                        </h3>
+                        <p className="text-gray-600 text-sm">{story.from}</p>
+                      </div>
+                    </div>
                     <div className="p-6 flex-1 flex flex-col">
-                      <h3 className="text-xl font-bold text-gray-900">
-                        {story.name}
-                      </h3>
-                      <p className="text-gray-600 text-sm">{story.from}</p>
                       <p className="font-semibold mt-2 text-lg">
                         {story.university}
                       </p>
@@ -241,20 +245,20 @@ const SuccessStories = () => {
           <button
             onClick={scrollPrev}
             disabled={!canScrollPrev}
-            className={`absolute -left-5 top-1/2 -translate-y-1/2 bg-purple-100 rounded-full p-3 shadow-2xl z-10 transition-opacity ${
+            className={`absolute -left-5 top-1/2 -translate-y-1/2 bg-slate-200 rounded-full p-3 shadow-2xl z-10 transition-opacity ${
               canScrollPrev ? "opacity-100" : "opacity-0 pointer-events-none"
             }`}
           >
-            <ChevronLeft className="w-8 h-8 text-blue-600" />
+            <ChevronLeft className="w-8 h-8 text-black" />
           </button>
           <button
             onClick={scrollNext}
             disabled={!canScrollNext}
-            className={`absolute -right-5 top-1/2 -translate-y-1/2 bg-purple-100 rounded-full p-3 shadow-2xl z-10 transition-opacity ${
+            className={`absolute -right-5 top-1/2 -translate-y-1/2 bg-slate-200 rounded-full p-3 shadow-2xl z-10 transition-opacity ${
               canScrollNext ? "opacity-100" : "opacity-0 pointer-events-none"
             }`}
           >
-            <ChevronRight className="w-8 h-8 text-blue-600" />
+            <ChevronRight className="w-8 h-8 text-black" />
           </button>
         </div>
       </div>

@@ -53,7 +53,7 @@ const PaymentSuccess = () => {
     (application?.applicationFees || 0) + (application?.serviceCharge || 0);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 flex items-center justify-center px-4 py-20">
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 flex items-center justify-center px-4 py-20 mt-20">
       <Confetti width={width} height={height} recycle={false} gravity={0.25} />
 
       <motion.div

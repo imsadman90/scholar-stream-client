@@ -9,12 +9,14 @@ import {
   signOut,
   updateProfile,
 } from "firebase/auth";
-import { app } from "../firebase/firebase.config.js";
+import app from "../firebase/firebase.config.js";
 import { AuthContext } from "./AuthContext.jsx";
 import toast from "react-hot-toast";
+import axios from "axios";
 
 const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
+googleProvider.addScope("email");
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -37,7 +39,8 @@ const AuthProvider = ({ children }) => {
 
   const logOut = () => {
     setLoading(true);
-    toast.success('Log Out Successfully')
+    localStorage.removeItem("jwtToken");
+    toast.success("Log Out Successfully");
     return signOut(auth);
   };
 
@@ -47,7 +50,7 @@ const AuthProvider = ({ children }) => {
         displayName: name,
         photoURL: photo,
       });
-      
+
       setUser({
         ...auth.currentUser,
         displayName: name,
@@ -61,9 +64,36 @@ const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      console.log("User detected:", currentUser?.email || "No user");
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
+
+      if (currentUser?.email) {
+        try {
+          await axios.post(`${import.meta.env.VITE_API_URL}/users`, {
+            name: currentUser.displayName || "Unknown User",
+            email: currentUser.email,
+            photoURL: currentUser.photoURL || "",
+            role: "student",
+          });
+
+          // Get JWT token from backend (no auth needed for login endpoint)
+          const { data } = await axios.post(
+            `${import.meta.env.VITE_API_URL}/auth/login`,
+            {
+              email: currentUser.email,
+            }
+          );
+
+          // Store backend JWT token
+          localStorage.setItem("jwtToken", data.token);
+        } catch (error) {
+          console.error("Failed to authenticate:", error);
+        }
+      } else {
+        // Remove token when user logs out
+        localStorage.removeItem("jwtToken");
+      }
+
       setLoading(false);
     });
 
@@ -86,4 +116,4 @@ const AuthProvider = ({ children }) => {
   );
 };
 
-export default AuthProvider;
+export { AuthProvider, AuthContext };
