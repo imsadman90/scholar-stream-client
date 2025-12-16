@@ -6,6 +6,9 @@ import {
   FaUserTag,
   FaCalendar,
   FaEdit,
+  FaSave,
+  FaTimes,
+  FaCamera,
 } from "react-icons/fa";
 import useAuth from "../../../hooks/useAuth";
 import useRole from "../../../hooks/useRole";
@@ -40,6 +43,16 @@ const Profile = () => {
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      // Validate file type
+      if (!file.type.startsWith("image/")) {
+        Swal.fire("Error", "Please select an image file", "error");
+        return;
+      }
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        Swal.fire("Error", "Image size should be less than 5MB", "error");
+        return;
+      }
       setPhotoFile(file);
       setPreviewUrl(URL.createObjectURL(file));
     }
@@ -63,25 +76,37 @@ const Profile = () => {
   };
 
   const handleUpdateProfile = async () => {
-    if (!name.trim()) return Swal.fire("Error", "Name is required", "error");
+    if (!name.trim()) {
+      return Swal.fire("Error", "Name is required", "error");
+    }
 
     setLoading(true);
 
     try {
       let photoURL = user.photoURL;
+
+      // Upload new photo if selected
       if (photoFile) {
         photoURL = await uploadToImageBB(photoFile);
       }
 
+      // Update Firebase profile
       await updateUserProfile(name, photoURL);
 
+      // Update MongoDB profile
       const { data } = await axiosSecure.patch(`/users/${user.email}`, {
         displayName: name,
         photoURL: photoURL,
       });
 
       if (data.success) {
-        Swal.fire("Success!", "Profile updated successfully", "success");
+        Swal.fire({
+          icon: "success",
+          title: "Success!",
+          text: "Profile updated successfully",
+          timer: 2000,
+          showConfirmButton: false,
+        });
         setIsEditing(false);
         setPhotoFile(null);
       } else {
@@ -89,7 +114,11 @@ const Profile = () => {
       }
     } catch (err) {
       console.error("Update error:", err);
-      Swal.fire("Error", err.message || "Update failed", "error");
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: err.message || "Failed to update profile",
+      });
     } finally {
       setLoading(false);
     }
@@ -101,6 +130,14 @@ const Profile = () => {
     setPreviewUrl(user?.photoURL || "");
     setIsEditing(false);
   };
+
+  if (isRoleLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto p-4">

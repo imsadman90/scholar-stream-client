@@ -2,44 +2,72 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { CheckCircle, Receipt, Home, LayoutDashboard } from "lucide-react";
-import axios from "axios";
 import Confetti from "react-confetti";
 import useWindowSize from "react-use/lib/useWindowSize";
+import useAxiosSecure from "../hooks/useAxiosSecure";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import toast from "react-hot-toast";
 
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const axiosSecure = useAxiosSecure();
   const { width, height } = useWindowSize();
   const [loading, setLoading] = useState(true);
   const [application, setApplication] = useState(null);
+  const [error, setError] = useState(null);
 
   const applicationId = searchParams.get("application_id");
+  const sessionId = searchParams.get("session_id");
 
   useEffect(() => {
-    updatePaymentStatus();
-  }, [applicationId]);
-
-  const updatePaymentStatus = async () => {
     if (!applicationId) {
+      setError("Application ID not found");
       setLoading(false);
       return;
     }
 
-    try {
-      await axios.patch(
-        `${import.meta.env.VITE_API_URL}/application/${applicationId}`,
-        { paymentStatus: "paid" }
-      );
-      const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/application/${applicationId}`
-      );
-      setApplication(res.data);
-    } catch (err) {
-      console.error("Payment update failed", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    setLoading(true);
+
+    const auth = getAuth();
+
+    // Wait for auth state to be resolved
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        toast.error("Please log in again");
+        navigate("/login");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        // Now safe to refresh token
+        await user.getIdToken(true);
+
+        // Update payment status
+        await axiosSecure.patch(`/application/${applicationId}`, {
+          paymentStatus: "paid",
+          stripeSessionId: sessionId,
+          paidAt: new Date().toISOString(),
+        });
+
+        // Fetch updated application
+        const res = await axiosSecure.get(`/application/${applicationId}`);
+        setApplication(res.data);
+
+        toast.success("Payment verified successfully!");
+      } catch (err) {
+        console.error("Payment update failed:", err);
+        setError(err.response?.data?.message || "Failed to verify payment");
+        toast.error("Payment verification failed");
+      } finally {
+        setLoading(false);
+      }
+    });
+
+    // Cleanup listener on unmount
+    return () => unsubscribe();
+  }, [applicationId, sessionId, axiosSecure, navigate]);
 
   if (loading) {
     return (
@@ -49,8 +77,9 @@ const PaymentSuccess = () => {
     );
   }
 
-  const totalPaid =
-    (application?.applicationFees || 0) + (application?.serviceCharge || 0);
+  const totalPaid = (
+    (application?.applicationFees || 0) + (application?.serviceCharge || 0)
+  ).toFixed(2);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 flex items-center justify-center px-4 py-20 mt-20">

@@ -1,6 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { useParams, Link } from "react-router-dom";
-import axios from "axios";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import {
   FaUniversity,
   FaMapMarkerAlt,
@@ -14,82 +13,103 @@ import {
   FaChevronLeft,
   FaChevronRight,
 } from "react-icons/fa";
+import useAxiosSecure from "../hooks/useAxiosSecure";
+import useAuth from "../hooks/useAuth";
+import toast from "react-hot-toast";
 
 const ScholarshipDetails = () => {
   const { id } = useParams();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const axiosSecure = useAxiosSecure();
   const scrollRef = useRef(null);
+
   const [scholarship, setScholarship] = useState(null);
   const [loading, setLoading] = useState(true);
   const [reviews, setReviews] = useState([]);
   const [reviewsLoading, setReviewsLoading] = useState(true);
   const [reviewUsers, setReviewUsers] = useState({});
+  const [hasApplied, setHasApplied] = useState(false);
+  const [checkingApplication, setCheckingApplication] = useState(true);
+
+  useEffect(() => {
+    const checkExistingApplication = async () => {
+      if (!user?.email || !id) {
+        setCheckingApplication(false);
+        return;
+      }
+      try {
+        const res = await axiosSecure.get(
+          `/application/check/${id}/${user.email}`
+        );
+        setHasApplied(res.data.hasApplied);
+      } finally {
+        setCheckingApplication(false);
+      }
+    };
+    checkExistingApplication();
+  }, [id, user?.email, axiosSecure]);
 
   const handleApply = () => {
-    window.location.href = `/apply/${id}`;
+    if (!user) {
+      toast.error("Please login to apply");
+      navigate("/login");
+      return;
+    }
+    if (hasApplied) {
+      toast.info("You have already applied for this scholarship");
+      navigate("/dashboard/my-applications");
+      return;
+    }
+    navigate(`/apply/${id}`);
   };
 
   const scrollLeft = () => {
-    if (scrollRef.current) {
-      const itemWidth = scrollRef.current.firstChild.offsetWidth + 24;
-      scrollRef.current.scrollBy({ left: -itemWidth, behavior: "smooth" });
+    if (scrollRef.current?.firstChild) {
+      const w = scrollRef.current.firstChild.offsetWidth + 24;
+      scrollRef.current.scrollBy({ left: -w, behavior: "smooth" });
     }
   };
 
   const scrollRight = () => {
-    if (scrollRef.current) {
-      const itemWidth = scrollRef.current.firstChild.offsetWidth + 24;
-      scrollRef.current.scrollBy({ left: itemWidth, behavior: "smooth" });
+    if (scrollRef.current?.firstChild) {
+      const w = scrollRef.current.firstChild.offsetWidth + 24;
+      scrollRef.current.scrollBy({ left: w, behavior: "smooth" });
     }
   };
 
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const res = await axios.get(
-          `${import.meta.env.VITE_API_URL}/reviews/scholarship/${id}`
-        );
+        const res = await axiosSecure.get(`/reviews/scholarship/${id}`);
         setReviews(res.data);
-
-        const uniqueEmails = [...new Set(res.data.map((r) => r.userEmail))];
-
-        const usersRes = await Promise.all(
-          uniqueEmails.map((email) =>
-            axios.get(`${import.meta.env.VITE_API_URL}/users/${email}`)
-          )
+        const emails = [...new Set(res.data.map((r) => r.userEmail))];
+        const users = await Promise.all(
+          emails.map((e) => axiosSecure.get(`/users/${e}`))
         );
-
-        const userMap = {};
-        usersRes.forEach((u) => {
-          userMap[u.data.email] = u.data.photoURL;
-        });
-
-        setReviewUsers(userMap);
-      } catch (err) {
-        console.error("Failed to load reviews:", err);
+        const map = {};
+        users.forEach((u) => (map[u.data.email] = u.data.photoURL));
+        setReviewUsers(map);
       } finally {
         setReviewsLoading(false);
       }
     };
     fetchReviews();
-  }, [id]);
+  }, [id, axiosSecure]);
 
   useEffect(() => {
     const fetchScholarship = async () => {
       try {
-        const res = await axios.get(
-          `${import.meta.env.VITE_API_URL}/scholarships/${id}`
-        );
+        const res = await axiosSecure.get(`/scholarships/${id}`);
         setScholarship(res.data);
-      } catch (err) {
-        console.error("Failed to load scholarship:", err);
       } finally {
         setLoading(false);
       }
     };
     fetchScholarship();
-  }, [id]);
+  }, [id, axiosSecure]);
 
-  if (loading) {
+  if (loading || checkingApplication) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <span className="loading loading-spinner loading-lg"></span>
@@ -100,12 +120,9 @@ const ScholarshipDetails = () => {
   if (!scholarship) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <h2 className="text-2xl font-bold">Scholarship Not Found</h2>
-          <Link to="/all-scholarships" className="btn btn-primary">
-            Browse Scholarships
-          </Link>
-        </div>
+        <Link to="/all-scholarships" className="btn btn-primary">
+          Browse Scholarships
+        </Link>
       </div>
     );
   }
@@ -118,10 +135,9 @@ const ScholarshipDetails = () => {
         </span>{" "}
         Details
       </h1>
+
       <div className="max-w-7xl mx-auto grid lg:grid-cols-3 gap-8">
-        {/* LEFT SECTION */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Header */}
           <div className="bg-white rounded-xl shadow p-6 space-y-4">
             <img
               src={scholarship.universityImage || "/placeholder-university.jpg"}
@@ -142,12 +158,10 @@ const ScholarshipDetails = () => {
               {scholarship.scholarshipName}
             </h1>
             <p className="flex items-center gap-2 text-gray-600">
-              <FaUniversity />
-              {scholarship.universityName}
+              <FaUniversity /> {scholarship.universityName}
             </p>
           </div>
 
-          {/* Info Grid */}
           <div className="grid sm:grid-cols-2 gap-4">
             <InfoCard
               icon={<FaMapMarkerAlt />}
@@ -175,7 +189,6 @@ const ScholarshipDetails = () => {
             />
           </div>
 
-          {/* Description */}
           <div className="bg-white rounded-xl shadow p-6">
             <h2 className="text-xl font-bold mb-3">Description</h2>
             <p className="text-gray-700 leading-relaxed">
@@ -184,9 +197,7 @@ const ScholarshipDetails = () => {
           </div>
         </div>
 
-        {/* RIGHT SIDEBAR*/}
         <div className="space-y-6">
-          {/* Stipend */}
           {scholarship.stipendAmount && (
             <div className="bg-emerald-100 border border-emerald-200 rounded-xl p-6">
               <p className="text-sm text-emerald-700">Monthly Stipend</p>
@@ -195,7 +206,7 @@ const ScholarshipDetails = () => {
               </p>
             </div>
           )}
-          {/* Reviews Carousel */}
+
           <div className="bg-white rounded-xl shadow p-6">
             <h2 className="text-2xl font-bold mb-6">
               Reviews ({reviews.length})
@@ -207,29 +218,23 @@ const ScholarshipDetails = () => {
               <p className="text-center text-gray-500">No reviews yet</p>
             ) : (
               <div className="relative">
-                {/* Left Arrow */}
                 <button
                   onClick={scrollLeft}
-                  className="absolute -left-5 top-1/2 -translate-y-1/2 z-10 bg-green-100 shadow-lg rounded-full p-2 hover:bg-gray-100 transition"
-                  aria-label="Scroll left"
+                  className="absolute -left-5 top-1/2 -translate-y-1/2 z-10 bg-green-100 shadow-lg rounded-full p-2"
                 >
-                  <FaChevronLeft className="text-xl text-gray-600" />
+                  <FaChevronLeft />
                 </button>
 
-                {/* Right Arrow */}
                 <button
                   onClick={scrollRight}
-                  className="absolute -right-5 top-1/2 -translate-y-1/2 z-10 bg-green-100 shadow-lg rounded-full p-2 hover:bg-gray-100 transition"
-                  aria-label="Scroll right"
+                  className="absolute -right-5 top-1/2 -translate-y-1/2 z-10 bg-green-100 shadow-lg rounded-full p-2"
                 >
-                  <FaChevronRight className="text-xl text-gray-600" />
+                  <FaChevronRight />
                 </button>
 
-                {/* Carousel Container */}
                 <div
                   ref={scrollRef}
-                  className="flex overflow-x-auto gap-6 pb-4 scrollbar-hide scroll-smooth"
-                  style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+                  className="flex overflow-x-auto gap-6 pb-4 scroll-smooth"
                 >
                   {reviews.map((review) => (
                     <div
@@ -238,19 +243,16 @@ const ScholarshipDetails = () => {
                     >
                       <img
                         src={reviewUsers[review.userEmail] || "/avatar.png"}
-                        alt={review.userName}
-                        className="w-12 h-12 rounded-full object-cover flex-shrink-0"
+                        className="w-12 h-12 rounded-full object-cover"
                       />
-                      <div className="flex-1 min-w-0">
-                        <div className="flex justify-between items-start">
-                          <h4 className="font-semibold truncate">
-                            {review.userName}
-                          </h4>
-                          <span className="text-xs text-gray-400 flex-shrink-0 ml-2">
+                      <div className="flex-1">
+                        <div className="flex justify-between">
+                          <h4 className="font-semibold">{review.userName}</h4>
+                          <span className="text-xs text-gray-400">
                             {new Date(review.reviewDate).toLocaleDateString()}
                           </span>
                         </div>
-                        <div className="flex items-center gap-1 my-2">
+                        <div className="flex gap-1 my-2">
                           {[...Array(5)].map((_, i) => (
                             <FaStar
                               key={i}
@@ -263,7 +265,7 @@ const ScholarshipDetails = () => {
                             />
                           ))}
                         </div>
-                        <p className="text-sm text-gray-700 line-clamp-3">
+                        <p className="text-sm text-gray-700">
                           {review.reviewComment}
                         </p>
                       </div>
@@ -273,6 +275,7 @@ const ScholarshipDetails = () => {
               </div>
             )}
           </div>
+
           <div className="bg-white rounded-xl shadow p-6 space-y-4">
             <h3 className="text-xl font-bold flex items-center gap-2">
               <FaMoneyBillWave /> Cost Summary
@@ -302,15 +305,26 @@ const ScholarshipDetails = () => {
               </p>
             </div>
           </div>
+
           <div className="bg-white rounded-xl shadow p-6">
             <h3 className="font-bold flex items-center gap-2 mb-2">
               <FaUserTie /> Posted By
             </h3>
             <p className="text-sm break-all">{scholarship.postedUserEmail}</p>
           </div>
-          <button onClick={handleApply} className="btn btn-primary w-full">
-            Apply Now
-          </button>
+
+          {checkingApplication ? (
+            <button className="btn btn-disabled w-full">Checking...</button>
+          ) : hasApplied ? (
+            <button className="btn btn-success w-full" disabled>
+              Applied
+            </button>
+          ) : (
+            <button onClick={handleApply} className="btn btn-primary w-full">
+              Apply Now
+            </button>
+          )}
+
           <Link to="/" className="btn btn-outline w-full">
             <FaArrowLeft /> Back Home
           </Link>

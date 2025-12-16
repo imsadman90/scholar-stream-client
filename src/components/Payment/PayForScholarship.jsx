@@ -2,40 +2,61 @@ import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FaCreditCard, FaShieldAlt, FaCheckCircle } from "react-icons/fa";
-import axios from "axios";
 import useAuth from "../../hooks/useAuth";
 import toast from "react-hot-toast";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
+import { getAuth } from "firebase/auth";
 
 const PaymentForScholarship = () => {
   const { id } = useParams();
   const { user } = useAuth();
+  const axiosSecure = useAxiosSecure();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
   const [application, setApplication] = useState(null);
 
-  const fetchApplicationDetails = async () => {
-    try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/application/${id}`
-      );
-      setApplication(response.data);
-    } catch (error) {
-      console.error("Error fetching application:", error);
-      toast.error("Failed to load application details");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchApplicationDetails();
-  }, [id]);
+    const fetchApplicationDetails = async () => {
+      try {
+        // ✅ Use relative path without full URL
+        const response = await axiosSecure.get(`/application/${id}`);
+        setApplication(response.data);
+      } catch (error) {
+        console.error("Error fetching application:", error);
+        toast.error("Failed to load application details");
+        navigate("/dashboard/my-applications");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchApplicationDetails();
+    } else {
+      setLoading(false);
+      toast.error("Invalid application ID");
+      navigate("/dashboard/my-applications");
+    }
+  }, [id, axiosSecure, navigate]);
 
   const handlePayment = async () => {
     setProcessing(true);
 
     try {
+      // ✅ Ensure user is authenticated and get fresh token
+      const auth = getAuth();
+      const currentUser = auth.currentUser;
+
+      if (!currentUser) {
+        toast.error("Please log in again");
+        navigate("/login");
+        return;
+      }
+
+      // Force refresh token to ensure it's valid
+      await currentUser.getIdToken(true);
+
       const paymentInfo = {
         applicationId: id,
         scholarshipName: application.scholarshipName || "Scholarship",
@@ -46,16 +67,17 @@ const PaymentForScholarship = () => {
         totalAmount:
           (application.applicationFees || 0) + (application.serviceCharge || 0),
         customer: {
-          name: user?.displayName,
+          name: user?.displayName || "Guest",
           email: user?.email,
-          image: user?.photoURL,
+          image: user?.photoURL || "",
         },
       };
 
       console.log("Creating checkout session with:", paymentInfo);
 
-      const { data } = await axios.post(
-        `${import.meta.env.VITE_API_URL}/create-checkout-session`,
+      // ✅ Use relative path without full URL
+      const { data } = await axiosSecure.post(
+        "/create-checkout-session",
         paymentInfo
       );
 
@@ -65,11 +87,14 @@ const PaymentForScholarship = () => {
       if (data.url) {
         window.location.href = data.url;
       } else {
-        throw new Error("No checkout URL received");
+        throw new Error("No checkout URL received from server");
       }
     } catch (error) {
       console.error("Payment error:", error);
-      toast.error("Failed to initiate payment. Please try again.");
+      const errorMessage =
+        error.response?.data?.error ||
+        "Failed to initiate payment. Please try again.";
+      toast.error(errorMessage);
       setProcessing(false);
     }
   };
@@ -86,6 +111,9 @@ const PaymentForScholarship = () => {
     return (
       <div className="flex flex-col justify-center items-center min-h-screen">
         <h2 className="text-3xl font-bold mb-4">Application Not Found</h2>
+        <p className="text-base-content/70 mb-6">
+          The application you're looking for doesn't exist or has been removed.
+        </p>
         <button
           onClick={() => navigate("/dashboard/my-applications")}
           className="btn btn-primary"
@@ -96,8 +124,9 @@ const PaymentForScholarship = () => {
     );
   }
 
-  const totalAmount =
-    (application.applicationFees || 0) + (application.serviceCharge || 0);
+  const totalAmount = (
+    (application.applicationFees || 0) + (application.serviceCharge || 0)
+  ).toFixed(2);
 
   return (
     <div className="min-h-screen bg-base-100 pt-24 pb-20">
@@ -127,6 +156,13 @@ const PaymentForScholarship = () => {
                   </h2>
 
                   <div className="space-y-4">
+                    <div className="flex justify-between items-center pb-3 border-b border-base-300">
+                      <span className="text-base-content/70">Scholarship</span>
+                      <span className="font-semibold">
+                        {application.scholarshipName || "N/A"}
+                      </span>
+                    </div>
+
                     <div className="flex justify-between items-center pb-3 border-b border-base-300">
                       <span className="text-base-content/70">University</span>
                       <span className="font-semibold">
@@ -225,11 +261,11 @@ const PaymentForScholarship = () => {
                       </span>
                     </div>
 
-                    <div className="flex justify-between items-center pt-3">
-                      <span className="text-xl font-semibold">
+                    <div className="justify-between items-center pt-3 grid grid-cols-1">
+                      <span className="text-2xl font-semibold">
                         Total Amount
                       </span>
-                      <span className="text-3xl font-bold">${totalAmount}</span>
+                      <span className="text-2xl font-bold">${totalAmount}</span>
                     </div>
                   </div>
 

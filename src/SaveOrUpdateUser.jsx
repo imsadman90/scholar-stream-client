@@ -1,8 +1,8 @@
 import axios from "axios";
 
 const SaveOrUpdateUser = async (user) => {
-  const { data } = await axios.put(
-    `${import.meta.env.VITE_API_URL}/users`,
+  const { data } = await axios.post(
+    `/users`,
     user,
     { withCredentials: true }
   );

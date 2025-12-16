@@ -181,7 +181,7 @@ const TopScholarships = () => {
         <div className="text-center mt-16">
           <Link to="/scholarships">
             <button className="btn btn-outline btn-lg">
-              View All Scholarships <GrLinkNext/>
+              View All Scholarships <GrLinkNext />
             </button>
           </Link>
         </div>

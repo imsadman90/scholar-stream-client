@@ -1,48 +1,70 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router";
 import axios from "axios";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { getAuth } from "firebase/auth";
 import useAuth from "./useAuth";
 
-const axiosInstance = axios.create({
+const axiosSecure = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   withCredentials: true,
 });
 
 const useAxiosSecure = () => {
-  const { user, logOut, loading } = useAuth();
+  const { logOut } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!loading && user) {
-      const requestInterceptor = axiosInstance.interceptors.request.use(
-        (config) => {
-          if (token) {
+    const requestInterceptor = axiosSecure.interceptors.request.use(
+      async (config) => {
+        try {
+          // ✅ Get Firebase Auth instance directly
+          const auth = getAuth();
+          const currentUser = auth.currentUser;
+
+          // ✅ Only get token if user exists and is authenticated
+          if (currentUser) {
+            const token = await currentUser.getIdToken(false); // false = use cached token
             config.headers.Authorization = `Bearer ${token}`;
           }
-          return config;
+        } catch (error) {
+          console.error("Error getting auth token:", error);
         }
-      );
+        return config;
+      },
+      (error) => {
+        console.error("Request interceptor error:", error);
+        return Promise.reject(error);
+      }
+    );
 
-      const responseInterceptor = axiosInstance.interceptors.response.use(
-        (res) => res,
-        (err) => {
-          if (err?.response?.status === 401 || err?.response?.status === 403) {
-            logOut()
-              .then(() => console.log("Logged out successfully."))
-              .catch(console.error);
-            navigate("/login");
+    const responseInterceptor = axiosSecure.interceptors.response.use(
+      (response) => response,
+      async (error) => {
+        const status = error.response?.status;
+
+        // ✅ Handle authentication errors
+        if (status === 401 || status === 403) {
+          console.error("Authentication error, logging out...");
+          try {
+            await logOut();
+          } catch (logoutError) {
+            console.error("Logout error:", logoutError);
           }
-          return Promise.reject(err);
+          navigate("/login", { replace: true });
         }
-      );
 
-      return () => {
-        axiosInstance.interceptors.request.eject(requestInterceptor);
-        axiosInstance.interceptors.response.eject(responseInterceptor);
-      };
-    }
-  }, [loading, user, logOut, navigate]);
+        return Promise.reject(error);
+      }
+    );
 
-  return axiosInstance;
+    // ✅ Cleanup function
+    return () => {
+      axiosSecure.interceptors.request.eject(requestInterceptor);
+      axiosSecure.interceptors.response.eject(responseInterceptor);
+    };
+  }, [logOut, navigate]);
+
+  return axiosSecure;
 };
+
 export default useAxiosSecure;

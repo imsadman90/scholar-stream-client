@@ -5,7 +5,6 @@ import useAuth from "../hooks/useAuth";
 import { FcGoogle } from "react-icons/fc";
 import { TbFidgetSpinner } from "react-icons/tb";
 import ScholarshipImage from "../../public/close-up-hands-holding-diplomas-caps.jpg";
-import SaveOrUpdateUser from "../SaveOrUpdateUser";
 
 const Login = () => {
   const { signIn, signInWithGoogle, loading, user, setLoading } = useAuth();
@@ -27,13 +26,6 @@ const Login = () => {
     try {
       //User Login
       const { user } = await signIn(email, password);
-
-       await SaveOrUpdateUser({
-         name: user?.displayName,
-         email: user?.email,
-         image: user?.photoURL,
-       });
-
       navigate(from, { replace: true });
       toast.success("Login Successful");
     } catch (err) {
@@ -47,13 +39,6 @@ const Login = () => {
     try {
       const { user } = await signInWithGoogle();
       console.log(user);
-      
-
-      await SaveOrUpdateUser({
-        name: user?.displayName,
-        email: user?.email,
-        image: user?.photoURL,
-      });
       navigate(from, { replace: true });
       toast.success("Login Successful");
     } catch (err) {

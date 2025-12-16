@@ -6,6 +6,7 @@ import { TbFidgetSpinner } from "react-icons/tb";
 import ScholarshipImage from "../../public/close-up-hands-holding-diplomas-caps.jpg";
 import axios from "axios";
 import toast from "react-hot-toast";
+import useAxiosSecure from "../hooks/useAxiosSecure";
 
 const Register = () => {
   const {
@@ -19,6 +20,7 @@ const Register = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
+  const axiosSecure = useAxiosSecure();
 
   const from = location.state || "/";
 
@@ -28,7 +30,7 @@ const Register = () => {
   // Save user to MongoDB
   const saveUser = async (userData) => {
     try {
-      const response = await axios.post(
+      const response = await axiosSecure.post(
         `${import.meta.env.VITE_API_URL}/users`,
         userData
       );

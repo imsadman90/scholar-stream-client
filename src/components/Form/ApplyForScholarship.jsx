@@ -10,6 +10,7 @@ import {
 import axios from "axios";
 import useAuth from "../../hooks/useAuth";
 import toast from "react-hot-toast";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 const ApplyForScholarship = () => {
   const { id } = useParams();
@@ -17,20 +18,19 @@ const ApplyForScholarship = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [scholarship, setScholarship] = useState(null);
+  const axiosSecure = useAxiosSecure();
 
   useEffect(() => {
     const fetchScholarship = async () => {
       try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/scholarships/${id}`
-        );
+        const response = await axiosSecure.get(`/scholarships/${id}`);
         setScholarship(response.data);
       } catch (error) {
         toast.error("Failed to load scholarship details");
       }
     };
     if (id) fetchScholarship();
-  }, [id]);
+  }, [id, axiosSecure]);
 
   const [formData, setFormData] = useState({
     fullName: user?.displayName || "",
@@ -74,10 +74,7 @@ const ApplyForScholarship = () => {
         ...formData,
       };
 
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/application`,
-        applicationData
-      );
+      const response = await axiosSecure.post(`/application`, applicationData);
 
       if (response.data.insertedId) {
         toast.success("Application submitted successfully!");
@@ -85,12 +82,9 @@ const ApplyForScholarship = () => {
         if (scholarship.applicationFees > 0 || scholarship.serviceCharge > 0) {
           navigate(`/dashboard/payment-page/${response.data.insertedId}`);
         } else {
-          await axios.patch(
-            `${import.meta.env.VITE_API_URL}/application/${
-              response.data.insertedId
-            }`,
-            { paymentStatus: "paid" }
-          );
+          await axiosSecure.patch(`/application/${response.data.insertedId}`, {
+            paymentStatus: "paid",
+          });
           navigate("/dashboard/my-applications");
         }
       }
