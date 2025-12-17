@@ -103,8 +103,9 @@ const ApplyForScholarship = () => {
     );
   }
 
-  const totalFee =
-    (scholarship.applicationFees || 0) + (scholarship.serviceCharge || 0);
+  const totalFee = (
+    (scholarship.applicationFees || 0) + (scholarship.serviceCharge || 0)
+  ).toFixed(2);
 
   return (
     <div className="min-h-screen bg-gray-50 py-20 px-4 mt-20">

@@ -128,41 +128,37 @@ const ScholarshipDetails = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-15 px-10 mt-20">
-      <h1 className="text-5xl text-center mb-15 text-gray-800 italic">
-        <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-          Scholarship
-        </span>{" "}
-        Details
-      </h1>
-
-      <div className="max-w-7xl mx-auto grid lg:grid-cols-3 gap-8">
+    <div className="bg-gray-50 mt-16 sm:mt-20 px-4 sm:px-6 lg:px-10 py-10">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
         <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white rounded-xl shadow p-6 space-y-4">
+          <div className="bg-white rounded-xl shadow p-4 sm:p-6 space-y-4">
             <img
               src={scholarship.universityImage || "/placeholder-university.jpg"}
               alt={scholarship.universityName}
-              className="w-full h-60 object-cover rounded-lg"
+              className="w-full h-48 sm:h-56 md:h-60 object-cover rounded-lg"
             />
-            <div className="flex flex-wrap gap-3">
+
+            <div className="flex flex-wrap gap-2">
               {scholarship.universityWorldRank && (
-                <span className="badge badge-success gap-1 text-lg py-4">
+                <span className="badge badge-success gap-1 text-sm sm:text-base py-3">
                   <FaStar /> Rank #{scholarship.universityWorldRank}
                 </span>
               )}
-              <span className="badge badge-info text-lg py-4">
+              <span className="badge badge-info text-sm sm:text-base py-3">
                 {scholarship.scholarshipCategory}
               </span>
             </div>
-            <h1 className="text-3xl font-bold">
+
+            <h1 className="text-2xl sm:text-3xl font-bold">
               {scholarship.scholarshipName}
             </h1>
-            <p className="flex items-center gap-2 text-gray-600">
+
+            <p className="flex items-center gap-2 text-gray-600 text-sm sm:text-base">
               <FaUniversity /> {scholarship.universityName}
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <InfoCard
               icon={<FaMapMarkerAlt />}
               title="Location"
@@ -189,9 +185,9 @@ const ScholarshipDetails = () => {
             />
           </div>
 
-          <div className="bg-white rounded-xl shadow p-6">
-            <h2 className="text-xl font-bold mb-3">Description</h2>
-            <p className="text-gray-700 leading-relaxed">
+          <div className="bg-white rounded-xl shadow p-4 sm:p-6">
+            <h2 className="text-lg sm:text-xl font-bold mb-3">Description</h2>
+            <p className="text-gray-700 leading-relaxed text-sm sm:text-base">
               {scholarship.scholarshipDescription || "No description provided."}
             </p>
           </div>
@@ -199,16 +195,16 @@ const ScholarshipDetails = () => {
 
         <div className="space-y-6">
           {scholarship.stipendAmount && (
-            <div className="bg-emerald-100 border border-emerald-200 rounded-xl p-6">
+            <div className="bg-emerald-100 border border-emerald-200 rounded-xl p-4 sm:p-6">
               <p className="text-sm text-emerald-700">Monthly Stipend</p>
-              <p className="text-3xl font-bold text-emerald-800">
+              <p className="text-2xl sm:text-3xl font-bold text-emerald-800">
                 {scholarship.stipendAmount}
               </p>
             </div>
           )}
 
-          <div className="bg-white rounded-xl shadow p-6">
-            <h2 className="text-2xl font-bold mb-6">
+          <div className="bg-white rounded-xl shadow p-4 sm:p-6">
+            <h2 className="text-xl font-bold mb-4">
               Reviews ({reviews.length})
             </h2>
 
@@ -220,51 +216,55 @@ const ScholarshipDetails = () => {
               <div className="relative">
                 <button
                   onClick={scrollLeft}
-                  className="absolute -left-5 top-1/2 -translate-y-1/2 z-10 bg-green-100 shadow-lg rounded-full p-2"
+                  className="hidden md:flex absolute -left-5 top-1/2 -translate-y-1/2 z-10 bg-green-100 shadow-lg rounded-full p-2"
                 >
                   <FaChevronLeft />
                 </button>
 
                 <button
                   onClick={scrollRight}
-                  className="absolute -right-5 top-1/2 -translate-y-1/2 z-10 bg-green-100 shadow-lg rounded-full p-2"
+                  className="hidden md:flex absolute -right-5 top-1/2 -translate-y-1/2 z-10 bg-green-100 shadow-lg rounded-full p-2"
                 >
                   <FaChevronRight />
                 </button>
 
                 <div
                   ref={scrollRef}
-                  className="flex overflow-x-auto gap-6 pb-4 scroll-smooth"
+                  className="flex overflow-x-auto gap-4 pb-4 scroll-smooth"
                 >
                   {reviews.map((review) => (
                     <div
                       key={review._id}
-                      className="min-w-full bg-gray-50 rounded-lg p-5 border flex gap-4"
+                      className="min-w-full bg-gray-50 rounded-lg p-4 border flex gap-4"
                     >
                       <img
                         src={reviewUsers[review.userEmail] || "/avatar.png"}
-                        className="w-12 h-12 rounded-full object-cover"
+                        className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover"
                       />
                       <div className="flex-1">
                         <div className="flex justify-between">
-                          <h4 className="font-semibold">{review.userName}</h4>
+                          <h4 className="font-semibold text-sm sm:text-base">
+                            {review.userName}
+                          </h4>
                           <span className="text-xs text-gray-400">
                             {new Date(review.reviewDate).toLocaleDateString()}
                           </span>
                         </div>
+
                         <div className="flex gap-1 my-2">
                           {[...Array(5)].map((_, i) => (
                             <FaStar
                               key={i}
+                              size={14}
                               className={
                                 i < review.ratingPoint
                                   ? "text-yellow-400"
                                   : "text-gray-300"
                               }
-                              size={14}
                             />
                           ))}
                         </div>
+
                         <p className="text-sm text-gray-700">
                           {review.reviewComment}
                         </p>
@@ -276,8 +276,8 @@ const ScholarshipDetails = () => {
             )}
           </div>
 
-          <div className="bg-white rounded-xl shadow p-6 space-y-4">
-            <h3 className="text-xl font-bold flex items-center gap-2">
+          <div className="bg-white rounded-xl shadow p-4 sm:p-6 space-y-4">
+            <h3 className="text-lg font-bold flex items-center gap-2">
               <FaMoneyBillWave /> Cost Summary
             </h3>
             <CostRow label="Tuition Fees" value={scholarship.tuitionFees} />
@@ -295,7 +295,7 @@ const ScholarshipDetails = () => {
             />
             <div className="pt-3 border-t">
               <p className="text-sm text-gray-500">Total Cost</p>
-              <p className="text-2xl font-bold">
+              <p className="text-xl sm:text-2xl font-bold">
                 $
                 {(
                   (scholarship.tuitionFees || 0) +
@@ -306,7 +306,7 @@ const ScholarshipDetails = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow p-6">
+          <div className="bg-white rounded-xl shadow p-4 sm:p-6">
             <h3 className="font-bold flex items-center gap-2 mb-2">
               <FaUserTie /> Posted By
             </h3>
@@ -336,10 +336,10 @@ const ScholarshipDetails = () => {
 
 const InfoCard = ({ icon, title, value }) => (
   <div className="bg-white rounded-lg shadow p-4 flex gap-3">
-    <div className="text-primary text-xl">{icon}</div>
+    <div className="text-primary text-lg sm:text-xl">{icon}</div>
     <div>
-      <p className="text-sm text-gray-500">{title}</p>
-      <p className="font-semibold">{value}</p>
+      <p className="text-xs sm:text-sm text-gray-500">{title}</p>
+      <p className="font-semibold text-sm sm:text-base">{value}</p>
     </div>
   </div>
 );
