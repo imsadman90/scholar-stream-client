@@ -8,18 +8,19 @@ import {
   FaStar,
   FaCalendarAlt,
 } from "react-icons/fa";
-import axios from "axios";
 import { Link } from "react-router-dom";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 const TopScholarships = () => {
   const [scholarships, setScholarships] = useState([]);
   const [loading, setLoading] = useState(true);
+  const axiosSecure = useAxiosSecure();
 
   useEffect(() => {
     const fetchTopScholarships = async () => {
       try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/scholarships`
+        const response = await axiosSecure.get(
+          `${import.meta.env.VITE_API_URL}/scholarships/top`
         );
 
         const sorted = response.data

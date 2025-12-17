@@ -16,7 +16,9 @@ const AllScholarships = () => {
   const { data: scholarships = [], isLoading } = useQuery({
     queryKey: ["scholarships"],
     queryFn: async () => {
-      const res = await axiosSecure.get("/scholarships");
+      const res = await axiosSecure.get(
+        `${import.meta.env.VITE_API_URL}/scholarships`
+      );
       return res.data;
     },
   });
