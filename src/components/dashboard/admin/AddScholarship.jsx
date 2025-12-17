@@ -1,4 +1,3 @@
-// src/components/dashboard/admin/AddScholarship.jsx
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
@@ -28,7 +27,6 @@ const AddScholarship = () => {
     onSuccess: () => {
       toast.success("Scholarship added successfully!");
       reset();
-      // This will refresh: Home page (top 6), All Scholarships, Manage Scholarships
       queryClient.invalidateQueries({ queryKey: ["scholarships"] });
       queryClient.invalidateQueries({ queryKey: ["scholarships/top"] });
     },

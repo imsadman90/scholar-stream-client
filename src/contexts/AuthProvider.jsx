@@ -72,7 +72,6 @@ const AuthProvider = ({ children }) => {
       const result = await signInWithPopup(auth, googleProvider);
       //  Save to MongoDB after Google sign-in
       await saveUserToDatabase(result.user);
-      toast.success("Signed in successfully!");
       return result;
     } catch (error) {
       toast.error("Failed to sign in with Google");

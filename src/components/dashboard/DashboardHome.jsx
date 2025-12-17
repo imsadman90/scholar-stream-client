@@ -1,6 +1,4 @@
-
-import ManageApplications from "./moderator/ManageApplications";
-import Dashboard from "../../pages/Dashboard"; // ← Correct import
+import Dashboard from "../../pages/Dashboard";
 import useRole from "../../hooks/useRole";
 import LoadingSpinner from "../shared/Loading";
 

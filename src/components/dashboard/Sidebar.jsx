@@ -34,9 +34,7 @@ const Sidebar = () => {
     }
   };
 
-
-  // Normalize role to match your DB values
-  const userRole = role?.toLowerCase(); // "admin", "moderator", "student"
+  const userRole = role?.toLowerCase();
 
   const adminLinks = [
     { path: "/dashboard", icon: FaHome, label: "Dashboard" },

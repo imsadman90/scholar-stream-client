@@ -83,31 +83,41 @@ const router = createBrowserRouter([
       },
       {
         path: "profile",
-        element: <Profile />,
+        element: (
+          <PrivateRoute>
+            <Profile />
+          </PrivateRoute>
+        ),
       },
 
       {
         path: "add-scholarship",
         element: (
-          <AdminRoutes>
-            <AddScholarship />
-          </AdminRoutes>
+          <PrivateRoute>
+            <AdminRoutes>
+              <AddScholarship />
+            </AdminRoutes>
+          </PrivateRoute>
         ),
       },
       {
         path: "manage-scholarships",
         element: (
-          <AdminRoutes>
-            <ManageScholarships />
-          </AdminRoutes>
+          <PrivateRoute>
+            <AdminRoutes>
+              <ManageScholarships />
+            </AdminRoutes>
+          </PrivateRoute>
         ),
       },
       {
         path: "manage-users",
         element: (
-          <AdminRoutes>
-            <ManageUsers />
-          </AdminRoutes>
+          <PrivateRoute>
+            <AdminRoutes>
+              <ManageUsers />
+            </AdminRoutes>
+          </PrivateRoute>
         ),
       },
       {

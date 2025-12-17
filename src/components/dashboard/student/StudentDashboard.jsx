@@ -1,5 +1,3 @@
-// src/pages/Dashboard.jsx  (Student Dashboard - Fixed Version)
-
 import { motion } from "framer-motion";
 import {
   FaFileAlt,
@@ -33,7 +31,6 @@ const StudentDashboard = () => {
       return res.data;
     },
     retry: 1,
-    // Add default values on error
     onError: (error) => {
       console.error("Error fetching stats:", error);
     }

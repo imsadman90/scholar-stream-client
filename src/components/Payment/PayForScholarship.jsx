@@ -19,7 +19,6 @@ const PaymentForScholarship = () => {
   useEffect(() => {
     const fetchApplicationDetails = async () => {
       try {
-        // ✅ Use relative path without full URL
         const response = await axiosSecure.get(`/application/${id}`);
         setApplication(response.data);
       } catch (error) {
@@ -44,7 +43,6 @@ const PaymentForScholarship = () => {
     setProcessing(true);
 
     try {
-      // ✅ Ensure user is authenticated and get fresh token
       const auth = getAuth();
       const currentUser = auth.currentUser;
 
@@ -53,8 +51,6 @@ const PaymentForScholarship = () => {
         navigate("/login");
         return;
       }
-
-      // Force refresh token to ensure it's valid
       await currentUser.getIdToken(true);
 
       const paymentInfo = {
@@ -75,7 +71,6 @@ const PaymentForScholarship = () => {
 
       console.log("Creating checkout session with:", paymentInfo);
 
-      // ✅ Use relative path without full URL
       const { data } = await axiosSecure.post(
         "/create-checkout-session",
         paymentInfo
@@ -83,7 +78,6 @@ const PaymentForScholarship = () => {
 
       console.log("Checkout session created:", data);
 
-      // Redirect to Stripe Checkout
       if (data.url) {
         window.location.href = data.url;
       } else {

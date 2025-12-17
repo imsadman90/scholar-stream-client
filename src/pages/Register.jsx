@@ -7,6 +7,12 @@ import ScholarshipImage from "../../public/close-up-hands-holding-diplomas-caps.
 import axios from "axios";
 import toast from "react-hot-toast";
 import useAxiosSecure from "../hooks/useAxiosSecure";
+import { useState } from "react";
+import { IoEye, IoEyeOff } from "react-icons/io5";
+
+// ImgBB configuration
+const image_hosting_key = import.meta.env.VITE_IMAGEBB_KEY;
+const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
 
 const Register = () => {
   const {
@@ -21,6 +27,7 @@ const Register = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const axiosSecure = useAxiosSecure();
+  const [showPassword, setShowPassword] = useState(false);
 
   const from = location.state || "/";
 
@@ -46,7 +53,7 @@ const Register = () => {
     event.preventDefault();
     const form = event.target;
     const name = form.name.value;
-    const photo = form.photo.value;
+    const photoFile = form.photo.files[0];
     const email = form.email.value;
     const password = form.password.value;
 
@@ -64,22 +71,45 @@ const Register = () => {
       return;
     }
 
+    // Check if photo is uploaded
+    if (!photoFile) {
+      toast.error("Please upload a profile photo");
+      return;
+    }
+
     try {
       setLoading(true);
 
-      // 1. Create user in Firebase
+      // 1. Upload image to ImgBB
+      const formData = new FormData();
+      formData.append("image", photoFile);
+
+      const imgRes = await fetch(image_hosting_api, {
+        method: "POST",
+        body: formData,
+      });
+      const imgData = await imgRes.json();
+
+      if (!imgData.success) {
+        throw new Error("Image upload failed");
+      }
+
+      const photoURL = imgData.data.display_url;
+      console.log("Image uploaded:", photoURL);
+
+      // 2. Create user in Firebase
       const result = await createUser(email, password);
       console.log("Firebase user created:", result.user);
 
-      // 2. Update user profile with name and photo
-      await updateUserProfile(name, photo);
+      // 3. Update user profile with name and photo
+      await updateUserProfile(name, photoURL);
       console.log("Profile updated");
 
-      // 3. Save user to MongoDB
+      // 4. Save user to MongoDB
       const userData = {
         name: name,
         email: email,
-        photoURL: photo,
+        photoURL: photoURL,
         role: "Student",
         createdAt: new Date().toISOString(),
       };
@@ -154,22 +184,25 @@ const Register = () => {
                 />
               </div>
 
-              {/* Photo URL */}
+              {/* Photo Upload */}
               <div>
                 <label
                   htmlFor="photo"
                   className="block mb-2 text-sm font-semibold"
                 >
-                  Photo URL *
+                  Profile Photo *
                 </label>
                 <input
-                  type="url"
+                  type="file"
                   name="photo"
                   id="photo"
+                  accept="image/*"
                   required
-                  placeholder="https://example.com/your-photo.jpg"
-                  className="w-full px-3 py-2 border rounded-md border-gray-300 bg-gray-200 text-gray-900 focus:outline-none focus:border-[#CBAD8D]"
+                  className="w-full px-3 py-2 border rounded-md border-gray-300 bg-gray-200 text-gray-900 focus:outline-none focus:border-[#CBAD8D] file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#CBAD8D] file:text-white hover:file:bg-[#b89a7a] file:cursor-pointer"
                 />
+                <p className="text-xs text-gray-500 mt-1">
+                  Upload your profile photo (JPG, PNG, GIF)
+                </p>
               </div>
 
               {/* Email */}
@@ -198,15 +231,28 @@ const Register = () => {
                 >
                   Password *
                 </label>
-                <input
-                  type="password"
-                  name="password"
-                  autoComplete="new-password"
-                  id="password"
-                  required
-                  placeholder="*******"
-                  className="w-full px-3 py-2 border rounded-md border-gray-300 bg-gray-200 text-gray-900 focus:outline-none focus:border-[#CBAD8D]"
-                />
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    autoComplete="new-password"
+                    id="password"
+                    required
+                    placeholder="*******"
+                    className="w-full px-3 py-2 border rounded-md border-gray-300 bg-gray-200 text-gray-900 focus:outline-none focus:border-[#CBAD8D]"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                  >
+                    {showPassword ? (
+                      <IoEyeOff className="w-5 h-5" />
+                    ) : (
+                      <IoEye className="w-5 h-5" />
+                    )}
+                  </button>
+                </div>
                 <p className="text-xs text-gray-500 mt-1">
                   Must contain: 6+ characters, 1 uppercase, 1 special character
                 </p>

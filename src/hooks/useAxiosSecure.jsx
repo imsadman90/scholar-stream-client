@@ -17,13 +17,11 @@ const useAxiosSecure = () => {
     const requestInterceptor = axiosSecure.interceptors.request.use(
       async (config) => {
         try {
-          // ✅ Get Firebase Auth instance directly
           const auth = getAuth();
           const currentUser = auth.currentUser;
 
-          // ✅ Only get token if user exists and is authenticated
           if (currentUser) {
-            const token = await currentUser.getIdToken(false); // false = use cached token
+            const token = await currentUser.getIdToken(false);
             config.headers.Authorization = `Bearer ${token}`;
           }
         } catch (error) {
@@ -42,7 +40,6 @@ const useAxiosSecure = () => {
       async (error) => {
         const status = error.response?.status;
 
-        // ✅ Handle authentication errors
         if (status === 401 || status === 403) {
           console.error("Authentication error, logging out...");
           try {
@@ -56,8 +53,7 @@ const useAxiosSecure = () => {
         return Promise.reject(error);
       }
     );
-
-    // ✅ Cleanup function
+    
     return () => {
       axiosSecure.interceptors.request.eject(requestInterceptor);
       axiosSecure.interceptors.response.eject(responseInterceptor);

@@ -48,7 +48,7 @@ const Profile = () => {
         Swal.fire("Error", "Please select an image file", "error");
         return;
       }
-      // Validate file size (max 5MB)
+      // Validate file size
       if (file.size > 5 * 1024 * 1024) {
         Swal.fire("Error", "Image size should be less than 5MB", "error");
         return;

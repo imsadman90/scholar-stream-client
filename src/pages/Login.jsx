@@ -4,12 +4,15 @@ import LoadingSpinner from "../components/shared/Loading";
 import useAuth from "../hooks/useAuth";
 import { FcGoogle } from "react-icons/fc";
 import { TbFidgetSpinner } from "react-icons/tb";
+import { IoEye, IoEyeOff } from "react-icons/io5";
 import ScholarshipImage from "../../public/close-up-hands-holding-diplomas-caps.jpg";
+import { useState } from "react";
 
 const Login = () => {
   const { signIn, signInWithGoogle, loading, user, setLoading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [showPassword, setShowPassword] = useState(false);
 
   const from = location.state || "/";
 
@@ -30,7 +33,8 @@ const Login = () => {
       toast.success("Login Successful");
     } catch (err) {
       console.log(err);
-      toast.error(err?.message);
+      setLoading(false);
+      toast.error("User Not Found! Please give a valid user Data.");
     }
   };
 
@@ -44,7 +48,7 @@ const Login = () => {
     } catch (err) {
       console.log(err);
       setLoading(false);
-      toast.error(err?.message);
+      toast.error("User Not Found! Please give a valid user Data.");
     }
   };
   return (
@@ -75,25 +79,31 @@ const Login = () => {
                   id="email"
                   required
                   placeholder="Enter Your Email Here"
-                  className="w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-lime-500 bg-gray-200 text-gray-900"
+                  className="w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-gray-500 bg-gray-200 text-gray-900"
                   data-temp-mail-org="0"
                 />
               </div>
-              <div>
-                <div className="flex justify-between">
-                  <label htmlFor="password" className="text-sm mb-2">
-                    Password
-                  </label>
-                </div>
+              <div className="relative">
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   name="password"
                   autoComplete="current-password"
                   id="password"
                   required
                   placeholder="*******"
-                  className="w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-lime-500 bg-gray-200 text-gray-900"
+                  className="w-full px-3 py-2 border rounded-md border-gray-300 focus:outline-gray-500 bg-gray-200 text-gray-900"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                >
+                  {showPassword ? (
+                    <IoEyeOff className="w-5 h-5" />
+                  ) : (
+                    <IoEye className="w-5 h-5" />
+                  )}
+                </button>
               </div>
             </div>
 

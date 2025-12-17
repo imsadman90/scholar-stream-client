@@ -30,8 +30,6 @@ const PaymentSuccess = () => {
     setLoading(true);
 
     const auth = getAuth();
-
-    // Wait for auth state to be resolved
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (!user) {
         toast.error("Please log in again");
@@ -41,17 +39,13 @@ const PaymentSuccess = () => {
       }
 
       try {
-        // Now safe to refresh token
         await user.getIdToken(true);
-
-        // Update payment status
         await axiosSecure.patch(`/application/${applicationId}`, {
           paymentStatus: "paid",
           stripeSessionId: sessionId,
           paidAt: new Date().toISOString(),
         });
 
-        // Fetch updated application
         const res = await axiosSecure.get(`/application/${applicationId}`);
         setApplication(res.data);
 
@@ -65,7 +59,6 @@ const PaymentSuccess = () => {
       }
     });
 
-    // Cleanup listener on unmount
     return () => unsubscribe();
   }, [applicationId, sessionId, axiosSecure, navigate]);
 

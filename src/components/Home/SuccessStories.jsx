@@ -7,7 +7,6 @@ const SuccessStories = () => {
   const [canScrollNext, setCanScrollNext] = useState(true);
 
   const stories = [
-    // ... your stories array (unchanged)
     {
       id: 1,
       name: "Md. Arif Hossain",

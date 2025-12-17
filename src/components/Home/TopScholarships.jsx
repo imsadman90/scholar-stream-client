@@ -22,7 +22,6 @@ const TopScholarships = () => {
           `${import.meta.env.VITE_API_URL}/scholarships`
         );
 
-        // Sort by most recent + take top 6
         const sorted = response.data
           .sort(
             (a, b) =>
