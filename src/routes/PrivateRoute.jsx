@@ -1,6 +1,7 @@
 import { Navigate, useLocation } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import LoadingSpinner from "../components/shared/Loading";
+import toast from "react-hot-toast";
 
 const PrivateRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -11,7 +12,8 @@ const PrivateRoute = ({ children }) => {
   }
 
   if (!user) {
-    return <Navigate to="/" state={{ from: location }} replace />;
+    toast.error("Please login first");
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   return children;

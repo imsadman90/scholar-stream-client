@@ -51,11 +51,6 @@ const ScholarshipDetails = () => {
   }, [id, user?.email, axiosSecure]);
 
   const handleApply = () => {
-    if (!user) {
-      toast.error("Please login to apply");
-      navigate("/login");
-      return;
-    }
     if (hasApplied) {
       toast.info("You have already applied for this scholarship");
       navigate("/dashboard/my-applications");

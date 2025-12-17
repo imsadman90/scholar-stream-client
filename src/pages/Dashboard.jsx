@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import {
   FaGraduationCap,
-
   FaCheckCircle,
   FaClock,
   FaTimesCircle,
@@ -30,12 +29,11 @@ const Dashboard = () => {
     queryKey: ["dashboardStats", user?.email, role],
     enabled: !!user?.email && !authLoading && !isRoleLoading,
     queryFn: async () => {
-      
       const res = await axiosSecure.get(`/application/dashboard/status`, {
         params: { email: user.email },
       });
       console.log(res);
-      
+
       return res.data;
     },
   });
@@ -87,35 +85,30 @@ const Dashboard = () => {
           <StatCard
             title="Total Applications"
             value={stats.totalApplications}
-            
             color="from-primary to-primary/80"
             loading={statsLoading}
           />
           <StatCard
             title="Pending"
             value={stats.pending}
-           
             color="from-warning to-warning/80"
             loading={statsLoading}
           />
           <StatCard
             title="In Processing"
             value={stats.processing}
-            
             color="from-info to-info/80"
             loading={statsLoading}
           />
           <StatCard
             title="Completed"
             value={stats.completed}
-           
             color="from-success to-success/80"
             loading={statsLoading}
           />
           <StatCard
             title="Rejected"
             value={stats.rejected}
-           
             color="from-error to-error/80"
             loading={statsLoading}
           />
@@ -196,7 +189,7 @@ const Dashboard = () => {
                         </p>
                       )}
                     </div>
-                    <span className="text-sm text-base-content/60">
+                    <span className="hidden md:inline text-sm text-base-content/60">
                       {new Date(
                         activity.appliedAt || activity.createdAt
                       ).toLocaleDateString()}

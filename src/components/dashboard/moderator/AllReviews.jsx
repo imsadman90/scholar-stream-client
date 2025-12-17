@@ -21,6 +21,17 @@ const AllReviews = () => {
     },
   });
 
+  // Fetch user role to check if moderator
+  const { data: userRole, isLoading: roleLoading } = useQuery({
+    queryKey: ["userRole", user?.email],
+    queryFn: async () => {
+      if (!user?.email) return null;
+      const res = await axiosSecure.get(`/users/${user.email}`);
+      return res.data.role;
+    },
+    enabled: !!user?.email,
+  });
+
   const handleDelete = (review) => {
     Swal.fire({
       title: "Are you sure?",
@@ -53,12 +64,14 @@ const AllReviews = () => {
     return format(parsed, "dd MMM yyyy");
   };
 
-  // Check if current user owns the review
-  const isOwner = (review) => {
-    return user?.email === review.userEmail;
+  // Check if current user can delete (owner OR moderator)
+  const canDelete = (review) => {
+    const isOwner = user?.email === review.userEmail;
+    const isModerator = userRole === "moderator" || userRole === "student";
+    return isOwner || isModerator;
   };
 
-  if (isLoading || authLoading) {
+  if (isLoading || authLoading || roleLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
@@ -165,10 +178,10 @@ const AllReviews = () => {
                         {formatDate(review.reviewDate)}
                       </td>
                       <td className="px-6 py-4 text-sm">
-                        {isOwner(review) ? (
+                        {canDelete(review) ? (
                           <button
                             onClick={() => handleDelete(review)}
-                            className="text-red-600 hover:text-red-800"
+                            className="text-red-600 hover:text-red-800 transition-colors"
                             title="Delete"
                           >
                             <FaTrash />
@@ -207,7 +220,7 @@ const AllReviews = () => {
                       <p className="font-semibold text-gray-900">
                         {review.userName}
                       </p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-sm font-medium text-gray-700 bg-gray-100 inline-block px-2 py-1 rounded mt-1">
                         {formatDate(review.reviewDate)}
                       </p>
                     </div>
@@ -246,11 +259,11 @@ const AllReviews = () => {
                   </p>
 
                   {/* Actions */}
-                  {isOwner(review) && (
+                  {canDelete(review) && (
                     <div className="flex justify-end pt-3 border-t border-gray-200">
                       <button
                         onClick={() => handleDelete(review)}
-                        className="text-red-600 flex items-center gap-2 hover:text-red-800"
+                        className="text-red-600 flex items-center gap-2 hover:text-red-800 transition-colors"
                       >
                         <FaTrash size={18} />
                         <span className="text-sm">Delete</span>

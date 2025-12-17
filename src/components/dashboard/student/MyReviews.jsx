@@ -212,8 +212,8 @@ const MyReviews = () => {
                   </p>
 
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-500">
-                      {formatDate(review?.date)}
+                    <span className="text-xs text-gray-500">
+                      {formatDate(review?.reviewDate)}
                     </span>
                     <div className="flex gap-4">
                       <button
