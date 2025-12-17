@@ -126,7 +126,6 @@ const MyApplications = () => {
       Swal.fire("Updated!", "Application updated successfully.", "success");
     },
     onError: (err) => {
-      console.error("Edit error:", err);
       Swal.fire(
         "Error!",
         err.response?.data?.message || "Failed to update",

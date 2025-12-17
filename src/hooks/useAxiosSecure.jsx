@@ -25,12 +25,10 @@ const useAxiosSecure = () => {
             config.headers.Authorization = `Bearer ${token}`;
           }
         } catch (error) {
-          console.error("Error getting auth token:", error);
         }
         return config;
       },
       (error) => {
-        console.error("Request interceptor error:", error);
         return Promise.reject(error);
       }
     );
@@ -41,11 +39,9 @@ const useAxiosSecure = () => {
         const status = error.response?.status;
 
         if (status === 401 || status === 403) {
-          console.error("Authentication error, logging out...");
           try {
             await logOut();
           } catch (logoutError) {
-            console.error("Logout error:", logoutError);
           }
           navigate("/login", { replace: true });
         }

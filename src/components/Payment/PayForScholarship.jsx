@@ -22,7 +22,6 @@ const PaymentForScholarship = () => {
         const response = await axiosSecure.get(`/application/${id}`);
         setApplication(response.data);
       } catch (error) {
-        console.error("Error fetching application:", error);
         toast.error("Failed to load application details");
         navigate("/dashboard/my-applications");
       } finally {
@@ -69,14 +68,10 @@ const PaymentForScholarship = () => {
         },
       };
 
-      console.log("Creating checkout session with:", paymentInfo);
-
       const { data } = await axiosSecure.post(
         "/create-checkout-session",
         paymentInfo
       );
-
-      console.log("Checkout session created:", data);
 
       if (data.url) {
         window.location.href = data.url;
@@ -84,7 +79,6 @@ const PaymentForScholarship = () => {
         throw new Error("No checkout URL received from server");
       }
     } catch (error) {
-      console.error("Payment error:", error);
       const errorMessage =
         error.response?.data?.error ||
         "Failed to initiate payment. Please try again.";

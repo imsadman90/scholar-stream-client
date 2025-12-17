@@ -113,7 +113,6 @@ const Profile = () => {
         Swal.fire("Warning", "Profile update had issues", "warning");
       }
     } catch (err) {
-      console.error("Update error:", err);
       Swal.fire({
         icon: "error",
         title: "Error",

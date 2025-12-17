@@ -30,7 +30,6 @@ const Login = () => {
       navigate(from, { replace: true });
       toast.success("Login Successful");
     } catch (err) {
-      console.log(err);
       setLoading(false);
       toast.error("Invalid email or password");
     }
@@ -42,7 +41,6 @@ const Login = () => {
       navigate(from, { replace: true });
       toast.success("Login Successful");
     } catch (err) {
-      console.log(err);
       setLoading(false);
       toast.error("Google login failed");
     }

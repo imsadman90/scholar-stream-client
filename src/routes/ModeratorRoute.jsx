@@ -8,15 +8,6 @@ const ModeratorRoute = ({ children }) => {
   const { user, loading: authLoading } = useAuth();
   const [role, isRoleLoading] = useRole();
 
-  useEffect(() => {
-    console.log("ModeratorRoute Check:", {
-      user: user?.email,
-      authLoading,
-      isRoleLoading,
-      role,
-    });
-  }, [user, authLoading, isRoleLoading, role]);
-
   if (authLoading || isRoleLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -26,16 +17,13 @@ const ModeratorRoute = ({ children }) => {
   }
 
   if (!user) {
-    console.log("ModeratorRoute: No user, redirecting to home");
     return <Navigate to="/" replace />;
   }
 
   if (role !== "moderator") {
-    console.log("ModeratorRoute: Not moderator, redirecting. Role:", role);
     return <Navigate to="/" replace />;
   }
 
-  console.log("ModeratorRoute: Access granted");
   return children;
 };
 

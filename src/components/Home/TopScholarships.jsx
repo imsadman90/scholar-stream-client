@@ -32,7 +32,6 @@ const TopScholarships = () => {
 
         setScholarships(sorted.length > 0 ? sorted : []);
       } catch (error) {
-        console.error("Failed to fetch scholarships:", error);
         setScholarships([]);
       } finally {
         setLoading(false);

@@ -32,7 +32,6 @@ const StudentDashboard = () => {
     },
     retry: 1,
     onError: (error) => {
-      console.error("Error fetching stats:", error);
     }
   });
 
@@ -50,7 +49,6 @@ const StudentDashboard = () => {
     },
     retry: 1,
     onError: (error) => {
-      console.error("Error fetching recent apps:", error);
     }
   });
 

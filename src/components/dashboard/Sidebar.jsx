@@ -30,7 +30,6 @@ const Sidebar = () => {
       await logOut();
       setIsOpen(false);
     } catch (error) {
-      console.error("Logout failed:", error);
     }
   };
 

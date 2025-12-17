@@ -74,7 +74,6 @@ const AddScholarship = () => {
 
       await mutateAsync(scholarshipData);
     } catch (err) {
-      console.error(err);
       toast.error("Image upload failed or server error");
     }
   };

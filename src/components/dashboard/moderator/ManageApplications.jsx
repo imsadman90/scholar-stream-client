@@ -52,7 +52,6 @@ const ManageApplications = () => {
 
       toast.success("Status updated successfully!");
     } catch (err) {
-      console.error(err);
       toast.error("Failed to update status");
     }
   };

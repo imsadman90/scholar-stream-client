@@ -32,7 +32,6 @@ const Dashboard = () => {
       const res = await axiosSecure.get(`/application/dashboard/status`, {
         params: { email: user.email },
       });
-      console.log(res);
 
       return res.data;
     },

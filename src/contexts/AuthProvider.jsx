@@ -39,9 +39,7 @@ const AuthProvider = ({ children }) => {
       }
 
       const result = await response.json();
-      console.log("User saved to MongoDB:", result);
     } catch (error) {
-      console.error("Error saving user to database:", error);
     }
   };
 
@@ -102,7 +100,7 @@ const AuthProvider = ({ children }) => {
 
       return Promise.resolve();
     } catch (error) {
-      console.error("Firebase update error:", error);
+
       return Promise.reject(error);
     }
   };

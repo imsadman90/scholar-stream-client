@@ -51,7 +51,6 @@ const PaymentSuccess = () => {
 
         toast.success("Payment verified successfully!");
       } catch (err) {
-        console.error("Payment update failed:", err);
         setError(err.response?.data?.message || "Failed to verify payment");
         toast.error("Payment verification failed");
       } finally {
