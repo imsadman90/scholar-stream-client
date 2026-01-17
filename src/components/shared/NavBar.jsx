@@ -1,4 +1,9 @@
-import { Link, NavLink, useNavigate, useNavigationType } from "react-router-dom";
+import {
+  Link,
+  NavLink,
+  useNavigate,
+  useNavigationType,
+} from "react-router-dom";
 import scholarship from "/public/scholarship.png";
 import avatar from "/avatar.png";
 import { useState } from "react";
@@ -18,7 +23,7 @@ const NavBar = () => {
   const navigationType = useNavigationType();
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 py-3 bg-white shadow-lg border-b px-5 h-20 dark:bg-base-300 dark:border-none">
+    <div className="fixed top-0 left-0 right-0 z-50 py-3 bg-white shadow-lg px-5 h-20 dark:bg-base-300 dark:border-none">
       <div className="flex items-center justify-between h-full">
         {/* Logo */}
         <Link to="/">
@@ -96,9 +101,9 @@ const NavBar = () => {
 
               {/* Dropdown */}
               {isOpen && (
-                <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-2xl border overflow-hidden">
+                <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-base-200 dark:border-none rounded-xl shadow-2xl border overflow-hidden">
                   <div className="px-5 py-4 border-b">
-                    <p className="font-semibold text-gray-800">
+                    <p className="font-semibold text-gray-800 dark:text-gray-400">
                       {user.displayName || "User"}
                     </p>
                     <p className="text-sm text-gray-500">{user.email}</p>
@@ -107,7 +112,7 @@ const NavBar = () => {
                   <Link
                     to="/dashboard"
                     onClick={() => setIsOpen(false)}
-                    className="flex items-center gap-3 px-5 py-3 hover:bg-purple-50 text-purple-700 font-medium"
+                    className="flex items-center gap-3 px-5 py-3 hover:bg-purple-50 text-purple-700 font-medium dark:hover:bg-base-300"
                   >
                     <MdDashboard /> Dashboard
                   </Link>
@@ -117,7 +122,7 @@ const NavBar = () => {
                       logOut();
                       setIsOpen(false);
                     }}
-                    className="w-full text-left flex items-center gap-3 px-5 py-3 hover:bg-red-50 text-red-600 font-medium"
+                    className="w-full text-left flex items-center gap-3 px-5 py-3 hover:bg-red-50 dark:hover:bg-base-300 text-red-600 font-medium"
                   >
                     <TbLogout /> Logout
                   </button>

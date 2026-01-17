@@ -4,6 +4,7 @@ import TopScholarships from "../components/Home/TopScholarships";
 import SuccessStories from "../components/Home/SuccessStories";
 import { useLocation } from "react-router";
 import { useEffect } from "react";
+import ScholarStreamSections from "../components/ScholarStreams Sections";
 
 const Home = () => {
   const location = useLocation();
@@ -20,6 +21,7 @@ const Home = () => {
       <Banner />
       <TopScholarships />
       <SuccessStories />
+      <ScholarStreamSections/>
       <FAQ />
     </div>
   );
