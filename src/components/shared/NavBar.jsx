@@ -80,6 +80,19 @@ const NavBar = () => {
           >
             <Contact2 /> Contact
           </button>
+
+          {user && (
+            <>
+              <NavLink to="/dashboard" className={NavLinkClass}>
+                <MdDashboard className="text-xl" />{" "}
+                <span className="dark:text-gray-200">Dashboard</span>
+              </NavLink>
+              <NavLink to="/dashboard/profile" className={NavLinkClass}>
+                <FaHome className="text-xl" />{" "}
+                <span className="dark:text-gray-200">Profile</span>
+              </NavLink>
+            </>
+          )}
         </div>
 
         {/* Desktop Auth Section */}

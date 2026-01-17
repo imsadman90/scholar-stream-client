@@ -1,9 +1,30 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../hooks/useAxiosSecure";
-
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
+
+const SkeletonCard = () => (
+  <div className="card bg-white shadow-xl dark:bg-base-100">
+    <figure className="px-6 pt-6">
+      <div className="rounded-xl h-48 w-full bg-gray-200 dark:bg-gray-700 animate-pulse" />
+    </figure>
+    <div className="card-body">
+      <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4 animate-pulse mb-2" />
+      <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded w-1/2 animate-pulse mb-3" />
+      <div className="space-y-2">
+        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full animate-pulse" />
+        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3 animate-pulse" />
+        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2 animate-pulse" />
+        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 animate-pulse" />
+        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3 animate-pulse" />
+      </div>
+      <div className="card-actions mt-4">
+        <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded w-full animate-pulse" />
+      </div>
+    </div>
+  </div>
+);
 
 const AllScholarships = () => {
   const axiosSecure = useAxiosSecure();
@@ -13,6 +34,7 @@ const AllScholarships = () => {
   const [sortBy, setSortBy] = useState("applicationFees");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
+
   const { data: scholarships = [], isLoading } = useQuery({
     queryKey: ["scholarships"],
     queryFn: async () => {
@@ -54,17 +76,10 @@ const AllScholarships = () => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filtered.slice(indexOfFirstItem, indexOfLastItem);
 
-  if (isLoading)
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <span className="loading loading-spinner loading-lg text-primary"></span>
-      </div>
-    );
-
   return (
     <div className="container mx-auto px-4 py-12 mt-20 dark:bg-base-300">
       <h1 className="text-4xl font-bold text-center mb-10 text-primary">
-        All Scholarships ({filtered.length})
+        All Scholarships {!isLoading && `(${filtered.length})`}
       </h1>
 
       <div className="bg-white rounded-xl shadow-lg p-6 mb-8 dark:bg-base-200">
@@ -75,12 +90,14 @@ const AllScholarships = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="input input-bordered"
+            disabled={isLoading}
           />
 
           <select
             value={filterCategory}
             onChange={(e) => setFilterCategory(e.target.value)}
             className="select select-bordered"
+            disabled={isLoading}
           >
             <option value="">All Categories</option>
             <option>Full fund</option>
@@ -92,6 +109,7 @@ const AllScholarships = () => {
             value={filterDegree}
             onChange={(e) => setFilterDegree(e.target.value)}
             className="select select-bordered"
+            disabled={isLoading}
           >
             <option value="">All Degrees</option>
             <option>Bachelor</option>
@@ -104,6 +122,7 @@ const AllScholarships = () => {
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
             className="select select-bordered"
+            disabled={isLoading}
           >
             <option value="applicationFees">Sort: Lowest Fee First</option>
             <option value="deadline">Sort: Deadline Soonest</option>
@@ -112,9 +131,17 @@ const AllScholarships = () => {
         </div>
       </div>
 
-      {filtered.length === 0 ? (
-        <div className="text-center py-20 bg-gray-50 rounded-xl">
-          <p className="text-2xl text-gray-600">No scholarships found</p>
+      {isLoading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {[...Array(6)].map((_, index) => (
+            <SkeletonCard key={index} />
+          ))}
+        </div>
+      ) : filtered.length === 0 ? (
+        <div className="text-center py-20 bg-gray-50 rounded-xl dark:bg-base-200">
+          <p className="text-2xl text-gray-600 dark:text-gray-400">
+            No scholarships found
+          </p>
         </div>
       ) : (
         <>
@@ -169,11 +196,11 @@ const AllScholarships = () => {
             ))}
           </div>
 
-          <div className="flex justify-center gap-2  mt-8">
+          <div className="flex justify-center gap-2 mt-8">
             <button
               className="join-item btn btn-outline"
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              disabled={currentPage === 1 || isLoading}
+              disabled={currentPage === 1}
             >
               Previous page
             </button>
@@ -182,12 +209,12 @@ const AllScholarships = () => {
               onClick={() =>
                 setCurrentPage((prev) => Math.min(prev + 1, totalPages))
               }
-              disabled={currentPage === totalPages || isLoading}
+              disabled={currentPage === totalPages}
             >
               Next page
             </button>
           </div>
-          <p className="text-center mt-2">
+          <p className="text-center mt-2 dark:text-gray-400">
             Page {currentPage} of {totalPages}
           </p>
         </>

@@ -1,5 +1,9 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import useAxiosSecure from "../hooks/useAxiosSecure";
+import useAuth from "../hooks/useAuth";
+import toast from "react-hot-toast";
 import {
   FaUniversity,
   FaMapMarkerAlt,
@@ -13,16 +17,13 @@ import {
   FaChevronLeft,
   FaChevronRight,
 } from "react-icons/fa";
-import useAxiosSecure from "../hooks/useAxiosSecure";
-import useAuth from "../hooks/useAuth";
-import toast from "react-hot-toast";
 
 const ScholarshipDetails = () => {
   const { id } = useParams();
   const { user } = useAuth();
   const navigate = useNavigate();
-  const axiosSecure = useAxiosSecure();
   const scrollRef = useRef(null);
+  const axiosSecure = useAxiosSecure();
 
   const [scholarship, setScholarship] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -32,6 +33,51 @@ const ScholarshipDetails = () => {
   const [hasApplied, setHasApplied] = useState(false);
   const [checkingApplication, setCheckingApplication] = useState(true);
 
+  // -------- Public Scholarship Fetch --------
+  useEffect(() => {
+    const fetchScholarship = async () => {
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_API_URL}/scholarships/${id}`,
+        );
+        setScholarship(res.data);
+      } catch (error) {
+        setScholarship(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchScholarship();
+  }, [id]);
+
+  // -------- Public Reviews Fetch --------
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_API_URL}/reviews/scholarship/${id}`,
+        );
+        setReviews(res.data);
+
+        const emails = [...new Set(res.data.map((r) => r.userEmail))];
+        const users = await Promise.all(
+          emails.map((e) =>
+            axios.get(`${import.meta.env.VITE_API_URL}/users/${e}`),
+          ),
+        );
+        const map = {};
+        users.forEach((u) => (map[u.data.email] = u.data.photoURL));
+        setReviewUsers(map);
+      } catch (error) {
+        setReviews([]);
+      } finally {
+        setReviewsLoading(false);
+      }
+    };
+    fetchReviews();
+  }, [id]);
+
+  // -------- Check if user already applied --------
   useEffect(() => {
     const checkExistingApplication = async () => {
       if (!user?.email || !id) {
@@ -40,9 +86,11 @@ const ScholarshipDetails = () => {
       }
       try {
         const res = await axiosSecure.get(
-          `/application/check/${id}/${user.email}`
+          `/application/check/${id}/${user.email}`,
         );
         setHasApplied(res.data.hasApplied);
+      } catch (error) {
+        setHasApplied(false);
       } finally {
         setCheckingApplication(false);
       }
@@ -50,22 +98,30 @@ const ScholarshipDetails = () => {
     checkExistingApplication();
   }, [id, user?.email, axiosSecure]);
 
+  // -------- Apply Button Handler --------
   const handleApply = () => {
+    if (!user) {
+      toast("Please login to apply!", { icon: "🔒" });
+      navigate("/login");
+      return;
+    }
+
     if (hasApplied) {
       toast.info("You have already applied for this scholarship");
       navigate("/dashboard/my-applications");
       return;
     }
+
     navigate(`/apply/${id}`);
   };
 
+  // -------- Reviews Scroll Handlers --------
   const scrollLeft = () => {
     if (scrollRef.current?.firstChild) {
       const w = scrollRef.current.firstChild.offsetWidth + 24;
       scrollRef.current.scrollBy({ left: -w, behavior: "smooth" });
     }
   };
-
   const scrollRight = () => {
     if (scrollRef.current?.firstChild) {
       const w = scrollRef.current.firstChild.offsetWidth + 24;
@@ -73,37 +129,7 @@ const ScholarshipDetails = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchReviews = async () => {
-      try {
-        const res = await axiosSecure.get(`/reviews/scholarship/${id}`);
-        setReviews(res.data);
-        const emails = [...new Set(res.data.map((r) => r.userEmail))];
-        const users = await Promise.all(
-          emails.map((e) => axiosSecure.get(`/users/${e}`))
-        );
-        const map = {};
-        users.forEach((u) => (map[u.data.email] = u.data.photoURL));
-        setReviewUsers(map);
-      } finally {
-        setReviewsLoading(false);
-      }
-    };
-    fetchReviews();
-  }, [id, axiosSecure]);
-
-  useEffect(() => {
-    const fetchScholarship = async () => {
-      try {
-        const res = await axiosSecure.get(`/scholarships/${id}`);
-        setScholarship(res.data);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchScholarship();
-  }, [id, axiosSecure]);
-
+  // -------- Loading / Error UI --------
   if (loading || checkingApplication) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -115,7 +141,7 @@ const ScholarshipDetails = () => {
   if (!scholarship) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Link to="/all-scholarships" className="btn btn-primary">
+        <Link to="/scholarships" className="btn btn-primary">
           Browse Scholarships
         </Link>
       </div>
@@ -126,6 +152,7 @@ const ScholarshipDetails = () => {
     <div className="bg-gray-50 mt-16 sm:mt-20 px-4 sm:px-6 lg:px-10 py-10 dark:bg-base-300">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
         <div className="lg:col-span-2 space-y-6">
+          {/* Scholarship Info */}
           <div className="bg-white rounded-xl shadow p-4 sm:p-6 space-y-4 dark:bg-base-100">
             <img
               src={scholarship.universityImage || "/placeholder-university.jpg"}
@@ -147,12 +174,12 @@ const ScholarshipDetails = () => {
             <h1 className="text-2xl sm:text-3xl font-bold">
               {scholarship.scholarshipName}
             </h1>
-
             <p className="flex items-center gap-2 text-gray-600 text-sm sm:text-base">
               <FaUniversity /> {scholarship.universityName}
             </p>
           </div>
 
+          {/* Key Info Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <InfoCard
               icon={<FaMapMarkerAlt />}
@@ -180,6 +207,7 @@ const ScholarshipDetails = () => {
             />
           </div>
 
+          {/* Description */}
           <div className="bg-white rounded-xl shadow p-4 sm:p-6 dark:bg-base-100">
             <h2 className="text-lg sm:text-xl font-bold mb-3 dark:text-gray-400">
               Description
@@ -191,6 +219,7 @@ const ScholarshipDetails = () => {
         </div>
 
         <div className="space-y-6">
+          {/* Monthly Stipend */}
           {scholarship.stipendAmount && (
             <div className="bg-emerald-100 border border-emerald-200 rounded-xl p-4 sm:p-6">
               <p className="text-sm text-emerald-700">Monthly Stipend</p>
@@ -200,11 +229,11 @@ const ScholarshipDetails = () => {
             </div>
           )}
 
+          {/* Reviews */}
           <div className="bg-white rounded-xl shadow p-4 sm:p-6 dark:bg-base-100">
             <h2 className="text-xl font-bold mb-4">
               Reviews ({reviews.length})
             </h2>
-
             {reviewsLoading ? (
               <p className="text-center text-gray-500">Loading reviews...</p>
             ) : reviews.length === 0 ? (
@@ -273,6 +302,7 @@ const ScholarshipDetails = () => {
             )}
           </div>
 
+          {/* Cost Summary */}
           <div className="bg-white rounded-xl shadow p-4 sm:p-6 space-y-4 dark:bg-base-100">
             <h3 className="text-lg font-bold flex items-center gap-2">
               <FaMoneyBillWave /> Cost Summary
@@ -303,6 +333,7 @@ const ScholarshipDetails = () => {
             </div>
           </div>
 
+          {/* Posted By */}
           <div className="bg-white rounded-xl shadow p-4 sm:p-6 dark:bg-base-100">
             <h3 className="font-bold flex items-center gap-2 mb-2">
               <FaUserTie /> Posted By
@@ -310,6 +341,7 @@ const ScholarshipDetails = () => {
             <p className="text-sm break-all">{scholarship.postedUserEmail}</p>
           </div>
 
+          {/* Apply Button */}
           {checkingApplication ? (
             <button className="btn btn-disabled w-full">Checking...</button>
           ) : hasApplied ? (
@@ -331,6 +363,7 @@ const ScholarshipDetails = () => {
   );
 };
 
+// ---------- InfoCard Component ----------
 const InfoCard = ({ icon, title, value }) => (
   <div className="bg-white dark:bg-base-100 rounded-lg shadow p-4 flex gap-3">
     <div className="text-primary text-lg sm:text-xl">{icon}</div>
@@ -341,6 +374,7 @@ const InfoCard = ({ icon, title, value }) => (
   </div>
 );
 
+// ---------- CostRow Component ----------
 const CostRow = ({ label, value }) => (
   <div className="flex justify-between text-sm">
     <span className="text-gray-600 dark:text-gray-300">{label}</span>

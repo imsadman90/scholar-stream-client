@@ -36,10 +36,16 @@ export default function ScholarStreamSections() {
             profile and dreams
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
-            <Link to="/scholarships" className="px-8 py-3 bg-white text-blue-600 rounded-lg font-semibold hover:bg-blue-50 transition-colors flex items-center gap-2">
+            <Link
+              to="/scholarships"
+              className="px-8 py-3 bg-white text-blue-600 rounded-lg font-semibold hover:bg-blue-50 transition-colors flex items-center gap-2"
+            >
               Browse Scholarships <ArrowRight size={20} />
             </Link>
-            <Link to="/register" className="px-8 py-3 border-2 border-white text-white rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors">
+            <Link
+              to="/register"
+              className="px-8 py-3 border-2 border-white text-white rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors"
+            >
               Create Free Account
             </Link>
           </div>
@@ -280,7 +286,9 @@ export default function ScholarStreamSections() {
                 <h3 className="text-xl font-semibold text-gray-900 mb-2 dark:text-green-500">
                   {blog.title}
                 </h3>
-                <p className="text-gray-600 mb-4 dark:text-gray-400">{blog.desc}</p>
+                <p className="text-gray-600 mb-4 dark:text-gray-400">
+                  {blog.desc}
+                </p>
               </div>
             ))}
           </div>
@@ -373,10 +381,16 @@ export default function ScholarStreamSections() {
             Join over 500,000 students worldwide
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
-            <Link to='/register' className="px-8 py-4 bg-white text-blue-600 rounded-lg font-semibold text-lg hover:bg-blue-50 transition-colors shadow-lg">
+            <Link
+              to="/register"
+              className="px-8 py-4 bg-white text-blue-600 rounded-lg font-semibold text-lg hover:bg-blue-50 transition-colors shadow-lg"
+            >
               Create Free Account
             </Link>
-            <Link to='/scholarships' className="px-8 py-4 border-2 border-white text-white rounded-lg font-semibold text-lg hover:bg-white hover:text-blue-600 transition-colors">
+            <Link
+              to="/scholarships"
+              className="px-8 py-4 border-2 border-white text-white rounded-lg font-semibold text-lg hover:bg-white hover:text-blue-600 transition-colors"
+            >
               Explore Scholarships
             </Link>
           </div>

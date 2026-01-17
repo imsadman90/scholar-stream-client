@@ -11,6 +11,45 @@ import {
 import { Link } from "react-router-dom";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 
+const SkeletonCard = () => (
+  <div className="card bg-base-100 shadow-xl border border-base-300">
+    <div className="relative h-56 bg-base-300 animate-pulse rounded-t-xl"></div>
+
+    <div className="card-body p-6">
+      <div className="h-6 bg-base-300 rounded w-3/4 animate-pulse"></div>
+
+      <div className="space-y-3 my-4">
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 bg-base-300 rounded animate-pulse"></div>
+          <div className="h-4 bg-base-300 rounded w-2/3 animate-pulse"></div>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 bg-base-300 rounded animate-pulse"></div>
+          <div className="h-4 bg-base-300 rounded w-1/2 animate-pulse"></div>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 bg-base-300 rounded animate-pulse"></div>
+          <div className="h-4 bg-base-300 rounded w-3/5 animate-pulse"></div>
+        </div>
+      </div>
+
+      <div className="flex justify-between items-center mt-4">
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 bg-base-300 rounded-lg animate-pulse"></div>
+          <div>
+            <div className="h-6 bg-base-300 rounded w-16 animate-pulse mb-1"></div>
+            <div className="h-3 bg-base-300 rounded w-24 animate-pulse"></div>
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-6">
+        <div className="h-12 bg-base-300 rounded-lg w-full animate-pulse"></div>
+      </div>
+    </div>
+  </div>
+);
+
 const TopScholarships = () => {
   const [scholarships, setScholarships] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,13 +59,13 @@ const TopScholarships = () => {
     const fetchTopScholarships = async () => {
       try {
         const response = await axiosSecure.get(
-          `${import.meta.env.VITE_API_URL}/scholarships/top`
+          `${import.meta.env.VITE_API_URL}/scholarships/top`,
         );
 
         const sorted = response.data
           .sort(
             (a, b) =>
-              new Date(b.scholarshipPostDate) - new Date(a.scholarshipPostDate)
+              new Date(b.scholarshipPostDate) - new Date(a.scholarshipPostDate),
           )
           .slice(0, 6);
 
@@ -43,20 +82,24 @@ const TopScholarships = () => {
 
   if (loading) {
     return (
-      <section className="py-20 bg-base-100">
+      <section className="py-20 bg-gradient-to-b from-base-100 px-10 to-base-200">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-bold text-center mb-12">
-            Top Scholarships
-          </h2>
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: -30 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              Top Scholarships
+            </h2>
+            <p className="text-lg text-base-content/70 mt-4">
+              Latest and most prestigious opportunities worldwide
+            </p>
+          </motion.div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="card bg-base-200 shadow-xl animate-pulse">
-                <div className="h-56 bg-base-300 rounded-t-xl"></div>
-                <div className="card-body">
-                  <div className="h-6 bg-base-300 rounded w-3/4"></div>
-                  <div className="h-4 bg-base-300 rounded w-1/2 mt-3"></div>
-                </div>
-              </div>
+              <SkeletonCard key={i} />
             ))}
           </div>
         </div>
@@ -66,8 +109,15 @@ const TopScholarships = () => {
 
   if (scholarships.length === 0) {
     return (
-      <section className="py-20 text-center">
-        <p className="text-xl text-gray-500">No scholarships available yet.</p>
+      <section className="py-20 bg-gradient-to-b from-base-100 px-10 to-base-200">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-8">
+            Top Scholarships
+          </h2>
+          <p className="text-xl text-base-content/60">
+            No scholarships available yet.
+          </p>
+        </div>
       </section>
     );
   }
@@ -131,7 +181,7 @@ const TopScholarships = () => {
                     <span>
                       Deadline:{" "}
                       {new Date(
-                        scholarship.applicationDeadline
+                        scholarship.applicationDeadline,
                       ).toLocaleDateString()}
                     </span>
                   </div>
