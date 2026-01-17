@@ -115,15 +115,15 @@ const ManageScholarships = () => {
 
   return (
     <>
-      <div className="min-h-screen bg-gray-50 py-10 px-4">
+      <div className="min-h-screen bg-gray-50 py-10 px-4 dark:bg-base-100">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="flex flex-col sm:flex-row justify-between items-center mb-10 gap-4">
             <div>
-              <h1 className="text-4xl font-bold text-gray-800">
+              <h1 className="text-4xl font-bold text-gray-800 dark:text-purple-500">
                 Manage Scholarships
               </h1>
-              <p className="text-gray-600 mt-2">
+              <p className="text-gray-600 mt-2 dark:text-gray-300">
                 View, edit, or remove scholarships
               </p>
             </div>
@@ -133,7 +133,7 @@ const ManageScholarships = () => {
           </div>
 
           {/* Table */}
-          <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+          <div className="bg-white rounded-2xl shadow-xl overflow-hidden dark:bg-base-100">
             <div className="overflow-x-auto">
               <table className="table w-full">
                 <thead className="bg-blue-600 text-white">
@@ -150,10 +150,10 @@ const ManageScholarships = () => {
                 </thead>
                 <tbody>
                   {scholarships.map((s, idx) => (
-                    <tr key={s._id} className="hover:bg-gray-50 transition">
+                    <tr key={s._id} className="hover:bg-gray-50 transition dark:hover:bg-base-300">
                       <td className="font-medium">{idx + 1}</td>
                       <td>
-                        <div className="font-semibold text-gray-800 text-md">
+                        <div className="font-semibold text-gray-800 text-md dark:text-gray-400">
                           {s.scholarshipName}
                         </div>
                         <div className="text-md text-gray-500">
@@ -239,9 +239,9 @@ const ManageScholarships = () => {
           />
 
           {/* Modal */}
-          <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-300">
-            <div className="sticky top-0 bg-white border-b border-gray-200 px-8 py-6 flex justify-between items-center rounded-t-3xl">
-              <h2 className="text-3xl font-bold text-gray-800">
+          <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-300 dark:bg-base-200">
+            <div className="sticky top-0 bg-white border-b border-gray-200 dark:bg-base-100 px-8 py-6 flex justify-between items-center rounded-t-3xl">
+              <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-400">
                 Edit Scholarship
               </h2>
               <button
@@ -441,10 +441,10 @@ const Select = ({ label, name, options, defaultValue }) => (
     <select
       name={name}
       defaultValue={defaultValue}
-      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition"
+      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition dark:bg-base-200"
     >
       {options.map((opt) => (
-        <option key={opt} value={opt}>
+        <option key={opt} value={opt} className="bg-base-200">
           {opt}
         </option>
       ))}

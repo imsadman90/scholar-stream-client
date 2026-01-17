@@ -84,7 +84,7 @@ const AllReviews = () => {
       <title>All Reviews | Scholar Stream</title>
 
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-8">
+        <h1 className="text-3xl font-bold text-gray-800 mb-8 dark:text-gray-300">
           All Reviews ({reviews.length})
         </h1>
 
@@ -99,9 +99,9 @@ const AllReviews = () => {
         ) : (
           <>
             {/* Desktop Table */}
-            <div className="hidden md:block overflow-x-auto bg-white rounded-lg shadow">
-              <table className="w-full table-auto">
-                <thead className="bg-gray-50 border-b">
+            <div className="hidden md:block overflow-x-auto bg-white rounded-lg shadow ">
+              <table className="w-full table-auto dark:bg-base-100">
+                <thead className="bg-gray-50 border-b dark:bg-base-200">
                   <tr>
                     <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">
                       Student
@@ -128,29 +128,32 @@ const AllReviews = () => {
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   {reviews.map((review) => (
-                    <tr key={review._id} className="hover:bg-gray-50">
+                    <tr
+                      key={review._id}
+                      className="hover:bg-gray-50 dark:hover:bg-base-300"
+                    >
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
                           {review.userPhoto ? (
                             <img
                               src={review.userPhoto}
                               alt={review.userName}
-                              className="w-10 h-10 rounded-full object-cover border-2 border-gray-200"
+                              className="w-10 h-10 rounded-full object-cover border-2 border-gray-200 dark:text-gray-400"
                             />
                           ) : (
                             <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center border-2 border-gray-300">
                               <FaUser className="text-gray-500" />
                             </div>
                           )}
-                          <span className="text-sm font-medium text-gray-900">
+                          <span className="text-sm font-medium text-gray-900 dark:text-gray-400">
                             {review.userName}
                           </span>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                      <td className="px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-400">
                         {review.scholarshipName}
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-600">
+                      <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
                         {review.universityName}
                       </td>
                       <td className="px-6 py-4">
@@ -172,9 +175,11 @@ const AllReviews = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-500 max-w-xs">
-                        <p className="line-clamp-2">{review.reviewComment}</p>
+                        <p className="line-clamp-2 dark:text-gray-400">
+                          {review.reviewComment}
+                        </p>
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-500">
+                      <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
                         {formatDate(review.reviewDate)}
                       </td>
                       <td className="px-6 py-4 text-sm">

@@ -6,10 +6,11 @@
   themes: light --default, dark --prefersdark;
 }
 
-@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
-
 * {
   font-family: "Noto Sans", sans-serif;
   font-optical-sizing: auto;
 }
 
+html {
+  scroll-behavior: smooth;
+}

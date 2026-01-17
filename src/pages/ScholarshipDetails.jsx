@@ -123,10 +123,10 @@ const ScholarshipDetails = () => {
   }
 
   return (
-    <div className="bg-gray-50 mt-16 sm:mt-20 px-4 sm:px-6 lg:px-10 py-10">
+    <div className="bg-gray-50 mt-16 sm:mt-20 px-4 sm:px-6 lg:px-10 py-10 dark:bg-base-300">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
         <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white rounded-xl shadow p-4 sm:p-6 space-y-4">
+          <div className="bg-white rounded-xl shadow p-4 sm:p-6 space-y-4 dark:bg-base-100">
             <img
               src={scholarship.universityImage || "/placeholder-university.jpg"}
               alt={scholarship.universityName}
@@ -168,21 +168,23 @@ const ScholarshipDetails = () => {
               icon={<FaCalendarAlt />}
               title="Deadline"
               value={new Date(
-                scholarship.applicationDeadline
+                scholarship.applicationDeadline,
               ).toLocaleDateString()}
             />
             <InfoCard
               icon={<FaClock />}
               title="Posted On"
               value={new Date(
-                scholarship.scholarshipPostDate
+                scholarship.scholarshipPostDate,
               ).toLocaleDateString()}
             />
           </div>
 
-          <div className="bg-white rounded-xl shadow p-4 sm:p-6">
-            <h2 className="text-lg sm:text-xl font-bold mb-3">Description</h2>
-            <p className="text-gray-700 leading-relaxed text-sm sm:text-base">
+          <div className="bg-white rounded-xl shadow p-4 sm:p-6 dark:bg-base-100">
+            <h2 className="text-lg sm:text-xl font-bold mb-3 dark:text-gray-400">
+              Description
+            </h2>
+            <p className="text-gray-700 leading-relaxed text-sm sm:text-base dark:text-gray-400">
               {scholarship.scholarshipDescription || "No description provided."}
             </p>
           </div>
@@ -198,7 +200,7 @@ const ScholarshipDetails = () => {
             </div>
           )}
 
-          <div className="bg-white rounded-xl shadow p-4 sm:p-6">
+          <div className="bg-white rounded-xl shadow p-4 sm:p-6 dark:bg-base-100">
             <h2 className="text-xl font-bold mb-4">
               Reviews ({reviews.length})
             </h2>
@@ -230,11 +232,11 @@ const ScholarshipDetails = () => {
                   {reviews.map((review) => (
                     <div
                       key={review._id}
-                      className="min-w-full bg-gray-50 rounded-lg p-4 border flex gap-4"
+                      className="min-w-full bg-gray-50 rounded-lg p-4 border flex gap-4 dark:bg-base-100"
                     >
                       <img
                         src={reviewUsers[review.userEmail] || "/avatar.png"}
-                        className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover"
+                        className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover dark:opacity-50"
                       />
                       <div className="flex-1">
                         <div className="flex justify-between">
@@ -260,7 +262,7 @@ const ScholarshipDetails = () => {
                           ))}
                         </div>
 
-                        <p className="text-sm text-gray-700">
+                        <p className="text-sm text-gray-700 dark:text-gray-400">
                           {review.reviewComment}
                         </p>
                       </div>
@@ -271,7 +273,7 @@ const ScholarshipDetails = () => {
             )}
           </div>
 
-          <div className="bg-white rounded-xl shadow p-4 sm:p-6 space-y-4">
+          <div className="bg-white rounded-xl shadow p-4 sm:p-6 space-y-4 dark:bg-base-100">
             <h3 className="text-lg font-bold flex items-center gap-2">
               <FaMoneyBillWave /> Cost Summary
             </h3>
@@ -301,7 +303,7 @@ const ScholarshipDetails = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow p-4 sm:p-6">
+          <div className="bg-white rounded-xl shadow p-4 sm:p-6 dark:bg-base-100">
             <h3 className="font-bold flex items-center gap-2 mb-2">
               <FaUserTie /> Posted By
             </h3>
@@ -330,7 +332,7 @@ const ScholarshipDetails = () => {
 };
 
 const InfoCard = ({ icon, title, value }) => (
-  <div className="bg-white rounded-lg shadow p-4 flex gap-3">
+  <div className="bg-white dark:bg-base-100 rounded-lg shadow p-4 flex gap-3">
     <div className="text-primary text-lg sm:text-xl">{icon}</div>
     <div>
       <p className="text-xs sm:text-sm text-gray-500">{title}</p>
@@ -341,7 +343,7 @@ const InfoCard = ({ icon, title, value }) => (
 
 const CostRow = ({ label, value }) => (
   <div className="flex justify-between text-sm">
-    <span className="text-gray-600">{label}</span>
+    <span className="text-gray-600 dark:text-gray-300">{label}</span>
     <span className="font-medium">{value}</span>
   </div>
 );

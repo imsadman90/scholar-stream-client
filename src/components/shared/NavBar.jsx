@@ -18,14 +18,17 @@ const NavBar = () => {
   const navigationType = useNavigationType();
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 py-3 bg-white shadow-lg border-b border-gray-100 px-5 h-20">
+    <div className="fixed top-0 left-0 right-0 z-50 py-3 bg-white shadow-lg border-b px-5 h-20 dark:bg-base-300 dark:border-none">
       <div className="flex items-center justify-between h-full">
         {/* Logo */}
         <Link to="/">
           <div className="flex justify-center items-center gap-1">
             <img src={scholarship} alt="Scholarship Logo" className="h-12" />
             <h1 className="text-gray-800 font-bold font-serif italic">
-              <span className="text-2xl text-purple-800">S</span>cholarStream
+              <span className="text-2xl text-purple-800 dark:text-purple-500">
+                S
+              </span>
+              <span className="dark:text-gray-400">cholarStream</span>
             </h1>
           </div>
         </Link>
@@ -41,10 +44,12 @@ const NavBar = () => {
               })
             }
           >
-            <IoHomeOutline className="text-xl" /> Home
+            <IoHomeOutline className="text-xl" />{" "}
+            <span className="dark:text-gray-200">Home</span>
           </NavLink>
           <NavLink to="/scholarships" className={NavLinkClass}>
-            <FcReadingEbook className="text-xl" /> All Scholarships
+            <FcReadingEbook className="text-xl" />
+            <span className="dark:text-gray-200"> All Scholarships</span>
           </NavLink>
 
           <button
@@ -54,7 +59,7 @@ const NavBar = () => {
             }}
             className="
     relative flex items-center gap-2 font-medium
-    text-gray-700 hover:text-purple-600 transition-colors
+    text-gray-700 dark:text-gray-200 hover:text-purple-600 transition-colors
 
     after:content-['']
     after:absolute

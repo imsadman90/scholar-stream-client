@@ -37,7 +37,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="bg-slate-200 py-12">
+    <footer className="bg-slate-200 py-12 dark:bg-base-300 dark:border-t dark:border-t-gray-500">
       <div className="container mx-auto px-6 sm:px-8 lg:px-16">
         {/* Top Section: Logo + Links + Social */}
         <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-8 md:gap-0">
@@ -46,7 +46,7 @@ const Footer = () => {
             <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-teal-400">
               ScholarStream
             </h2>
-            <p className="mt-2 text-gray-600 max-w-xs">
+            <p className="mt-2 text-gray-600 max-w-xs dark:text-gray-400">
               Empowering students worldwide by connecting them to scholarships
               and educational opportunities.
             </p>
@@ -60,7 +60,7 @@ const Footer = () => {
                 <li key={link.name}>
                   <a
                     href={link.href}
-                    className="text-gray-600 hover:text-black transition-colors duration-200"
+                    className="text-gray-600 hover:text-black transition-colors duration-200 dark:text-gray-400 dark:hover:text-purple-500"
                   >
                     {link.name}
                   </a>
@@ -99,7 +99,7 @@ const Footer = () => {
             reserved.
           </p>
           <p>
-            Designed with <span className="text-red-500">♥</span> by
+            Designed with <span className="text-red-500 italic">Love</span> by
             ScholarStream Team
           </p>
         </div>

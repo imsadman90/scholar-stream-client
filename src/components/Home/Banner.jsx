@@ -7,7 +7,7 @@ const Banner = () => {
   };
 
   return (
-    <div className="relative bg-gradient-to-r from-blue-600 to-purple-600 flex items-center overflow-hidden">
+    <div className="relative bg-gradient-to-r from-blue-600 to-purple-600 flex items-center overflow-hidden dark:opacity-80">
       {/* Container */}
       <div className="container mx-auto px-4 py-20">
         <div className="max-w-4xl mx-auto text-center text-white">

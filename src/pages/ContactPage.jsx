@@ -61,7 +61,7 @@ const ContactPage = () => {
         id="contact"
         className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-20"
       >
-        <div className="container mx-auto px-6 text-center">
+        <div className="container mx-auto px-6 text-center dark:opacity-60">
           <h1 className="text-4xl sm:text-5xl font-bold mb-4">Get in Touch</h1>
           <p className="text-lg sm:text-xl text-blue-200 max-w-2xl mx-auto">
             We'd love to hear from you! Whether you have questions, feedback, or
@@ -71,17 +71,17 @@ const ContactPage = () => {
       </section>
 
       {/* Main Content */}
-      <section className="py-16">
-        <div className="container mx-auto px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
+      <section className="">
+        <div className="container mx-auto px-6 dark:bg-base-100 py-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto dark:bg-base-100">
             {/* Contact Form */}
-            <div className="bg-white rounded-2xl shadow-xl p-8">
-              <h2 className="text-3xl font-bold text-gray-800 mb-6">
+            <div className="bg-white rounded-2xl shadow-xl p-8 dark:bg-base-100 dark:border dark:border-gray-500">
+              <h2 className="text-3xl font-bold text-gray-800 mb-6 dark:text-gray-300">
                 Send Us a Message
               </h2>
 
               {status === "success" && (
-                <div className="mb-6 p-4 bg-green-100 text-green-700 rounded-lg">
+                <div className="mb-6 p-4 bg-green-100 text-green-700 rounded-lg dark:text-gray-300">
                   Thank you! Your message has been sent successfully. We'll get
                   back to you soon.
                 </div>
@@ -103,13 +103,13 @@ const ContactPage = () => {
                       value={formData[field]}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition dark:text-gray-300"
                       placeholder={
                         field === "name"
                           ? "John Doe"
                           : field === "email"
-                          ? "john@example.com"
-                          : "How can we help?"
+                            ? "john@example.com"
+                            : "How can we help?"
                       }
                     />
                   </div>
@@ -147,11 +147,11 @@ const ContactPage = () => {
             {/* Contact Info & Social */}
             <div className="space-y-8">
               {/* Contact Details */}
-              <div className="bg-white rounded-2xl shadow-xl p-8">
-                <h2 className="text-3xl font-bold text-gray-800 mb-6">
+              <div className="bg-white rounded-2xl shadow-xl p-8 dark:bg-base-100 dark:border dark:border-gray-500">
+                <h2 className="text-3xl font-bold text-gray-800 mb-6 dark:text-gray-400">
                   Contact Information
                 </h2>
-                <div className="space-y-6">
+                <div className="space-y-6 ">
                   {[
                     {
                       icon: FaEnvelope,
@@ -181,11 +181,13 @@ const ContactPage = () => {
                         <Icon className="text-2xl text-blue-600" />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-gray-800">{title}</h3>
+                        <h3 className="font-semibold text-gray-800 dark:text-gray-400">
+                          {title}
+                        </h3>
                         {info.map((line, i) => (
                           <p
                             key={i}
-                            className={`text-gray-600 text-xs md:text-lg ${
+                            className={`text-gray-600 text-xs md:text-lg dark:text-gray-400 ${
                               i === info.length - 1 && title === "Phone"
                                 ? "text-sm  text-gray-500"
                                 : ""
@@ -201,8 +203,8 @@ const ContactPage = () => {
               </div>
 
               {/* Social Media */}
-              <div className="bg-white rounded-2xl shadow-xl p-8">
-                <h3 className="text-2xl font-bold text-gray-800 mb-6">
+              <div className="bg-white rounded-2xl shadow-xl p-8 dark:bg-base-100 dark:border dark:border-gray-500">
+                <h3 className="text-2xl font-bold text-gray-800 mb-6 dark:text-blue-500">
                   Follow Us
                 </h3>
                 <div className="flex flex-wrap gap-4">
@@ -213,7 +215,7 @@ const ContactPage = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={`Follow us on ${label}`}
-                      className="bg-gray-100 p-4 rounded-full hover:bg-blue-100 hover:scale-110 transition-all duration-300"
+                      className="bg-gray-100 dark:bg-base-300 p-4 rounded-full hover:bg-blue-100 hover:scale-110 transition-all duration-300"
                     >
                       <Icon className="text-2xl text-gray-700" />
                     </a>

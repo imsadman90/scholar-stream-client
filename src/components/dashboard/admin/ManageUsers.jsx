@@ -96,7 +96,7 @@ const ManageUsers = () => {
     <div className="container mx-auto px-4 py-8">
       {/* Header */}
       <div className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h1 className="text-3xl font-bold text-gray-800">
+        <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-400">
           Manage Users{" "}
           <span className="text-3xl font-normal text-gray-600">
             ({users.length})
@@ -116,14 +116,16 @@ const ManageUsers = () => {
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto bg-white rounded-lg shadow">
+      <div className="overflow-x-auto bg-white rounded-lg shadow dark:bg-base-200 dark:border dark:border-gray-500">
         <table className="table table-zebra w-full">
           <thead>
-            <tr className="bg-gray-100 text-left text-sm font-semibold text-gray-700">
-              <th className="px-6 py-4">User</th>
-              <th className="px-6 py-4">Email</th>
-              <th className="px-6 py-4">Role</th>
-              <th className="px-6 py-4 text-center">Actions</th>
+            <tr className="bg-gray-100 text-left text-sm font-semibold text-gray-700 dark:bg-base-200">
+              <th className="px-6 py-4 dark:text-gray-400">User</th>
+              <th className="px-6 py-4 dark:text-gray-400">Email</th>
+              <th className="px-6 py-4 dark:text-gray-400">Role</th>
+              <th className="px-6 py-4 text-center dark:text-gray-400">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -135,7 +137,7 @@ const ManageUsers = () => {
               </tr>
             ) : (
               filteredUsers.map((user) => (
-                <tr key={user._id} className="hover:bg-gray-50 transition">
+                <tr key={user._id} className="hover:bg-gray-50 transition dark:hover:bg-base-300">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <div className="avatar">
@@ -152,7 +154,7 @@ const ManageUsers = () => {
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-gray-600">{user.email}</td>
+                  <td className="px-6 py-4 text-gray-600 dark:text-gray-400">{user.email}</td>
                   <td className="px-6 py-4">
                     <select
                       defaultValue={user.role || "student"}

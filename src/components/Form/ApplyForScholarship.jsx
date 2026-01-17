@@ -108,7 +108,7 @@ const ApplyForScholarship = () => {
   ).toFixed(2);
 
   return (
-    <div className="min-h-screen bg-gray-50 py-20 px-4 mt-20">
+    <div className="min-h-screen bg-gray-50 py-20 px-4 mt-20 dark:bg-base-100">
       <div className="max-w-4xl mx-auto space-y-10">
         {/* Header */}
         <motion.div
@@ -126,7 +126,7 @@ const ApplyForScholarship = () => {
         </motion.div>
 
         {/* Scholarship Summary */}
-        <div className="bg-white rounded-xl shadow p-6 space-y-3">
+        <div className="bg-white rounded-xl shadow p-6 space-y-3 dark:bg-base-200">
           <h2 className="text-xl font-bold">{scholarship.scholarshipName}</h2>
           <p className="flex items-center gap-2 text-gray-600">
             <FaUniversity />
@@ -139,7 +139,7 @@ const ApplyForScholarship = () => {
             <Info
               label="Deadline"
               value={new Date(
-                scholarship.applicationDeadline
+                scholarship.applicationDeadline,
               ).toLocaleDateString()}
             />
             <Info
@@ -252,7 +252,7 @@ const ApplyForScholarship = () => {
           </Section>
 
           {/* Submit */}
-          <div className="bg-white rounded-xl shadow p-6 flex flex-col sm:flex-row justify-between items-center gap-6">
+          <div className="bg-white rounded-xl shadow p-6 flex flex-col sm:flex-row justify-between items-center gap-6 dark:bg-base-200">
             <div>
               <p className="text-sm text-gray-500">Total Payable</p>
               <p className="text-2xl font-bold">
@@ -274,8 +274,8 @@ const ApplyForScholarship = () => {
               {loading
                 ? "Submitting..."
                 : totalFee > 0
-                ? "Proceed to Payment"
-                : "Submit Application"}
+                  ? "Proceed to Payment"
+                  : "Submit Application"}
             </button>
           </div>
         </form>
@@ -286,7 +286,7 @@ const ApplyForScholarship = () => {
 
 /* Reusable UI */
 const Section = ({ title, icon, children }) => (
-  <div className="bg-white rounded-xl shadow p-6">
+  <div className="bg-white rounded-xl shadow p-6 dark:bg-base-200">
     <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
       {icon} {title}
     </h3>

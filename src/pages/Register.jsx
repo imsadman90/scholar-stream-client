@@ -115,10 +115,10 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white px-4 pt-20 my-20">
-      <div className="w-full max-w-6xl flex flex-col md:flex-row gap-6">
+    <div className="min-h-screen flex items-center justify-center bg-white px-4 pt-20 dark:bg-base-300">
+      <div className="w-full max-w-6xl flex flex-col md:flex-row gap-6 py-20">
         {/* Form */}
-        <div className="w-full md:w-1/2 bg-gray-100 p-6 md:p-8 rounded-lg">
+        <div className="w-full md:w-1/2 bg-gray-100 p-6 md:p-8 rounded-lg dark:bg-base-100">
           <div className="text-center">
             <h1 className="text-3xl md:text-4xl font-bold">Register</h1>
             <p className="text-sm text-gray-400 mt-1">
@@ -131,7 +131,7 @@ const Register = () => {
               name="name"
               placeholder="Full Name"
               required
-              className="w-full px-3 py-2 rounded-md border bg-gray-200"
+              className="w-full px-3 py-2 rounded-md border bg-gray-200 dark:bg-base-200 dark:border-none"
             />
 
             <input
@@ -139,7 +139,7 @@ const Register = () => {
               name="photo"
               accept="image/*"
               required
-              className="w-full px-3 py-2 rounded-md border bg-gray-200 file:bg-lime-500 file:text-white file:border-0 file:px-4 file:py-2"
+              className="dark:bg-base-200 dark:border-none w-full px-3 py-2 rounded-md border bg-gray-200 file:bg-lime-500 file:text-white file:border-0 file:px-4 file:py-2"
             />
 
             <input
@@ -147,7 +147,7 @@ const Register = () => {
               name="email"
               placeholder="Email"
               required
-              className="w-full px-3 py-2 rounded-md border bg-gray-200"
+              className="w-full px-3 py-2 rounded-md border bg-gray-200 dark:bg-base-200 dark:border-none"
             />
 
             <div className="relative">
@@ -156,7 +156,7 @@ const Register = () => {
                 name="password"
                 placeholder="Password"
                 required
-                className="w-full px-3 py-2 rounded-md border bg-gray-200"
+                className="w-full px-3 py-2 rounded-md border bg-gray-200 dark:bg-base-200 dark:border-none"
               />
               <button
                 type="button"
@@ -188,7 +188,7 @@ const Register = () => {
 
           <button
             onClick={handleGoogleSignIn}
-            className="w-full flex items-center justify-center gap-2 border rounded-md p-2"
+            className="w-full flex items-center justify-center gap-2 border rounded-md p-2 dark:border-none dark:bg-base-200"
           >
             <FcGoogle size={26} />
             Continue with Google
@@ -199,7 +199,7 @@ const Register = () => {
             <Link
               to="/login"
               state={from}
-              className="text-[#CBAD8D] font-semibold"
+              className="text-green-500 font-semibold"
             >
               Login
             </Link>
@@ -211,7 +211,7 @@ const Register = () => {
           <img
             src={ScholarshipImage}
             alt="Scholarship"
-            className="w-full h-[500px] object-cover rounded-lg"
+            className="w-full h-[500px] object-cover rounded-lg dark:opacity-70"
           />
         </div>
       </div>

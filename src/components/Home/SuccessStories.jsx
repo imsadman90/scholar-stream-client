@@ -169,17 +169,17 @@ const SuccessStories = () => {
   }, []);
 
   return (
-    <section className="mt-20 mb-10">
+    <section className="pt-20 dark:bg-base-300">
       <div className="container mx-auto px-4 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12 lg:mb-16">
-          <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-teal-600">
+          <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-green-400 mb-4">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-teal-600 dark:text-purple-400">
               Success{" "}
             </span>
             Stories
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto dark:text-gray-400">
             10 inspiring young men who proved that no dream is too big
           </p>
         </div>
@@ -197,7 +197,7 @@ const SuccessStories = () => {
                   key={story.id}
                   className="flex-none w-full sm:w-96 md:w-80 lg:w-96 snap-start"
                 >
-                  <div className="rounded-2xl shadow-xl overflow-hidden h-full bg-gray-100 p-5 flex flex-col">
+                  <div className="rounded-2xl shadow-xl overflow-hidden h-full bg-gray-100 p-5 flex flex-col dark:bg-base-100">
                     <div className="flex justify-start gap-5 items-center">
                       <img
                         src={story.image}
@@ -205,18 +205,22 @@ const SuccessStories = () => {
                         className="w-20 h-20 rounded-full object-cover ml-3"
                       />
                       <div>
-                        <h3 className="text-xl font-bold text-gray-900">
+                        <h3 className="text-xl font-bold text-gray-900 dark:text-gray-400">
                           {story.name}
                         </h3>
-                        <p className="text-gray-600 text-sm">{story.from}</p>
+                        <p className="text-gray-600 text-sm dark:text-gray-400">
+                          {story.from}
+                        </p>
                       </div>
                     </div>
                     <div className="p-6 flex-1 flex flex-col">
-                      <p className="font-semibold mt-2 text-lg">
+                      <p className="font-semibold mt-2 text-lg dark:text-gray-400">
                         {story.university}
                       </p>
-                      <p className="text-gray-700 text-sm">{story.degree}</p>
-                      <p className="mt-2 text-green-600 font-bold text-lg">
+                      <p className="text-gray-700 text-sm dark:text-gray-400">
+                        {story.degree}
+                      </p>
+                      <p className="mt-2 text-green-600 font-bold text-lg dark:text-gray-400">
                         {story.amount}
                       </p>
                       <div className="flex mt-2 text-yellow-400">
@@ -230,7 +234,7 @@ const SuccessStories = () => {
                           </svg>
                         ))}
                       </div>
-                      <p className="mt-4 italic text-gray-800 flex-1">
+                      <p className="mt-4 italic text-gray-800 flex-1 dark:text-gray-400">
                         "{story.quote}"
                       </p>
                     </div>

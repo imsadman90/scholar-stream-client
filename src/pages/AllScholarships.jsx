@@ -17,7 +17,7 @@ const AllScholarships = () => {
     queryKey: ["scholarships"],
     queryFn: async () => {
       const res = await axiosSecure.get(
-        `${import.meta.env.VITE_API_URL}/scholarships`
+        `${import.meta.env.VITE_API_URL}/scholarships`,
       );
       return res.data;
     },
@@ -62,12 +62,12 @@ const AllScholarships = () => {
     );
 
   return (
-    <div className="container mx-auto px-4 py-12 mt-20">
+    <div className="container mx-auto px-4 py-12 mt-20 dark:bg-base-300">
       <h1 className="text-4xl font-bold text-center mb-10 text-primary">
         All Scholarships ({filtered.length})
       </h1>
 
-      <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
+      <div className="bg-white rounded-xl shadow-lg p-6 mb-8 dark:bg-base-200">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <input
             type="text"
@@ -122,7 +122,7 @@ const AllScholarships = () => {
             {currentItems.map((scholarship) => (
               <div
                 key={scholarship._id}
-                className="card bg-white shadow-xl hover:shadow-2xl transition"
+                className="card bg-white shadow-xl hover:shadow-2xl transition dark:bg-base-100"
               >
                 <figure className="px-6 pt-6">
                   <img
@@ -132,12 +132,14 @@ const AllScholarships = () => {
                   />
                 </figure>
                 <div className="card-body">
-                  <h2 className="card-title text-lg">
+                  <h2 className="card-title text-lg dark:text-gray-400">
                     {scholarship.scholarshipName}
                   </h2>
-                  <p className="font-semibold">{scholarship.universityName}</p>
-                  <div className="text-sm text-gray-600 space-y-1">
-                    <p>
+                  <p className="font-semibold dark:text-gray-400">
+                    {scholarship.universityName}
+                  </p>
+                  <div className="text-sm text-gray-600 space-y-1 dark:text-gray-400">
+                    <p className="dark:text-gray-400">
                       {scholarship.universityCity},{" "}
                       {scholarship.universityCountry}
                     </p>
@@ -150,7 +152,7 @@ const AllScholarships = () => {
                       Deadline:{" "}
                       {format(
                         new Date(scholarship.applicationDeadline),
-                        "dd MMM yyyy"
+                        "dd MMM yyyy",
                       )}
                     </p>
                   </div>

@@ -93,7 +93,7 @@ const MyReviews = () => {
       <title>My Reviews | Scholar Stream</title>
 
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-8">
+        <h1 className="text-3xl font-bold text-gray-800 mb-8 dark:text-gray-400">
           My Reviews ({reviews.length})
         </h1>
 
@@ -108,9 +108,9 @@ const MyReviews = () => {
         ) : (
           <>
             {/* Desktop Table */}
-            <div className="hidden md:block overflow-x-auto bg-white rounded-lg shadow">
+            <div className="hidden md:block overflow-x-auto bg-white rounded-lg shadow dark:bg-base-100">
               <table className="w-full table-auto">
-                <thead className="bg-gray-50 border-b">
+                <thead className="bg-gray-50 border-b dark:bg-base-300">
                   <tr>
                     <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">
                       Scholarship
@@ -132,13 +132,16 @@ const MyReviews = () => {
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200">
+                <tbody className="divide-y divide-gray-200 dark:border dark:border-slate-500">
                   {reviews.map((review) => (
-                    <tr key={review._id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                    <tr
+                      key={review._id}
+                      className="hover:bg-gray-50 dark:hover:bg-base-300"
+                    >
+                      <td className="px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-400">
                         {review.scholarshipName}
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-600">
+                      <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
                         {review.universityName}
                       </td>
                       <td className="px-6 py-4">
@@ -149,10 +152,10 @@ const MyReviews = () => {
                           <span className="text-gray-500 text-sm">/ 5</span>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-500 min-w-40">
+                      <td className="px-6 py-4 text-sm text-gray-500 min-w-40 dark:text-gray-400">
                         {review.reviewComment}
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-500">
+                      <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
                         {formatDate(review.reviewDate)}
                       </td>
                       <td className="px-6 py-4 text-sm">
@@ -242,7 +245,7 @@ const MyReviews = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div className="absolute inset-0 bg-black opacity-50"></div>
 
-          <div className="relative bg-white rounded-lg p-6 w-full max-w-md z-10">
+          <div className="relative bg-white rounded-lg p-6 w-full max-w-md z-10 dark:bg-base-100">
             <h2 className="text-xl font-bold mb-4">Edit Review</h2>
 
             {/* Rating Input */}

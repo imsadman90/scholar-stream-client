@@ -80,14 +80,14 @@ const AddScholarship = () => {
 
   return (
     <>
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-12">
         <h1 className="text-3xl font-bold text-center mb-8 text-primary">
           Add New Scholarship
         </h1>
 
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="bg-white rounded-xl shadow-xl p-8 max-w-5xl mx-auto"
+          className="bg-white rounded-xl shadow-xl p-8 max-w-5xl mx-auto dark:bg-base-100 dark:border dark:border-gray-500"
         >
           <div className="grid md:grid-cols-2 gap-6">
             {/* Scholarship Name */}

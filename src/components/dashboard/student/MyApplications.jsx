@@ -219,7 +219,7 @@ const MyApplications = () => {
       <title>My Applications | Scholar Stream</title>
 
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-8 dark:text-gray-200">
           My Scholarship Applications ({applications.length})
         </h1>
 
@@ -234,9 +234,9 @@ const MyApplications = () => {
             </button>
           </div>
         ) : (
-          <div className="overflow-x-auto bg-white rounded-lg shadow">
+          <div className="overflow-x-auto bg-white rounded-lg shadow dark:bg-base-100 dark:border dark:border-slate-500">
             <table className="table w-full">
-              <thead className="bg-gray-100 text-gray-700 text-sm">
+              <thead className="bg-gray-100 text-gray-700 text-sm dark:bg-slate-300">
                 <tr>
                   <th>University</th>
                   <th>Degree</th>
@@ -302,8 +302,8 @@ const MyApplications = () => {
                             app.applicationStatus === "completed"
                               ? "bg-green-100 text-green-700 font-semibold"
                               : app.applicationStatus === "rejected"
-                              ? "bg-red-100 text-red-700 font-semibold"
-                              : "bg-yellow-100 text-yellow-700 font-semibold"
+                                ? "bg-red-100 text-red-700 font-semibold"
+                                : "bg-yellow-100 text-yellow-700 font-semibold"
                           }`}
                         >
                           {app.applicationStatus}

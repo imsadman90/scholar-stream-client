@@ -47,10 +47,10 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white px-4 pt-20 my-10">
-      <div className="w-full max-w-6xl flex flex-col md:flex-row gap-6">
+    <div className="min-h-screen flex items-center justify-center bg-white px-4 pt-20 dark:bg-base-100">
+      <div className="w-full max-w-6xl flex flex-col md:flex-row gap-6 py-20">
         {/* Form Section */}
-        <div className="w-full md:w-1/2 bg-gray-100 p-6 md:p-8 rounded-lg">
+        <div className="w-full md:w-1/2 bg-gray-100 p-6 md:p-8 rounded-lg dark:bg-base-200">
           <div className="text-center">
             <h1 className="text-3xl md:text-4xl font-bold">Log In</h1>
             <p className="text-sm text-gray-400 mt-1">
@@ -66,7 +66,7 @@ const Login = () => {
                 name="email"
                 required
                 placeholder="Enter your email"
-                className="w-full px-3 py-2 rounded-md border border-gray-300 bg-gray-200 focus:outline-gray-500"
+                className="w-full px-3 py-2 rounded-md border border-gray-300 bg-gray-200 focus:outline-gray-500 dark:bg-base-100 dark:border-none"
               />
             </div>
 
@@ -77,7 +77,7 @@ const Login = () => {
                 name="password"
                 required
                 placeholder="********"
-                className="w-full px-3 py-2 rounded-md border border-gray-300 bg-gray-200 focus:outline-gray-500"
+                className="w-full px-3 py-2 rounded-md border border-gray-300 bg-gray-200 focus:outline-gray-500 dark:bg-base-100 dark:border-none"
               />
               <button
                 type="button"
@@ -114,7 +114,7 @@ const Login = () => {
 
           <div
             onClick={handleGoogleSignIn}
-            className="flex items-center justify-center gap-2 border rounded-md p-2 cursor-pointer hover:bg-gray-50"
+            className="flex items-center justify-center gap-2 border rounded-md p-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-base-300 dark:border-none"
           >
             <FcGoogle size={28} />
             <span>Continue with Google</span>
@@ -137,7 +137,7 @@ const Login = () => {
           <img
             src={ScholarshipImage}
             alt="Scholarship"
-            className="w-full h-[500px] object-cover rounded-lg"
+            className="w-full h-[500px] object-cover rounded-lg dark:opacity-70"
           />
         </div>
       </div>
