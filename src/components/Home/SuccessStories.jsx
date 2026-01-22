@@ -1,5 +1,7 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { motion } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
+import { Star } from "lucide-react";
 
 const SuccessStories = () => {
   const scrollRef = useRef(null);
@@ -151,7 +153,7 @@ const SuccessStories = () => {
     if (!scrollRef.current) return;
     const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
     setCanScrollPrev(scrollLeft > 0);
-    setCanScrollNext(scrollLeft + clientWidth < scrollWidth - 10); // small tolerance
+    setCanScrollNext(scrollLeft + clientWidth < scrollWidth - 10);
   };
 
   useEffect(() => {
@@ -169,22 +171,34 @@ const SuccessStories = () => {
   }, []);
 
   return (
-    <section className="pt-20 dark:bg-base-300">
-      <div className="container mx-auto px-4 lg:px-8">
-        {/* Header */}
-        <div className="text-center mb-12 lg:mb-16">
-          <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-green-400 mb-4">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-teal-600 dark:text-purple-400">
-              Success{" "}
-            </span>
-            Stories
-          </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto dark:text-gray-400">
-            10 inspiring young men who proved that no dream is too big
-          </p>
-        </div>
+    <section className="relative py-20 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white overflow-hidden">
+      {/* Background blur effects */}
+      <div className="absolute inset-0 pointer-events-none opacity-40">
+        <div className="absolute top-0 left-1/3 h-80 w-80 bg-emerald-500 blur-[140px]" />
+        <div className="absolute bottom-10 right-1/4 h-72 w-72 bg-cyan-500 blur-[120px]" />
+      </div>
 
-        {/* Carousel Wrapper */}
+      <div className="relative max-w-7xl mx-auto px-4 lg:px-8">
+        {/* Header */}
+        <motion.div
+          className="text-center mb-14"
+          initial={{ opacity: 0, y: -20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+        >
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/20 bg-white/10 backdrop-blur text-xs uppercase tracking-[0.25em] font-semibold">
+            Success stories
+          </div>
+          <h2 className="text-4xl md:text-5xl font-black mt-5">
+            From Dreams to Reality
+          </h2>
+          <p className="text-lg text-slate-200/80 mt-3 max-w-2xl mx-auto">
+            Meet 10 scholars who achieved the impossible through determination
+            and ScholarStream
+          </p>
+        </motion.div>
+
+        {/* Carousel */}
         <div className="relative">
           <div className="overflow-hidden">
             <div
@@ -192,76 +206,100 @@ const SuccessStories = () => {
               className="flex gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory scrollbar-hide py-4"
               style={{ scrollPadding: "0 1.5rem" }}
             >
-              {stories.map((story) => (
-                <div
+              {stories.map((story, idx) => (
+                <motion.div
                   key={story.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.05 }}
                   className="flex-none w-full sm:w-96 md:w-80 lg:w-96 snap-start"
                 >
-                  <div className="rounded-2xl shadow-xl overflow-hidden h-full bg-gray-100 p-5 flex flex-col dark:bg-base-100">
-                    <div className="flex justify-start gap-5 items-center">
+                  <div className="relative rounded-3xl border border-white/15 bg-white/5 backdrop-blur-xl shadow-2xl shadow-black/20 overflow-hidden h-full p-6 flex flex-col hover:shadow-xl transition-shadow">
+                    {/* Gradient accent */}
+                    <div className="absolute top-0 right-0 h-32 w-32 bg-gradient-to-br from-cyan-500/20 to-purple-500/20 blur-3xl" />
+
+                    {/* Header with image and basic info */}
+                    <div className="relative flex items-start gap-4 mb-4">
                       <img
                         src={story.image}
                         alt={story.name}
-                        className="w-20 h-20 rounded-full object-cover ml-3"
+                        className="h-16 w-16 rounded-2xl object-cover border-2 border-white/20 flex-shrink-0"
                       />
-                      <div>
-                        <h3 className="text-xl font-bold text-gray-900 dark:text-gray-400">
+                      <div className="flex-1">
+                        <h3 className="text-lg font-bold text-white leading-tight">
                           {story.name}
                         </h3>
-                        <p className="text-gray-600 text-sm dark:text-gray-400">
-                          {story.from}
-                        </p>
+                        <p className="text-sm text-slate-300">{story.from}</p>
+                        <div className="flex items-center gap-0.5 mt-2">
+                          {[...Array(5)].map((_, i) => (
+                            <Star
+                              key={i}
+                              className="w-4 h-4 fill-amber-300 text-amber-300"
+                            />
+                          ))}
+                        </div>
                       </div>
                     </div>
-                    <div className="p-6 flex-1 flex flex-col">
-                      <p className="font-semibold mt-2 text-lg dark:text-gray-400">
-                        {story.university}
-                      </p>
-                      <p className="text-gray-700 text-sm dark:text-gray-400">
-                        {story.degree}
-                      </p>
-                      <p className="mt-2 text-green-600 font-bold text-lg dark:text-gray-400">
-                        {story.amount}
-                      </p>
-                      <div className="flex mt-2 text-yellow-400">
-                        {[...Array(5)].map((_, i) => (
-                          <svg
-                            key={i}
-                            className="w-5 h-5 fill-current"
-                            viewBox="0 0 20 20"
-                          >
-                            <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                          </svg>
-                        ))}
+
+                    {/* Divider */}
+                    <div className="h-px bg-gradient-to-r from-white/10 to-transparent mb-4" />
+
+                    {/* Scholarship details */}
+                    <div className="relative space-y-3 mb-4 flex-1">
+                      <div>
+                        <p className="text-xs text-slate-400 uppercase tracking-wider">
+                          University
+                        </p>
+                        <p className="text-sm font-semibold text-cyan-200">
+                          {story.university}
+                        </p>
                       </div>
-                      <p className="mt-4 italic text-gray-800 flex-1 dark:text-gray-400">
+                      <div>
+                        <p className="text-xs text-slate-400 uppercase tracking-wider">
+                          Program
+                        </p>
+                        <p className="text-sm text-slate-200">{story.degree}</p>
+                      </div>
+                      <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 border border-white/10">
+                        <span className="text-xs font-bold text-emerald-200">
+                          Award:
+                        </span>
+                        <span className="text-sm font-semibold text-white">
+                          {story.amount}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Quote */}
+                    <div className="relative border-l-2 border-purple-400/50 pl-4 py-3">
+                      <p className="text-sm italic text-slate-100">
                         "{story.quote}"
                       </p>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>
 
-          {/* Navigation Buttons - Hidden when not needed */}
+          {/* Navigation Buttons */}
           <button
             onClick={scrollPrev}
             disabled={!canScrollPrev}
-            className={`absolute -left-5 top-1/2 -translate-y-1/2 bg-slate-200 rounded-full p-3 shadow-2xl z-10 transition-opacity ${
+            className={`absolute -left-6 top-1/2 -translate-y-1/2 h-12 w-12 rounded-full bg-white/10 border border-white/20 backdrop-blur flex items-center justify-center shadow-lg hover:bg-white/15 transition-all z-10 ${
               canScrollPrev ? "opacity-100" : "opacity-0 pointer-events-none"
             }`}
           >
-            <ChevronLeft className="w-8 h-8 text-black" />
+            <ChevronLeft className="w-6 h-6 text-white" />
           </button>
           <button
             onClick={scrollNext}
             disabled={!canScrollNext}
-            className={`absolute -right-5 top-1/2 -translate-y-1/2 bg-slate-200 rounded-full p-3 shadow-2xl z-10 transition-opacity ${
+            className={`absolute -right-6 top-1/2 -translate-y-1/2 h-12 w-12 rounded-full bg-white/10 border border-white/20 backdrop-blur flex items-center justify-center shadow-lg hover:bg-white/15 transition-all z-10 ${
               canScrollNext ? "opacity-100" : "opacity-0 pointer-events-none"
             }`}
           >
-            <ChevronRight className="w-8 h-8 text-black" />
+            <ChevronRight className="w-6 h-6 text-white" />
           </button>
         </div>
       </div>

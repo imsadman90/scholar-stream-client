@@ -108,32 +108,41 @@ const ApplyForScholarship = () => {
   ).toFixed(2);
 
   return (
-    <div className="min-h-screen bg-gray-50 py-20 px-4 mt-20 dark:bg-base-100">
-      <div className="max-w-4xl mx-auto space-y-10">
+    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 py-20 px-4 mt-20 text-white">
+      <div className="max-w-5xl mx-auto space-y-10">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-center"
         >
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary text-white mb-4">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-purple-600 text-white mb-4 shadow-lg shadow-cyan-500/30">
             <FaGraduationCap className="text-2xl" />
           </div>
-          <h1 className="text-3xl font-bold">Apply for Scholarship</h1>
-          <p className="text-gray-600 mt-2">
+          <h1 className="text-3xl md:text-4xl font-black">
+            Apply for Scholarship
+          </h1>
+          <p className="text-slate-200/80 mt-2">
             Complete the form carefully before submitting
           </p>
         </motion.div>
 
         {/* Scholarship Summary */}
-        <div className="bg-white rounded-xl shadow p-6 space-y-3 dark:bg-base-200">
-          <h2 className="text-xl font-bold">{scholarship.scholarshipName}</h2>
-          <p className="flex items-center gap-2 text-gray-600">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.05 }}
+          className="rounded-2xl border border-white/15 bg-white/5 backdrop-blur-xl p-6 space-y-4 shadow-lg shadow-black/20"
+        >
+          <h2 className="text-2xl font-bold text-white">
+            {scholarship.scholarshipName}
+          </h2>
+          <p className="flex items-center gap-2 text-slate-200/80">
             <FaUniversity />
             {scholarship.universityName}
           </p>
 
-          <div className="grid sm:grid-cols-4 gap-4 text-sm pt-4">
+          <div className="grid sm:grid-cols-4 gap-4 text-sm pt-2">
             <Info label="Degree" value={scholarship.degree} />
             <Info label="Category" value={scholarship.scholarshipCategory} />
             <Info
@@ -148,7 +157,7 @@ const ApplyForScholarship = () => {
               highlight
             />
           </div>
-        </div>
+        </motion.div>
 
         {/* Application Form */}
         <form onSubmit={handleSubmit} className="space-y-8">
@@ -252,12 +261,12 @@ const ApplyForScholarship = () => {
           </Section>
 
           {/* Submit */}
-          <div className="bg-white rounded-xl shadow p-6 flex flex-col sm:flex-row justify-between items-center gap-6 dark:bg-base-200">
+          <div className="rounded-2xl border border-white/15 bg-white/5 backdrop-blur-xl p-6 flex flex-col sm:flex-row justify-between items-center gap-6 shadow-lg shadow-black/20">
             <div>
-              <p className="text-sm text-gray-500">Total Payable</p>
-              <p className="text-2xl font-bold">
+              <p className="text-sm text-slate-200/70">Total Payable</p>
+              <p className="text-2xl font-black">
                 {totalFee === 0 ? (
-                  <span className="flex items-center gap-2 text-green-600">
+                  <span className="flex items-center gap-2 text-emerald-300">
                     <FaCheckCircle /> FREE
                   </span>
                 ) : (
@@ -269,7 +278,7 @@ const ApplyForScholarship = () => {
             <button
               type="submit"
               disabled={loading}
-              className="btn btn-primary btn-lg"
+              className="px-6 py-3 rounded-xl font-semibold bg-gradient-to-r from-cyan-500 to-purple-600 text-white hover:shadow-lg hover:shadow-cyan-500/30 shadow-lg shadow-black/30 transition-all disabled:opacity-60"
             >
               {loading
                 ? "Submitting..."
@@ -286,34 +295,53 @@ const ApplyForScholarship = () => {
 
 /* Reusable UI */
 const Section = ({ title, icon, children }) => (
-  <div className="bg-white rounded-xl shadow p-6 dark:bg-base-200">
-    <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true }}
+    className="rounded-2xl border border-white/15 bg-white/5 backdrop-blur-xl p-6 shadow-lg shadow-black/20"
+  >
+    <h3 className="text-xl font-bold mb-4 flex items-center gap-2 text-white">
       {icon} {title}
     </h3>
     <div className="grid md:grid-cols-2 gap-4">{children}</div>
-  </div>
+  </motion.div>
 );
 
 const Input = ({ label, ...props }) => (
   <div>
-    <label className="block text-sm font-medium mb-1">{label}</label>
-    <input {...props} className="input input-bordered w-full" />
+    <label className="block text-sm font-medium mb-1 text-slate-200/90">
+      {label}
+    </label>
+    <input
+      {...props}
+      className="w-full px-4 py-3 rounded-xl border border-white/20 bg-white/10 backdrop-blur-sm text-white placeholder:text-slate-400 focus:outline-none focus:border-white/50 focus:bg-white/15 transition"
+    />
   </div>
 );
 
 const Select = ({ label, children, ...props }) => (
   <div>
-    <label className="block text-sm font-medium mb-1">{label}</label>
-    <select {...props} className="select select-bordered w-full">
+    <label className="block text-sm font-medium mb-1 text-slate-200/90">
+      {label}
+    </label>
+    <select
+      {...props}
+      className="w-full px-4 py-3 rounded-xl border border-white/20 bg-white/10 backdrop-blur-sm text-white focus:outline-none focus:border-white/50 focus:bg-white/15 transition cursor-pointer"
+    >
       {children}
     </select>
   </div>
 );
 
 const Info = ({ label, value, highlight }) => (
-  <div className="text-center">
-    <p className="text-gray-500 text-xs">{label}</p>
-    <p className={`font-semibold ${highlight ? "text-primary" : ""}`}>
+  <div className="text-center bg-white/5 border border-white/10 rounded-xl p-3">
+    <p className="text-slate-300 text-xs">{label}</p>
+    <p
+      className={`font-semibold text-white ${
+        highlight ? "text-emerald-300" : ""
+      }`}
+    >
       {value}
     </p>
   </div>

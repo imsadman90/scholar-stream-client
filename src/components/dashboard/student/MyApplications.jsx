@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import Swal from "sweetalert2";
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const MyApplications = () => {
   const { user, loading: authLoading } = useAuth();
@@ -60,7 +61,7 @@ const MyApplications = () => {
   const applicationsWithDetails = useMemo(() => {
     return applications.map((app) => {
       const scholarship = allScholarships.find(
-        (s) => s._id === app.scholarshipId
+        (s) => s._id === app.scholarshipId,
       );
       return {
         ...app,
@@ -111,7 +112,7 @@ const MyApplications = () => {
       Swal.fire(
         "Error!",
         err.response?.data?.message || "Failed to submit review",
-        "error"
+        "error",
       );
     },
   });
@@ -129,7 +130,7 @@ const MyApplications = () => {
       Swal.fire(
         "Error!",
         err.response?.data?.message || "Failed to update",
-        "error"
+        "error",
       );
     },
   });
@@ -183,7 +184,7 @@ const MyApplications = () => {
       return Swal.fire(
         "Too Long",
         "Review must be under 500 characters",
-        "warning"
+        "warning",
       );
     }
 
@@ -198,10 +199,24 @@ const MyApplications = () => {
     }
   };
 
+  const statusBadge = (status) => {
+    if (status === "completed")
+      return "bg-emerald-500/15 text-emerald-300 border border-emerald-400/30";
+    if (status === "rejected")
+      return "bg-rose-500/15 text-rose-300 border border-rose-400/30";
+    return "bg-amber-500/15 text-amber-200 border border-amber-300/30";
+  };
+
+  const paymentBadge = (status) => {
+    if (status === "paid")
+      return "bg-emerald-500/15 text-emerald-300 border border-emerald-400/30";
+    return "bg-rose-500/15 text-rose-200 border border-rose-300/30";
+  };
+
   if (isLoading || authLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin h-12 w-12 rounded-full border-b-2 border-primary"></div>
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+        <div className="animate-spin h-12 w-12 rounded-full border-b-2 border-cyan-400"></div>
       </div>
     );
   }
@@ -218,377 +233,423 @@ const MyApplications = () => {
     <>
       <title>My Applications | Scholar Stream</title>
 
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8 dark:text-gray-200">
-          My Scholarship Applications ({applications.length})
-        </h1>
-
-        {applications.length === 0 ? (
-          <div className="text-center bg-gray-50 py-20 rounded-xl shadow">
-            <h3 className="text-2xl font-bold mb-3">No applications yet</h3>
-            <button
-              onClick={() => (window.location.href = "/scholarships")}
-              className="btn btn-primary"
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-100">
+        <div className="max-w-6xl mx-auto px-4 py-10 lg:py-14">
+          <div className="flex items-center justify-between gap-4 flex-wrap mb-8">
+            <div>
+              <div className="text-xs uppercase tracking-[0.3em] text-cyan-300 mb-2">
+                My Space
+              </div>
+              <h1 className="text-3xl lg:text-4xl font-bold text-white flex items-center gap-3">
+                My Scholarship Applications
+                <span className="px-3 py-1 rounded-full bg-white/10 border border-white/15 text-sm text-cyan-200">
+                  {applications.length} total
+                </span>
+              </h1>
+              <p className="text-slate-400 mt-2">
+                Track payments, statuses, and feedback for every submission.
+              </p>
+            </div>
+            <Link
+              to="/scholarships"
+              className="inline-flex items-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-500 text-white font-semibold shadow-lg shadow-cyan-500/30 hover:translate-y-[-1px] transition"
             >
               Browse Scholarships
-            </button>
+            </Link>
           </div>
-        ) : (
-          <div className="overflow-x-auto bg-white rounded-lg shadow dark:bg-base-100 dark:border dark:border-slate-500">
-            <table className="table w-full">
-              <thead className="bg-gray-100 text-gray-700 text-sm dark:bg-slate-300">
-                <tr>
-                  <th>University</th>
-                  <th>Degree</th>
-                  <th>Applied</th>
-                  <th>Fees</th>
-                  <th>Payment</th>
-                  <th>Pay</th>
-                  <th>Status</th>
-                  <th>Feedback</th>
-                  <th className="text-center">Actions</th>
-                </tr>
-              </thead>
 
-              <tbody>
-                {applicationsWithDetails.map((app) => {
-                  const unpaid =
-                    !app.paymentStatus || app.paymentStatus === "unpaid";
-
-                  return (
-                    <tr key={app._id} className="hover">
-                      <td className="text-nowrap">
-                        <p className="font-semibold">{app.universityName}</p>
-                        <p className="text-xs text-gray-500">
-                          {app.universityCity || "N/A"}
-                        </p>
-                      </td>
-                      <td>{app.degree || app.subjectCategory}</td>
-                      <td className="min-w-30">
-                        {formatDate(app.applicationDate)}
-                      </td>
-                      <td className="font-semibold">${app.applicationFees}</td>
-
-                      <td>
-                        <span
-                          className={`text-md rounded-full ${
-                            app.paymentStatus === "paid"
-                              ? "font-semibold text-green-700"
-                              : "font-semibold text-red-700"
-                          }`}
-                        >
-                          {app.paymentStatus || "unpaid"}
-                        </span>
-                      </td>
-
-                      <td>
-                        {app.applicationStatus === "pending" && unpaid ? (
-                          <Link
-                            to={`/dashboard/payment-page/${app._id}`}
-                            className="btn btn-success btn-sm text-white"
-                          >
-                            Pay
-                          </Link>
-                        ) : (
-                          <span className="text-green-700 font-semibold">
-                            Paid
-                          </span>
-                        )}
-                      </td>
-
-                      <td>
-                        <span
-                          className={`px-3 py-1 text-xs rounded-full ${
-                            app.applicationStatus === "completed"
-                              ? "bg-green-100 text-green-700 font-semibold"
-                              : app.applicationStatus === "rejected"
-                                ? "bg-red-100 text-red-700 font-semibold"
-                                : "bg-yellow-100 text-yellow-700 font-semibold"
-                          }`}
-                        >
-                          {app.applicationStatus}
-                        </span>
-                      </td>
-
-                      <td className="min-w-40">
-                        {app.feedback ? (
-                          <i>"{app.feedback}"</i>
-                        ) : (
-                          <span className="text-gray-400">No feedback yet</span>
-                        )}
-                      </td>
-
-                      <td className="flex gap-3 py-5">
-                        <button
-                          onClick={() => {
-                            setSelectedApp(app);
-                            setIsDetailsOpen(true);
-                          }}
-                          className="btn btn-sm"
-                        >
-                          Details
-                        </button>
-                        {app.applicationStatus === "pending" && (
-                          <button
-                            onClick={() => handleEditClick(app)}
-                            className="btn btn-sm btn-warning text-white"
-                          >
-                            Edit
-                          </button>
-                        )}
-                        {app.applicationStatus === "completed" &&
-                          !app.reviewed && (
-                            <button
-                              onClick={() => {
-                                setSelectedApp(app);
-                                setIsReviewOpen(true);
-                              }}
-                              className="btn btn-info btn-sm text-white"
-                            >
-                              Add Review
-                            </button>
-                          )}
-                        {app.applicationStatus === "completed" &&
-                          app.reviewed && (
-                            <span className="text-green-600 font-semibold mt-1">
-                              Reviewed
-                            </span>
-                          )}
-                        {app.applicationStatus === "pending" && (
-                          <button
-                            onClick={() => handleDelete(app._id)}
-                            className="btn btn-error btn-sm text-white"
-                          >
-                            Delete
-                          </button>
-                        )}
-                      </td>
+          {applications.length === 0 ? (
+            <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-10 text-center shadow-2xl">
+              <h3 className="text-2xl font-semibold text-white mb-3">
+                No applications yet
+              </h3>
+              <p className="text-slate-400 mb-6">
+                Start exploring scholarships tailored for you and submit your
+                first application.
+              </p>
+              <Link
+                to="/scholarships"
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-500 text-white font-semibold shadow-lg shadow-cyan-500/30 hover:translate-y-[-1px] transition"
+              >
+                Find Scholarships
+              </Link>
+            </div>
+          ) : (
+            <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl">
+              <div className="overflow-x-auto">
+                <table className="table table-zebra-zebra w-full text-sm">
+                  <thead className="bg-gradient-to-r from-white/10 via-white/5 to-white/10 text-slate-100">
+                    <tr>
+                      <th className="font-semibold">University</th>
+                      <th className="font-semibold">Degree</th>
+                      <th className="font-semibold">Applied</th>
+                      <th className="font-semibold">Fees</th>
+                      <th className="font-semibold">Payment</th>
+                      <th className="font-semibold">Pay</th>
+                      <th className="font-semibold">Status</th>
+                      <th className="font-semibold">Feedback</th>
+                      <th className="font-semibold text-center">Actions</th>
                     </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        )}
+                  </thead>
 
-        {/* View Details Modal */}
-        {isDetailsOpen && selectedApp && (
-          <dialog className="modal modal-open">
-            <div className="modal-box w-11/12 max-w-3xl max-h-screen overflow-y-auto">
-              <h3 className="font-bold text-2xl mb-4 text-primary">
-                {selectedApp.universityName} – Application Details
-              </h3>
+                  <tbody>
+                    {applicationsWithDetails.map((app) => {
+                      const unpaid =
+                        !app.paymentStatus || app.paymentStatus === "unpaid";
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                <p>
-                  <strong>Degree:</strong> {selectedApp.degree}
-                </p>
-                <p>
-                  <strong>Applied on:</strong>{" "}
-                  {formatDate(selectedApp.applicationDate)}
-                </p>
-                <p>
-                  <strong>Fees:</strong> ${selectedApp.applicationFees}
-                </p>
-                <p>
-                  <strong>Payment Status:</strong>{" "}
-                  {selectedApp.paymentStatus || "unpaid"}
-                </p>
-                <p>
-                  <strong>Status:</strong> {selectedApp.applicationStatus}
-                </p>
-                <p>
-                  <strong>Feedback:</strong>{" "}
-                  {selectedApp.feedback || "No feedback yet"}
-                </p>
-                <p>
-                  <strong>University City:</strong>{" "}
-                  {selectedApp.universityCity || "N/A"}
-                </p>
-                <p>
-                  <strong>University Country:</strong>{" "}
-                  {selectedApp.universityCountry || "N/A"}
-                </p>
-              </div>
+                      return (
+                        <motion.tr
+                          key={app._id}
+                          initial={{ opacity: 0, y: 6 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.15 }}
+                          className="hover:bg-white/5"
+                        >
+                          <td className="min-w-44">
+                            <div className="font-semibold text-white">
+                              {app.universityName}
+                            </div>
+                            <div className="text-xs text-slate-400">
+                              {app.universityCity || "N/A"}
+                            </div>
+                          </td>
+                          <td className="text-slate-200">
+                            {app.degree || app.subjectCategory}
+                          </td>
+                          <td className="text-slate-200">
+                            {formatDate(app.applicationDate)}
+                          </td>
+                          <td className="font-semibold text-cyan-200">
+                            ${app.applicationFees}
+                          </td>
 
-              <div className="modal-action mt-4">
-                <button className="btn" onClick={() => setIsDetailsOpen(false)}>
-                  Close
-                </button>
+                          <td>
+                            <span
+                              className={`inline-flex px-3 py-1 rounded-full text-xs font-semibold ${paymentBadge(app.paymentStatus)}`}
+                            >
+                              {app.paymentStatus || "unpaid"}
+                            </span>
+                          </td>
+
+                          <td>
+                            {app.applicationStatus === "pending" && unpaid ? (
+                              <Link
+                                to={`/dashboard/payment-page/${app._id}`}
+                                className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-gradient-to-r from-cyan-500 to-emerald-500 text-white text-xs font-semibold shadow-md shadow-cyan-500/30 hover:translate-y-[-1px] transition w-[80px]"
+                              >
+                                Pay now
+                              </Link>
+                            ) : (
+                              <span className="text-emerald-300 font-semibold">
+                                Paid
+                              </span>
+                            )}
+                          </td>
+
+                          <td>
+                            <span
+                              className={`inline-flex px-3 py-1 rounded-full text-xs font-semibold ${statusBadge(app.applicationStatus)}`}
+                            >
+                              {app.applicationStatus}
+                            </span>
+                          </td>
+
+                          <td className="min-w-44 text-slate-200">
+                            {app.feedback ? (
+                              <i className="text-slate-100">"{app.feedback}"</i>
+                            ) : (
+                              <span className="text-slate-500">
+                                No feedback yet
+                              </span>
+                            )}
+                          </td>
+
+                          <td className="py-5">
+                            <div className="flex flex-wrap md:flex-nowrap items-center gap-2 justify-start md:justify-end">
+                              <button
+                                onClick={() => {
+                                  setSelectedApp(app);
+                                  setIsDetailsOpen(true);
+                                }}
+                                className="px-3 py-2 rounded-lg border border-white/15 bg-white/5 text-slate-100 text-xs font-semibold hover:border-cyan-300/50 hover:text-white transition"
+                              >
+                                Details
+                              </button>
+                              {app.applicationStatus === "pending" && (
+                                <button
+                                  onClick={() => handleEditClick(app)}
+                                  className="px-3 py-2 rounded-lg bg-amber-500/80 text-white text-xs font-semibold shadow-md hover:translate-y-[-1px] transition"
+                                >
+                                  Edit
+                                </button>
+                              )}
+                              {app.applicationStatus === "completed" &&
+                                !app.reviewed && (
+                                  <button
+                                    onClick={() => {
+                                      setSelectedApp(app);
+                                      setIsReviewOpen(true);
+                                    }}
+                                    className="px-3 py-2 rounded-lg bg-sky-500/80 text-white text-xs font-semibold shadow-md hover:translate-y-[-1px] transition"
+                                  >
+                                    Add Review
+                                  </button>
+                                )}
+                              {app.applicationStatus === "completed" &&
+                                app.reviewed && (
+                                  <span className="text-emerald-300 font-semibold text-xs mt-1">
+                                    Reviewed
+                                  </span>
+                                )}
+                              {app.applicationStatus === "pending" && (
+                                <button
+                                  onClick={() => handleDelete(app._id)}
+                                  className="px-3 py-2 rounded-lg bg-rose-500/80 text-white text-xs font-semibold shadow-md hover:translate-y-[-1px] transition"
+                                >
+                                  Delete
+                                </button>
+                              )}
+                            </div>
+                          </td>
+                        </motion.tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
               </div>
             </div>
-          </dialog>
-        )}
+          )}
 
-        {/* Edit Modal */}
-        {isEditOpen && selectedApp && (
-          <dialog className="modal modal-open">
-            <div className="modal-box w-11/12 max-w-4xl h-[600px]  overflow-y-auto">
-              <h3 className="font-bold text-2xl mb-6 text-center text-primary">
-                Edit Application – {selectedApp.universityName}
-              </h3>
+          {/* View Details Modal */}
+          {isDetailsOpen && selectedApp && (
+            <dialog className="modal modal-open">
+              <div className="modal-box w-11/12 max-w-3xl max-h-screen overflow-y-auto bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-100 border border-white/10 shadow-2xl">
+                <h3 className="text-xl font-semibold mb-4 text-white">
+                  {selectedApp.universityName} – Application Details
+                </h3>
 
-              {/* Scholarship Info - Read Only */}
-              <div className="bg-base-200 p-5 rounded-lg mb-4 mb-6">
-                <h4 className="font-bold text-lg mb-3">Scholarship Details</h4>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm bg-white/5 border border-white/10 rounded-xl p-4">
                   <p>
-                    <strong>University:</strong> {selectedApp.universityName}
+                    <span className="text-slate-400">Degree:</span>{" "}
+                    {selectedApp.degree}
                   </p>
                   <p>
-                    <strong>Degree:</strong> {selectedApp.degree}
+                    <span className="text-slate-400">Applied on:</span>{" "}
+                    {formatDate(selectedApp.applicationDate)}
                   </p>
                   <p>
-                    <strong>Category:</strong> {selectedApp.scholarshipCategory}
+                    <span className="text-slate-400">Fees:</span> $
+                    {selectedApp.applicationFees}
                   </p>
                   <p>
-                    <strong>Fee:</strong> $
-                    {selectedApp.applicationFees + selectedApp.serviceCharge}
+                    <span className="text-slate-400">Payment Status:</span>{" "}
+                    {selectedApp.paymentStatus || "unpaid"}
+                  </p>
+                  <p>
+                    <span className="text-slate-400">Status:</span>{" "}
+                    {selectedApp.applicationStatus}
+                  </p>
+                  <p>
+                    <span className="text-slate-400">Feedback:</span>{" "}
+                    {selectedApp.feedback || "No feedback yet"}
+                  </p>
+                  <p>
+                    <span className="text-slate-400">University City:</span>{" "}
+                    {selectedApp.universityCity || "N/A"}
+                  </p>
+                  <p>
+                    <span className="text-slate-400">University Country:</span>{" "}
+                    {selectedApp.universityCountry || "N/A"}
                   </p>
                 </div>
+
+                <div className="modal-action mt-6">
+                  <button
+                    className="px-4 py-2 rounded-lg border border-white/20 text-slate-100 hover:border-cyan-400/50 hover:text-white transition"
+                    onClick={() => setIsDetailsOpen(false)}
+                  >
+                    Close
+                  </button>
+                </div>
               </div>
+            </dialog>
+          )}
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                {/* Form inputs */}
-                {Object.entries(editForm).map(([key, value]) => (
-                  <div key={key}>
-                    <label className="label">
-                      <span className="label-text font-medium">
-                        {key.replace(/([A-Z])/g, " $1")}
-                      </span>
-                    </label>
-                    <input
-                      type={key === "dateOfBirth" ? "date" : "text"}
-                      className="input input-bordered w-full"
-                      value={value}
-                      onChange={(e) =>
-                        setEditForm({ ...editForm, [key]: e.target.value })
-                      }
-                    />
-                  </div>
-                ))}
-              </div>
+          {/* Edit Modal */}
+          {isEditOpen && selectedApp && (
+            <dialog className="modal modal-open">
+              <div className="modal-box w-11/12 max-w-4xl h-[620px] overflow-y-auto bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-100 border border-white/10 shadow-2xl">
+                <h3 className="text-2xl font-semibold mb-6 text-center text-white">
+                  Edit Application – {selectedApp.universityName}
+                </h3>
 
-              <div className="modal-action mt-8">
-                <button
-                  className="btn btn-success text-white"
-                  onClick={handleSubmitEdit}
-                  disabled={editMutation.isPending}
-                >
-                  {editMutation.isPending ? "Saving..." : "Save Changes"}
-                </button>
-                <button className="btn" onClick={() => setIsEditOpen(false)}>
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </dialog>
-        )}
-
-        {isReviewOpen && selectedApp && (
-          <dialog className="modal modal-open">
-            <div className="modal-box w-11/12 max-w-2xl">
-              <h3 className="font-bold text-2xl mb-6 text-center text-primary">
-                Write a Review
-              </h3>
-
-              {/* Scholarship Info */}
-              <div className="bg-base-200 p-4 rounded-lg mb-6">
-                <div className="flex items-center gap-4">
-                  {selectedApp.universityImage && (
-                    <img
-                      src={selectedApp.universityImage}
-                      alt={selectedApp.universityName}
-                      className="w-16 h-16 rounded-lg object-cover"
-                    />
-                  )}
-                  <div>
-                    <h4 className="font-bold text-lg">
+                {/* Scholarship Info - Read Only */}
+                <div className="bg-white/5 border border-white/10 p-5 rounded-xl mb-6">
+                  <h4 className="font-semibold text-lg mb-3 text-white">
+                    Scholarship Details
+                  </h4>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm text-slate-200">
+                    <p>
+                      <span className="text-slate-400">University:</span>{" "}
                       {selectedApp.universityName}
-                    </h4>
-                    <p className="text-sm text-gray-600">
-                      {selectedApp.scholarshipName || selectedApp.degree}
                     </p>
-                    <p className="text-xs text-gray-500">
-                      {selectedApp.universityCity},{" "}
-                      {selectedApp.universityCountry}
+                    <p>
+                      <span className="text-slate-400">Degree:</span>{" "}
+                      {selectedApp.degree}
+                    </p>
+                    <p>
+                      <span className="text-slate-400">Category:</span>{" "}
+                      {selectedApp.scholarshipCategory}
+                    </p>
+                    <p>
+                      <span className="text-slate-400">Fee:</span> $
+                      {selectedApp.applicationFees + selectedApp.serviceCharge}
                     </p>
                   </div>
                 </div>
-              </div>
 
-              {/* Rating Input */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium mb-3">
-                  Rating <span className="text-red-500">*</span>
-                </label>
-                <div className="flex gap-2 items-center">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <button
-                      key={star}
-                      type="button"
-                      onClick={() => setRating(star)}
-                      className={`text-4xl transition-all hover:scale-110 ${
-                        star <= rating ? "text-yellow-400" : "text-gray-300"
-                      } hover:text-yellow-400`}
-                    >
-                      ★
-                    </button>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  {Object.entries(editForm).map(([key, value]) => (
+                    <div key={key}>
+                      <label className="block text-sm font-medium text-slate-200 mb-2">
+                        {key.replace(/([A-Z])/g, " $1")}
+                      </label>
+                      <input
+                        type={key === "dateOfBirth" ? "date" : "text"}
+                        className="w-full rounded-lg bg-white/5 border border-white/10 px-3 py-2 text-slate-100 focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-500/30 outline-none"
+                        value={value}
+                        onChange={(e) =>
+                          setEditForm({ ...editForm, [key]: e.target.value })
+                        }
+                      />
+                    </div>
                   ))}
-                  <span className="ml-3 text-lg font-semibold text-gray-700">
-                    {rating}/5
-                  </span>
+                </div>
+
+                <div className="modal-action mt-8">
+                  <button
+                    className="px-4 py-3 rounded-lg bg-gradient-to-r from-cyan-500 to-emerald-500 text-white font-semibold shadow-lg shadow-cyan-500/30 hover:translate-y-[-1px] transition"
+                    onClick={handleSubmitEdit}
+                    disabled={editMutation.isPending}
+                  >
+                    {editMutation.isPending ? "Saving..." : "Save Changes"}
+                  </button>
+                  <button
+                    className="px-4 py-3 rounded-lg border border-white/20 text-slate-100 hover:border-rose-400/50 hover:text-white transition"
+                    onClick={() => setIsEditOpen(false)}
+                  >
+                    Cancel
+                  </button>
                 </div>
               </div>
+            </dialog>
+          )}
 
-              {/* Comment Input */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium mb-2">
-                  Your Review <span className="text-red-500">*</span>
-                </label>
-                <textarea
-                  value={comment}
-                  onChange={(e) => setComment(e.target.value)}
-                  className="textarea textarea-bordered w-full h-32"
-                  placeholder="Share your experience with this scholarship program..."
-                  required
-                />
-                <p className="text-xs text-gray-500 mt-1">
-                  {comment.length} / 500 characters
-                </p>
-              </div>
+          {isReviewOpen && selectedApp && (
+            <dialog className="modal modal-open">
+              <div className="modal-box w-11/12 max-w-2xl bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-100 border border-white/10 shadow-2xl">
+                <h3 className="text-2xl font-semibold mb-6 text-center text-white">
+                  Write a Review
+                </h3>
 
-              {/* Action Buttons */}
-              <div className="modal-action">
-                <button
-                  className="btn btn-success text-white"
-                  onClick={handleSubmitReview}
-                  disabled={reviewMutation.isPending || !comment.trim()}
-                >
-                  {reviewMutation.isPending ? (
-                    <>
-                      <span className="loading loading-spinner loading-sm"></span>
-                      Submitting...
-                    </>
-                  ) : (
-                    "Submit Review"
-                  )}
-                </button>
-                <button
-                  className="btn"
-                  onClick={() => {
-                    setIsReviewOpen(false);
-                    setRating(5);
-                    setComment("");
-                  }}
-                  disabled={reviewMutation.isPending}
-                >
-                  Cancel
-                </button>
+                {/* Scholarship Info */}
+                <div className="bg-white/5 border border-white/10 p-4 rounded-xl mb-6">
+                  <div className="flex items-center gap-4">
+                    {selectedApp.universityImage && (
+                      <img
+                        src={selectedApp.universityImage}
+                        alt={selectedApp.universityName}
+                        className="w-16 h-16 rounded-lg object-cover border border-white/10"
+                      />
+                    )}
+                    <div>
+                      <h4 className="font-semibold text-lg text-white">
+                        {selectedApp.universityName}
+                      </h4>
+                      <p className="text-sm text-slate-300">
+                        {selectedApp.scholarshipName || selectedApp.degree}
+                      </p>
+                      <p className="text-xs text-slate-400">
+                        {selectedApp.universityCity},{" "}
+                        {selectedApp.universityCountry}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Rating Input */}
+                <div className="mb-6">
+                  <label className="block text-sm font-medium mb-3 text-slate-200">
+                    Rating <span className="text-rose-400">*</span>
+                  </label>
+                  <div className="flex gap-2 items-center">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        key={star}
+                        type="button"
+                        onClick={() => setRating(star)}
+                        className={`text-4xl transition-all hover:scale-110 ${
+                          star <= rating ? "text-amber-300" : "text-slate-500"
+                        } hover:text-amber-300`}
+                      >
+                        ★
+                      </button>
+                    ))}
+                    <span className="ml-3 text-lg font-semibold text-slate-100">
+                      {rating}/5
+                    </span>
+                  </div>
+                </div>
+
+                {/* Comment Input */}
+                <div className="mb-6">
+                  <label className="block text-sm font-medium mb-2 text-slate-200">
+                    Your Review <span className="text-rose-400">*</span>
+                  </label>
+                  <textarea
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                    className="w-full h-32 rounded-lg bg-white/5 border border-white/10 px-3 py-2 text-slate-100 focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-500/30 outline-none"
+                    placeholder="Share your experience with this scholarship program..."
+                    required
+                  />
+                  <p className="text-xs text-slate-400 mt-1">
+                    {comment.length} / 500 characters
+                  </p>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="modal-action">
+                  <button
+                    className="px-4 py-3 rounded-lg bg-gradient-to-r from-cyan-500 to-emerald-500 text-white font-semibold shadow-lg shadow-cyan-500/30 hover:translate-y-[-1px] transition"
+                    onClick={handleSubmitReview}
+                    disabled={reviewMutation.isPending || !comment.trim()}
+                  >
+                    {reviewMutation.isPending ? (
+                      <>
+                        <span className="loading loading-spinner loading-sm"></span>
+                        Submitting...
+                      </>
+                    ) : (
+                      "Submit Review"
+                    )}
+                  </button>
+                  <button
+                    className="px-4 py-3 rounded-lg border border-white/20 text-slate-100 hover:border-rose-400/50 hover:text-white transition"
+                    onClick={() => {
+                      setIsReviewOpen(false);
+                      setRating(5);
+                      setComment("");
+                    }}
+                    disabled={reviewMutation.isPending}
+                  >
+                    Cancel
+                  </button>
+                </div>
               </div>
-            </div>
-          </dialog>
-        )}
+            </dialog>
+          )}
+        </div>
       </div>
     </>
   );

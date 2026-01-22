@@ -20,17 +20,16 @@ import {
   Cell,
 } from "recharts";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
-import LoadingSpinner from "../../shared/Loading";
 import { useQuery } from "@tanstack/react-query";
 import useAuth from "../../../hooks/useAuth";
 import Loading from "../../shared/Loading";
 
 const Analytics = () => {
   const axiosSecure = useAxiosSecure();
-  const { user, loading} = useAuth(); 
+  const { user, loading } = useAuth();
 
   if (loading) {
-    return <Loading/>;
+    return <Loading />;
   }
 
   if (!user?.email) {
@@ -46,7 +45,7 @@ const Analytics = () => {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["adminAnalytics", user.email], 
+    queryKey: ["adminAnalytics", user.email],
     queryFn: async () => {
       const [usersRes, scholarshipsRes, applicationsRes] = await Promise.all([
         axiosSecure.get("/users"),
@@ -67,7 +66,7 @@ const Analytics = () => {
         .reduce(
           (sum, app) =>
             sum + (app.applicationFees || 0) + (app.serviceCharge || 0),
-          0
+          0,
         );
 
       // Top 5 Universities by Applications
@@ -123,7 +122,11 @@ const Analytics = () => {
   ];
 
   if (isLoading) {
-    return <LoadingSpinner />;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-100">
+        <Loading />
+      </div>
+    );
   }
 
   if (error) {
@@ -149,82 +152,121 @@ const Analytics = () => {
     categoryData,
   } = analytics;
 
-  
   return (
-    <div className="p-6">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
-        <div className="flex justify-between items-center mb-10">
-          <h1 className="text-4xl font-bold text-primary">
-            Analytics Dashboard
-          </h1>
-          <FaChartLine className="text-5xl text-primary opacity-80" />
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-100">
+      <div className="max-w-6xl mx-auto px-4 lg:px-6 py-10 lg:py-14">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-10">
+            <div>
+              <p className="text-xs uppercase tracking-[0.3em] text-cyan-300">
+                Admin
+              </p>
+              <h1 className="text-3xl lg:text-4xl font-bold text-white mt-1">
+                Analytics Dashboard
+              </h1>
+              <p className="text-slate-400 mt-1">
+                Monitor users, scholarships, and revenue at a glance.
+              </p>
+            </div>
+            <div className="flex items-center gap-3 px-4 py-3 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-lg text-cyan-200 shadow-lg">
+              <FaChartLine className="text-2xl" />
+              <span className="text-sm">Live overview</span>
+            </div>
+          </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-          <StatCard
-            title="Total Users"
-            value={totalUsers}
-            icon={<FaUsers />}
-            gradient="from-blue-500 to-blue-600"
-          />
-          <StatCard
-            title="Total Scholarships"
-            value={totalScholarships}
-            icon={<FaGraduationCap />}
-            gradient="from-green-500 to-emerald-600"
-          />
-          <StatCard
-            title="Total Applications"
-            value={totalApplications}
-            icon={<FaFileAlt />}
-            gradient="from-purple-500 to-indigo-600"
-          />
-          <StatCard
-            title="Revenue Collected"
-            value={`$${totalFeesCollected.toLocaleString()}`}
-            gradient="from-orange-500 to-red-600"
-          />
-        </div>
+          {/* Stats Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
+            <StatCard
+              title="Total Users"
+              value={totalUsers}
+              icon={<FaUsers />}
+              gradient="from-cyan-500/80 via-cyan-500 to-emerald-500"
+            />
+            <StatCard
+              title="Total Scholarships"
+              value={totalScholarships}
+              icon={<FaGraduationCap />}
+              gradient="from-emerald-500/80 via-emerald-500 to-teal-400"
+            />
+            <StatCard
+              title="Total Applications"
+              value={totalApplications}
+              icon={<FaFileAlt />}
+              gradient="from-indigo-500/80 via-violet-500 to-cyan-400"
+            />
+            <StatCard
+              title="Revenue Collected"
+              value={`$${totalFeesCollected.toLocaleString()}`}
+              gradient="from-amber-500/80 via-orange-500 to-rose-500"
+            />
+          </div>
 
-        {/* Charts Section */}
-        <div className="grid lg:grid-cols-2 gap-8 mb-10">
-          {/* Bar Chart */}
-          <div className="card bg-base-200 shadow-xl">
-            <div className="card-body">
-              <h2 className="card-title text-2xl mb-4">
-                Top Universities by Applications
-              </h2>
+          {/* Charts Section */}
+          <div className="grid lg:grid-cols-2 gap-6 mb-10">
+            {/* Bar Chart */}
+            <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-5 shadow-2xl">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-semibold text-white">
+                  Top Universities by Applications
+                </h2>
+                <span className="text-xs px-3 py-1 rounded-full bg-amber-400/15 text-amber-200 border border-amber-400/30">
+                  Top 5
+                </span>
+              </div>
               {topUniversities.length === 0 ? (
-                <p className="text-center py-10 text-gray-500">
+                <p className="text-center py-10 text-slate-400">
                   No application data yet
                 </p>
               ) : (
                 <ResponsiveContainer width="100%" height={350}>
-                  <BarChart data={topUniversities} margin={{ top: 10, right: 30, left: 0, bottom: 60 }}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="university" angle={-20} textAnchor="end" height={90} fontSize={12} />
-                    <YAxis />
-                    <Tooltip />
-                    <Bar dataKey="applications" fill="#8b5cf6" radius={[8, 8, 0, 0]} />
+                  <BarChart
+                    data={topUniversities}
+                    margin={{ top: 10, right: 30, left: 0, bottom: 60 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                    <XAxis
+                      dataKey="university"
+                      angle={-20}
+                      textAnchor="end"
+                      height={90}
+                      fontSize={12}
+                      tick={{ fill: "#94a3b8" }}
+                    />
+                    <YAxis tick={{ fill: "#94a3b8" }} />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "#0f172a",
+                        borderRadius: 12,
+                        border: "1px solid #1e293b",
+                        color: "#e2e8f0",
+                      }}
+                    />
+                    <Bar
+                      dataKey="applications"
+                      fill="#22d3ee"
+                      radius={[10, 10, 0, 0]}
+                    />
                   </BarChart>
                 </ResponsiveContainer>
               )}
             </div>
-          </div>
 
-          {/* Pie Chart */}
-          <div className="card bg-base-200 shadow-xl">
-            <div className="card-body">
-              <h2 className="card-title text-2xl mb-4">
-                Scholarship Categories
-              </h2>
+            {/* Pie Chart */}
+            <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-5 shadow-2xl">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-semibold text-white">
+                  Scholarship Categories
+                </h2>
+                <span className="text-xs px-3 py-1 rounded-full bg-cyan-400/15 text-cyan-200 border border-cyan-400/30">
+                  Distribution
+                </span>
+              </div>
               {categoryData.length === 0 ? (
-                <p className="text-center py-10 text-gray-500">
+                <p className="text-center py-10 text-slate-400">
                   No scholarships yet
                 </p>
               ) : (
@@ -235,73 +277,102 @@ const Analytics = () => {
                       cx="50%"
                       cy="50%"
                       labelLine={false}
-                      label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                      outerRadius={100}
+                      label={({ name, percent }) =>
+                        `${name}: ${(percent * 100).toFixed(0)}%`
+                      }
+                      outerRadius={110}
                       dataKey="value"
                     >
                       {categoryData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={COLORS[index % COLORS.length]}
+                        />
                       ))}
                     </Pie>
-                    <Tooltip />
-                    <Legend />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "#0f172a",
+                        borderRadius: 12,
+                        border: "1px solid #1e293b",
+                        color: "#e2e8f0",
+                      }}
+                    />
+                    <Legend wrapperStyle={{ color: "#cbd5e1" }} />
                   </PieChart>
                 </ResponsiveContainer>
               )}
             </div>
           </div>
-        </div>
 
-        {/* Quick Insights */}
-        <div className="card bg-base-200 shadow-xl">
-          <div className="card-body">
-            <h2 className="card-title text-2xl mb-6">Quick Insights</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="stat bg-base-100 rounded-xl">
-                <div className="stat-title">Avg. Fee per Application</div>
-                <div className="stat-value text-primary">
-                  ${totalApplications > 0
+          {/* Quick Insights */}
+          <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-6 shadow-2xl">
+            <h2 className="text-xl font-semibold text-white mb-6">
+              Quick Insights
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <InsightCard
+                label="Avg. Fee per Application"
+                value={`$${
+                  totalApplications > 0
                     ? (totalFeesCollected / totalApplications).toFixed(2)
-                    : "0.00"}
-                </div>
-              </div>
-              <div className="stat bg-base-100 rounded-xl">
-                <div className="stat-title">Scholarships per User</div>
-                <div className="stat-value text-secondary">
-                  {totalUsers > 0 ? (totalScholarships / totalUsers).toFixed(1) : "0"}
-                </div>
-              </div>
-              <div className="stat bg-base-100 rounded-xl">
-                <div className="stat-title">Applications per Scholarship</div>
-                <div className="stat-value text-accent">
-                  {totalScholarships > 0
+                    : "0.00"
+                }`}
+                tone="from-cyan-500/20 via-cyan-500/10 to-transparent"
+              />
+              <InsightCard
+                label="Scholarships per User"
+                value={
+                  totalUsers > 0
+                    ? (totalScholarships / totalUsers).toFixed(1)
+                    : "0"
+                }
+                tone="from-emerald-500/20 via-emerald-500/10 to-transparent"
+              />
+              <InsightCard
+                label="Applications per Scholarship"
+                value={
+                  totalScholarships > 0
                     ? (totalApplications / totalScholarships).toFixed(1)
-                    : "0"}
-                </div>
-              </div>
+                    : "0"
+                }
+                tone="from-amber-500/20 via-amber-500/10 to-transparent"
+              />
             </div>
           </div>
-        </div>
-      </motion.div>
+        </motion.div>
+      </div>
     </div>
   );
 };
 
 const StatCard = ({ title, value, icon, gradient }) => (
   <motion.div
-    whileHover={{ y: -8, scale: 1.02 }}
-    className={`card bg-gradient-to-br ${gradient} text-white shadow-2xl`}
+    whileHover={{ y: -6, scale: 1.01 }}
+    className={`rounded-2xl bg-gradient-to-br ${gradient} text-white shadow-2xl p-[1px]`}
   >
-    <div className="card-body">
+    <div className="rounded-2xl bg-slate-950/60 p-4 h-full">
       <div className="flex justify-between items-start">
         <div>
-          <p className="text-white/80 text-sm font-medium">{title}</p>
-          <h3 className="text-4xl font-bold mt-2">{value}</h3>
+          <p className="text-white/70 text-xs font-medium">{title}</p>
+          <h3 className="text-3xl font-bold mt-2">{value}</h3>
         </div>
-        <div className="text-5xl opacity-70">{icon}</div>
+        <div className="text-4xl opacity-80">{icon}</div>
       </div>
     </div>
   </motion.div>
+);
+
+const InsightCard = ({ label, value, tone }) => (
+  <div className="rounded-xl border border-white/10 bg-white/5 backdrop-blur-lg p-4 shadow-lg relative overflow-hidden">
+    <div
+      className={`absolute inset-0 bg-gradient-to-br ${tone} pointer-events-none`}
+    />
+    <div className="relative">
+      <p className="text-sm text-slate-300">{label}</p>
+      <p className="text-2xl font-semibold text-white mt-1">{value}</p>
+    </div>
+  </div>
 );
 
 export default Analytics;

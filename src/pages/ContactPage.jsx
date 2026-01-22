@@ -9,6 +9,13 @@ import {
 } from "react-icons/fa6";
 
 const ContactPage = () => {
+  const socialLinks = [
+    { icon: FaFacebookF, href: "https://facebook.com", label: "Facebook" },
+    { icon: FaXTwitter, href: "https://x.com", label: "Twitter" },
+    { icon: FaLinkedinIn, href: "https://linkedin.com", label: "LinkedIn" },
+    { icon: FaInstagram, href: "https://instagram.com", label: "Instagram" },
+  ];
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -31,39 +38,18 @@ const ContactPage = () => {
     }, 1500);
   };
 
-  const socialLinks = [
-    {
-      icon: FaFacebookF,
-      href: "https://facebook.com/scholarstream",
-      label: "Facebook",
-    },
-    {
-      icon: FaXTwitter,
-      href: "https://x.com/scholarstream",
-      label: "X (Twitter)",
-    },
-    {
-      icon: FaLinkedinIn,
-      href: "https://linkedin.com/company/scholarstream",
-      label: "LinkedIn",
-    },
-    {
-      icon: FaInstagram,
-      href: "https://instagram.com/scholarstream",
-      label: "Instagram",
-    },
-  ];
-
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       {/* Hero Section */}
       <section
         id="contact"
-        className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-20"
+        className="relative text-white py-20 overflow-hidden rounded-3xl glass-panel"
       >
-        <div className="container mx-auto px-6 text-center dark:opacity-60">
+        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 via-fuchsia-500/15 to-transparent" />
+        <div className="absolute inset-0 grid-pattern" aria-hidden="true" />
+        <div className="container mx-auto px-6 text-center relative z-10">
           <h1 className="text-4xl sm:text-5xl font-bold mb-4">Get in Touch</h1>
-          <p className="text-lg sm:text-xl text-blue-200 max-w-2xl mx-auto">
+          <p className="text-lg sm:text-xl text-slate-200 max-w-2xl mx-auto">
             We'd love to hear from you! Whether you have questions, feedback, or
             partnership ideas, our team is here to help.
           </p>
@@ -71,17 +57,17 @@ const ContactPage = () => {
       </section>
 
       {/* Main Content */}
-      <section className="">
-        <div className="container mx-auto px-6 dark:bg-base-100 py-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto dark:bg-base-100">
+      <section className="py-12">
+        <div className="container mx-auto px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
             {/* Contact Form */}
-            <div className="bg-white rounded-2xl shadow-xl p-8 dark:bg-base-100 dark:border dark:border-gray-500">
-              <h2 className="text-3xl font-bold text-gray-800 mb-6 dark:text-gray-300">
+            <div className="glass-panel rounded-2xl shadow-2xl p-8 border border-white/10">
+              <h2 className="text-3xl font-bold text-white mb-6">
                 Send Us a Message
               </h2>
 
               {status === "success" && (
-                <div className="mb-6 p-4 bg-green-100 text-green-700 rounded-lg dark:text-gray-300">
+                <div className="mb-6 p-4 bg-emerald-500/20 text-emerald-100 rounded-lg">
                   Thank you! Your message has been sent successfully. We'll get
                   back to you soon.
                 </div>
@@ -92,7 +78,7 @@ const ContactPage = () => {
                   <div key={field}>
                     <label
                       htmlFor={field}
-                      className="block text-sm font-medium text-gray-700 mb-2"
+                      className="block text-sm font-medium text-slate-200 mb-2"
                     >
                       {field.charAt(0).toUpperCase() + field.slice(1)}
                     </label>
@@ -103,7 +89,7 @@ const ContactPage = () => {
                       value={formData[field]}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition dark:text-gray-300"
+                      className="w-full px-4 py-3 border border-white/20 rounded-lg bg-white/5 text-white focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition"
                       placeholder={
                         field === "name"
                           ? "John Doe"
@@ -118,7 +104,7 @@ const ContactPage = () => {
                 <div>
                   <label
                     htmlFor="message"
-                    className="block text-sm font-medium text-gray-700 mb-2"
+                    className="block text-sm font-medium text-slate-200 mb-2"
                   >
                     Message
                   </label>
@@ -129,7 +115,7 @@ const ContactPage = () => {
                     onChange={handleChange}
                     required
                     rows={6}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition resize-none"
+                    className="w-full px-4 py-3 border border-white/20 rounded-lg bg-white/5 text-white focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition resize-none"
                     placeholder="Tell us more..."
                   />
                 </div>
@@ -137,7 +123,7 @@ const ContactPage = () => {
                 <button
                   type="submit"
                   disabled={status === "sending"}
-                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold py-4 rounded-lg hover:from-blue-700 hover:to-indigo-700 transition duration-300 shadow-lg disabled:opacity-70"
+                  className="w-full bg-gradient-to-r from-cyan-400 to-fuchsia-500 text-slate-900 font-semibold py-4 rounded-lg hover:opacity-90 transition duration-300 shadow-lg disabled:opacity-70"
                 >
                   {status === "sending" ? "Sending..." : "Send Message"}
                 </button>
@@ -147,8 +133,8 @@ const ContactPage = () => {
             {/* Contact Info & Social */}
             <div className="space-y-8">
               {/* Contact Details */}
-              <div className="bg-white rounded-2xl shadow-xl p-8 dark:bg-base-100 dark:border dark:border-gray-500">
-                <h2 className="text-3xl font-bold text-gray-800 mb-6 dark:text-gray-400">
+              <div className="glass-panel rounded-2xl shadow-2xl p-8 border border-white/10">
+                <h2 className="text-3xl font-bold text-white mb-6">
                   Contact Information
                 </h2>
                 <div className="space-y-6 ">
@@ -177,19 +163,17 @@ const ContactPage = () => {
                     },
                   ].map(({ icon: Icon, title, info }) => (
                     <div key={title} className="flex items-start space-x-4">
-                      <div className="bg-blue-100 p-3 rounded-full">
-                        <Icon className="text-2xl text-blue-600" />
+                      <div className="bg-white/10 p-3 rounded-full">
+                        <Icon className="text-2xl text-cyan-300" />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-gray-800 dark:text-gray-400">
-                          {title}
-                        </h3>
+                        <h3 className="font-semibold text-white">{title}</h3>
                         {info.map((line, i) => (
                           <p
                             key={i}
-                            className={`text-gray-600 text-xs md:text-lg dark:text-gray-400 ${
+                            className={`text-slate-300 text-xs md:text-lg ${
                               i === info.length - 1 && title === "Phone"
-                                ? "text-sm  text-gray-500"
+                                ? "text-sm text-slate-400"
                                 : ""
                             }`}
                           >
@@ -203,8 +187,8 @@ const ContactPage = () => {
               </div>
 
               {/* Social Media */}
-              <div className="bg-white rounded-2xl shadow-xl p-8 dark:bg-base-100 dark:border dark:border-gray-500">
-                <h3 className="text-2xl font-bold text-gray-800 mb-6 dark:text-blue-500">
+              <div className="glass-panel rounded-2xl shadow-2xl p-8 border border-white/10">
+                <h3 className="text-2xl font-bold text-white mb-6">
                   Follow Us
                 </h3>
                 <div className="flex flex-wrap gap-4">
@@ -215,9 +199,9 @@ const ContactPage = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={`Follow us on ${label}`}
-                      className="bg-gray-100 dark:bg-base-300 p-4 rounded-full hover:bg-blue-100 hover:scale-110 transition-all duration-300"
+                      className="bg-white/5 p-4 rounded-full hover:bg-white/10 hover:scale-105 transition-all duration-300"
                     >
-                      <Icon className="text-2xl text-gray-700" />
+                      <Icon className="text-2xl text-cyan-200" />
                     </a>
                   ))}
                 </div>

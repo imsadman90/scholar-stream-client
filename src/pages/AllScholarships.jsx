@@ -1,29 +1,30 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { motion } from "framer-motion";
 import useAxiosSecure from "../hooks/useAxiosSecure";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
 
 const SkeletonCard = () => (
-  <div className="card bg-white shadow-xl dark:bg-base-100">
-    <figure className="px-6 pt-6">
-      <div className="rounded-xl h-48 w-full bg-gray-200 dark:bg-gray-700 animate-pulse" />
-    </figure>
-    <div className="card-body">
-      <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4 animate-pulse mb-2" />
-      <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded w-1/2 animate-pulse mb-3" />
+  <motion.div
+    initial={{ opacity: 0.5 }}
+    animate={{ opacity: 1 }}
+    transition={{ repeat: Infinity, duration: 1.5 }}
+    className="rounded-2xl border border-white/15 bg-white/5 backdrop-blur-xl overflow-hidden"
+  >
+    <div className="w-full h-48 bg-slate-700/30 animate-pulse" />
+    <div className="p-6 space-y-4">
+      <div className="h-6 bg-slate-700/30 rounded-lg w-3/4 animate-pulse" />
+      <div className="h-5 bg-slate-700/30 rounded-lg w-1/2 animate-pulse" />
       <div className="space-y-2">
-        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full animate-pulse" />
-        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3 animate-pulse" />
-        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2 animate-pulse" />
-        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 animate-pulse" />
-        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3 animate-pulse" />
+        <div className="h-4 bg-slate-700/30 rounded-lg w-full animate-pulse" />
+        <div className="h-4 bg-slate-700/30 rounded-lg w-2/3 animate-pulse" />
+        <div className="h-4 bg-slate-700/30 rounded-lg w-1/2 animate-pulse" />
+        <div className="h-4 bg-slate-700/30 rounded-lg w-3/4 animate-pulse" />
       </div>
-      <div className="card-actions mt-4">
-        <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded w-full animate-pulse" />
-      </div>
+      <div className="h-12 bg-slate-700/30 rounded-xl w-full animate-pulse mt-4" />
     </div>
-  </div>
+  </motion.div>
 );
 
 const AllScholarships = () => {
@@ -77,148 +78,199 @@ const AllScholarships = () => {
   const currentItems = filtered.slice(indexOfFirstItem, indexOfLastItem);
 
   return (
-    <div className="container mx-auto px-4 py-12 mt-20 dark:bg-base-300">
-      <h1 className="text-4xl font-bold text-center mb-10 text-primary">
-        All Scholarships {!isLoading && `(${filtered.length})`}
-      </h1>
+    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 px-4 py-16 mt-20">
+      <div className="container mx-auto max-w-7xl">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-12"
+        >
+          <h1 className="text-4xl md:text-5xl font-black text-white mb-2">
+            All Scholarships
+          </h1>
+          {!isLoading && (
+            <p className="text-lg text-slate-200/80">
+              <span className="text-cyan-300 font-semibold">
+                {filtered.length}
+              </span>{" "}
+              opportunities available
+            </p>
+          )}
+        </motion.div>
 
-      <div className="bg-white rounded-xl shadow-lg p-6 mb-8 dark:bg-base-200">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <input
-            type="text"
-            placeholder="Search by scholarship or university..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="input input-bordered"
-            disabled={isLoading}
-          />
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="rounded-2xl border border-white/15 bg-white/5 backdrop-blur-xl p-6 mb-10 shadow-lg shadow-black/20"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <input
+              type="text"
+              placeholder="Search by scholarship or university..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="px-4 py-3 rounded-xl border border-white/30 bg-white/10 backdrop-blur-sm text-white placeholder:text-slate-400 focus:outline-none focus:border-white/50 focus:bg-white/15 transition"
+              disabled={isLoading}
+            />
 
-          <select
-            value={filterCategory}
-            onChange={(e) => setFilterCategory(e.target.value)}
-            className="select select-bordered"
-            disabled={isLoading}
-          >
-            <option value="">All Categories</option>
-            <option>Full fund</option>
-            <option>Partial</option>
-            <option>Self-fund</option>
-          </select>
+            <select
+              value={filterCategory}
+              onChange={(e) => setFilterCategory(e.target.value)}
+              className="px-4 py-3 rounded-xl border border-white/30 bg-white/10 backdrop-blur-sm text-white focus:outline-none focus:border-white/50 focus:bg-white/15 transition cursor-pointer"
+              disabled={isLoading}
+            >
+              <option className="bg-slate-900 text-white" value="">
+                All Categories
+              </option>
+              <option className="bg-slate-900 text-white">Full fund</option>
+              <option className="bg-slate-900 text-white">Partial</option>
+              <option className="bg-slate-900 text-white">Self-fund</option>
+            </select>
 
-          <select
-            value={filterDegree}
-            onChange={(e) => setFilterDegree(e.target.value)}
-            className="select select-bordered"
-            disabled={isLoading}
-          >
-            <option value="">All Degrees</option>
-            <option>Bachelor</option>
-            <option>Masters</option>
-            <option>PhD</option>
-            <option>Diploma</option>
-          </select>
+            <select
+              value={filterDegree}
+              onChange={(e) => setFilterDegree(e.target.value)}
+              className="px-4 py-3 rounded-xl border border-white/30 bg-white/10 backdrop-blur-sm text-white focus:outline-none focus:border-white/50 focus:bg-white/15 transition cursor-pointer"
+              disabled={isLoading}
+            >
+              <option className="bg-slate-900 text-white" value="">
+                All Degrees
+              </option>
+              <option className="bg-slate-900 text-white">Bachelor</option>
+              <option className="bg-slate-900 text-white">Masters</option>
+              <option className="bg-slate-900 text-white">PhD</option>
+              <option className="bg-slate-900 text-white">Diploma</option>
+            </select>
 
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="select select-bordered"
-            disabled={isLoading}
-          >
-            <option value="applicationFees">Sort: Lowest Fee First</option>
-            <option value="deadline">Sort: Deadline Soonest</option>
-            <option value="rank">Sort: Best Rank</option>
-          </select>
-        </div>
-      </div>
-
-      {isLoading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {[...Array(6)].map((_, index) => (
-            <SkeletonCard key={index} />
-          ))}
-        </div>
-      ) : filtered.length === 0 ? (
-        <div className="text-center py-20 bg-gray-50 rounded-xl dark:bg-base-200">
-          <p className="text-2xl text-gray-600 dark:text-gray-400">
-            No scholarships found
-          </p>
-        </div>
-      ) : (
-        <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {currentItems.map((scholarship) => (
-              <div
-                key={scholarship._id}
-                className="card bg-white shadow-xl hover:shadow-2xl transition dark:bg-base-100"
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="px-4 py-3 rounded-xl border border-white/30 bg-white/10 backdrop-blur-sm text-white focus:outline-none focus:border-white/50 focus:bg-white/15 transition cursor-pointer"
+              disabled={isLoading}
+            >
+              <option
+                className="bg-slate-900 text-white"
+                value="applicationFees"
               >
-                <figure className="px-6 pt-6">
-                  <img
-                    src={scholarship.universityImage}
-                    alt={scholarship.universityName}
-                    className="rounded-xl h-48 w-full object-cover"
-                  />
-                </figure>
-                <div className="card-body">
-                  <h2 className="card-title text-lg dark:text-gray-400">
-                    {scholarship.scholarshipName}
-                  </h2>
-                  <p className="font-semibold dark:text-gray-400">
-                    {scholarship.universityName}
-                  </p>
-                  <div className="text-sm text-gray-600 space-y-1 dark:text-gray-400">
-                    <p className="dark:text-gray-400">
-                      {scholarship.universityCity},{" "}
-                      {scholarship.universityCountry}
+                Sort: Lowest Fee First
+              </option>
+              <option className="bg-slate-900 text-white" value="deadline">
+                Sort: Deadline Soonest
+              </option>
+              <option className="bg-slate-900 text-white" value="rank">
+                Sort: Best Rank
+              </option>
+            </select>
+          </div>
+        </motion.div>
+
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[...Array(6)].map((_, index) => (
+              <SkeletonCard key={index} />
+            ))}
+          </div>
+        ) : filtered.length === 0 ? (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-center py-20 rounded-2xl border border-white/15 bg-white/5 backdrop-blur-xl"
+          >
+            <p className="text-2xl font-semibold text-slate-200">
+              No scholarships found
+            </p>
+            <p className="text-slate-300 mt-2">
+              Try adjusting your search filters
+            </p>
+          </motion.div>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+              {currentItems.map((scholarship, idx) => (
+                <motion.div
+                  key={scholarship._id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.05 }}
+                  className="rounded-2xl border border-white/15 bg-white/5 backdrop-blur-xl overflow-hidden hover:shadow-xl shadow-lg shadow-black/20 transition-all hover:border-white/30 group"
+                >
+                  <figure className="overflow-hidden relative h-48">
+                    <img
+                      src={scholarship.universityImage}
+                      alt={scholarship.universityName}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </figure>
+                  <div className="p-6">
+                    <h2 className="text-lg font-bold text-white mb-2 line-clamp-2">
+                      {scholarship.scholarshipName}
+                    </h2>
+                    <p className="font-semibold text-cyan-200 mb-3">
+                      {scholarship.universityName}
                     </p>
-                    <p>Rank: #{scholarship.universityWorldRank}</p>
-                    <p>Degree: {scholarship.degree}</p>
-                    <p className="font-bold text-primary">
-                      Application Fee: ${scholarship.applicationFees}
-                    </p>
-                    <p>
-                      Deadline:{" "}
-                      {format(
-                        new Date(scholarship.applicationDeadline),
-                        "dd MMM yyyy",
-                      )}
-                    </p>
-                  </div>
-                  <div className="card-actions mt-4">
+                    <div className="text-sm text-slate-200/80 space-y-2 mb-4">
+                      <p>
+                        📍 {scholarship.universityCity},{" "}
+                        {scholarship.universityCountry}
+                      </p>
+                      <p>🏆 Rank: #{scholarship.universityWorldRank}</p>
+                      <p>🎓 Degree: {scholarship.degree}</p>
+                      <p className="text-emerald-300 font-semibold">
+                        💰 Fee: ${scholarship.applicationFees}
+                      </p>
+                      <p className="text-amber-300">
+                        📅{" "}
+                        {format(
+                          new Date(scholarship.applicationDeadline),
+                          "dd MMM yyyy",
+                        )}
+                      </p>
+                    </div>
                     <Link
                       to={`/scholarship-details/${scholarship._id}`}
-                      className="btn btn-primary w-full"
+                      className="block w-full py-3 px-4 rounded-xl font-semibold bg-gradient-to-r from-cyan-500 to-purple-600 text-white hover:shadow-lg hover:shadow-cyan-500/30 shadow-lg shadow-black/20 transition-all text-center"
                     >
                       View Details
                     </Link>
                   </div>
-                </div>
-              </div>
-            ))}
-          </div>
+                </motion.div>
+              ))}
+            </div>
 
-          <div className="flex justify-center gap-2 mt-8">
-            <button
-              className="join-item btn btn-outline"
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              disabled={currentPage === 1}
+            <div className="flex justify-center gap-3 mt-10">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+                className="px-6 py-3 rounded-xl font-semibold border border-white/30 bg-white/10 text-white hover:border-white/50 hover:bg-white/20 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+              >
+                Previous
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                }
+                disabled={currentPage === totalPages}
+                className="px-6 py-3 rounded-xl font-semibold border border-white/30 bg-white/10 text-white hover:border-white/50 hover:bg-white/20 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+              >
+                Next
+              </motion.button>
+            </div>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center mt-4 text-slate-200/80 font-semibold"
             >
-              Previous page
-            </button>
-            <button
-              className="join-item btn btn-outline"
-              onClick={() =>
-                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-              }
-              disabled={currentPage === totalPages}
-            >
-              Next page
-            </button>
-          </div>
-          <p className="text-center mt-2 dark:text-gray-400">
-            Page {currentPage} of {totalPages}
-          </p>
-        </>
-      )}
+              Page <span className="text-cyan-300">{currentPage}</span> of{" "}
+              <span className="text-cyan-300">{totalPages}</span>
+            </motion.p>
+          </>
+        )}
+      </div>
     </div>
   );
 };

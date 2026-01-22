@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { motion } from "framer-motion";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { format } from "date-fns";
@@ -73,8 +74,8 @@ const AllReviews = () => {
 
   if (isLoading || authLoading || roleLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+        <div className="animate-spin rounded-full h-14 w-14 border-4 border-cyan-400 border-t-transparent"></div>
       </div>
     );
   }
@@ -83,203 +84,211 @@ const AllReviews = () => {
     <>
       <title>All Reviews | Scholar Stream</title>
 
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-8 dark:text-gray-300">
-          All Reviews ({reviews.length})
-        </h1>
-
-        {reviews.length === 0 ? (
-          <div className="text-center py-20 bg-gray-50 rounded-xl">
-            <div className="text-6xl mb-4">📝</div>
-            <h3 className="text-2xl font-bold mb-2">No reviews yet</h3>
-            <p className="text-gray-600">
-              Reviews from students will appear here.
-            </p>
-          </div>
-        ) : (
-          <>
-            {/* Desktop Table */}
-            <div className="hidden md:block overflow-x-auto bg-white rounded-lg shadow ">
-              <table className="w-full table-auto dark:bg-base-100">
-                <thead className="bg-gray-50 border-b dark:bg-base-200">
-                  <tr>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">
-                      Student
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">
-                      Scholarship
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">
-                      University
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">
-                      Rating
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">
-                      Comment
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">
-                      Date
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
-                  {reviews.map((review) => (
-                    <tr
-                      key={review._id}
-                      className="hover:bg-gray-50 dark:hover:bg-base-300"
-                    >
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          {review.userPhoto ? (
-                            <img
-                              src={review.userPhoto}
-                              alt={review.userName}
-                              className="w-10 h-10 rounded-full object-cover border-2 border-gray-200 dark:text-gray-400"
-                            />
-                          ) : (
-                            <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center border-2 border-gray-300">
-                              <FaUser className="text-gray-500" />
-                            </div>
-                          )}
-                          <span className="text-sm font-medium text-gray-900 dark:text-gray-400">
-                            {review.userName}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-400">
-                        {review.scholarshipName}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
-                        {review.universityName}
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-1">
-                          {[...Array(5)].map((_, i) => (
-                            <FaStar
-                              key={i}
-                              className={
-                                i < review.ratingPoint
-                                  ? "text-yellow-400"
-                                  : "text-gray-300"
-                              }
-                              size={14}
-                            />
-                          ))}
-                          <span className="text-sm font-semibold ml-2">
-                            {review.ratingPoint}/5
-                          </span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-500 max-w-xs">
-                        <p className="line-clamp-2 dark:text-gray-400">
-                          {review.reviewComment}
-                        </p>
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
-                        {formatDate(review.reviewDate)}
-                      </td>
-                      <td className="px-6 py-4 text-sm">
-                        {canDelete(review) ? (
-                          <button
-                            onClick={() => handleDelete(review)}
-                            className="text-red-600 hover:text-red-800 transition-colors"
-                            title="Delete"
-                          >
-                            <FaTrash />
-                          </button>
-                        ) : (
-                          <span className="text-gray-400 text-xs">-</span>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-100">
+        <div className="max-w-6xl mx-auto px-4 lg:px-6 py-10 lg:py-14">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+            <div>
+              <p className="text-xs uppercase tracking-[0.3em] text-cyan-300">
+                Moderator
+              </p>
+              <h1 className="text-3xl lg:text-4xl font-bold text-white">
+                All Reviews
+              </h1>
+              <p className="text-slate-400 mt-1">
+                Browse, moderate, and remove student feedback.
+              </p>
             </div>
+            <div className="px-4 py-3 rounded-2xl border border-white/10 bg-white/5 backdrop-blur text-cyan-200 shadow-lg">
+              <span className="text-xs uppercase tracking-[0.2em]">Total</span>
+              <div className="text-2xl font-semibold">{reviews.length}</div>
+            </div>
+          </div>
 
-            {/* Mobile Cards */}
-            <div className="block md:hidden space-y-4">
-              {reviews.map((review) => (
-                <div
-                  key={review._id}
-                  className="bg-white rounded-lg shadow p-6 border border-gray-200"
-                >
-                  {/* Student Info */}
-                  <div className="flex items-center gap-3 mb-4 pb-4 border-b border-gray-200">
-                    {review.userPhoto ? (
-                      <img
-                        src={review.userPhoto}
-                        alt={review.userName}
-                        className="w-12 h-12 rounded-full object-cover border-2 border-gray-200"
-                      />
-                    ) : (
-                      <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center border-2 border-gray-300">
-                        <FaUser className="text-gray-500" size={20} />
+          {reviews.length === 0 ? (
+            <div className="text-center py-16 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl">
+              <div className="text-6xl mb-4">📝</div>
+              <h3 className="text-2xl font-bold text-white mb-2">
+                No reviews yet
+              </h3>
+              <p className="text-slate-400">
+                Reviews from students will appear here.
+              </p>
+            </div>
+          ) : (
+            <>
+              {/* Desktop Table */}
+              <div className="hidden md:block overflow-x-auto rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl">
+                <table className="w-full table-auto text-slate-100">
+                  <thead className="bg-white/5 border-b border-white/10 text-xs uppercase tracking-[0.1em] text-slate-300">
+                    <tr>
+                      <th className="px-5 py-3 text-left">Student</th>
+                      <th className="px-5 py-3 text-left">Scholarship</th>
+                      <th className="px-5 py-3 text-left">University</th>
+                      <th className="px-5 py-3 text-left">Rating</th>
+                      <th className="px-5 py-3 text-left">Comment</th>
+                      <th className="px-5 py-3 text-left">Date</th>
+                      <th className="px-5 py-3 text-left">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-white/5">
+                    {reviews.map((review, idx) => (
+                      <motion.tr
+                        key={review._id}
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.18, delay: idx * 0.02 }}
+                        className="hover:bg-white/5"
+                      >
+                        <td className="px-5 py-3">
+                          <div className="flex items-center gap-3">
+                            {review.userPhoto ? (
+                              <img
+                                src={review.userPhoto}
+                                alt={review.userName}
+                                className="w-10 h-10 rounded-full object-cover border border-white/20"
+                              />
+                            ) : (
+                              <div className="w-10 h-10 rounded-full bg-white/10 border border-white/20 flex items-center justify-center">
+                                <FaUser className="text-slate-300" />
+                              </div>
+                            )}
+                            <div>
+                              <p className="text-sm font-semibold text-white">
+                                {review.userName}
+                              </p>
+                              <p className="text-xs text-slate-400">
+                                {review.userEmail}
+                              </p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-5 py-3 text-sm font-semibold text-white">
+                          {review.scholarshipName}
+                        </td>
+                        <td className="px-5 py-3 text-sm text-slate-300">
+                          {review.universityName}
+                        </td>
+                        <td className="px-5 py-3">
+                          <div className="flex items-center gap-1">
+                            {[...Array(5)].map((_, i) => (
+                              <FaStar
+                                key={i}
+                                className={
+                                  i < review.ratingPoint
+                                    ? "text-amber-300"
+                                    : "text-slate-600"
+                                }
+                                size={14}
+                              />
+                            ))}
+                            <span className="text-sm font-semibold ml-2 text-white">
+                              {review.ratingPoint}/5
+                            </span>
+                          </div>
+                        </td>
+                        <td className="px-5 py-3 text-sm text-slate-300 max-w-xs">
+                          <p className="line-clamp-2">{review.reviewComment}</p>
+                        </td>
+                        <td className="px-5 py-3 text-sm text-slate-300">
+                          {formatDate(review.reviewDate)}
+                        </td>
+                        <td className="px-5 py-3 text-sm">
+                          {canDelete(review) ? (
+                            <button
+                              onClick={() => handleDelete(review)}
+                              className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-rose-400/40 bg-rose-500/10 text-rose-200 hover:bg-rose-500/20 transition"
+                              title="Delete"
+                            >
+                              <FaTrash />
+                            </button>
+                          ) : (
+                            <span className="text-slate-500 text-xs">-</span>
+                          )}
+                        </td>
+                      </motion.tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile Cards */}
+              <div className="block md:hidden space-y-4">
+                {reviews.map((review, idx) => (
+                  <motion.div
+                    key={review._id}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.2, delay: idx * 0.02 }}
+                    className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-5 shadow-2xl"
+                  >
+                    <div className="flex items-center gap-3 mb-4 pb-4 border-b border-white/10">
+                      {review.userPhoto ? (
+                        <img
+                          src={review.userPhoto}
+                          alt={review.userName}
+                          className="w-12 h-12 rounded-full object-cover border border-white/20"
+                        />
+                      ) : (
+                        <div className="w-12 h-12 rounded-full bg-white/10 border border-white/20 flex items-center justify-center">
+                          <FaUser className="text-slate-300" size={18} />
+                        </div>
+                      )}
+                      <div>
+                        <p className="font-semibold text-white">
+                          {review.userName}
+                        </p>
+                        <p className="text-xs font-medium text-slate-300 bg-white/10 inline-block px-2 py-1 rounded mt-1">
+                          {formatDate(review.reviewDate)}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="mb-3">
+                      <h3 className="font-bold text-lg text-white">
+                        {review.scholarshipName}
+                      </h3>
+                      <p className="text-sm text-slate-300">
+                        {review.universityName}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-2 my-3">
+                      {[...Array(5)].map((_, i) => (
+                        <FaStar
+                          key={i}
+                          className={
+                            i < review.ratingPoint
+                              ? "text-amber-300"
+                              : "text-slate-600"
+                          }
+                        />
+                      ))}
+                      <span className="text-sm font-medium ml-1 text-white">
+                        {review.ratingPoint}/5
+                      </span>
+                    </div>
+
+                    <p className="text-slate-200/90 italic mb-3">
+                      "{review.reviewComment}"
+                    </p>
+
+                    {canDelete(review) && (
+                      <div className="flex justify-end pt-3 border-t border-white/10">
+                        <button
+                          onClick={() => handleDelete(review)}
+                          className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-rose-400/40 text-rose-200 bg-rose-500/10 hover:bg-rose-500/20 transition"
+                        >
+                          <FaTrash size={16} />
+                          <span className="text-sm">Delete</span>
+                        </button>
                       </div>
                     )}
-                    <div>
-                      <p className="font-semibold text-gray-900">
-                        {review.userName}
-                      </p>
-                      <p className="text-sm font-medium text-gray-700 bg-gray-100 inline-block px-2 py-1 rounded mt-1">
-                        {formatDate(review.reviewDate)}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Scholarship Info */}
-                  <div className="mb-3">
-                    <h3 className="font-bold text-lg text-gray-800">
-                      {review.scholarshipName}
-                    </h3>
-                    <p className="text-sm text-gray-600">
-                      {review.universityName}
-                    </p>
-                  </div>
-
-                  {/* Rating */}
-                  <div className="flex items-center gap-2 my-3">
-                    {[...Array(5)].map((_, i) => (
-                      <FaStar
-                        key={i}
-                        className={
-                          i < review.ratingPoint
-                            ? "text-yellow-400"
-                            : "text-gray-300"
-                        }
-                      />
-                    ))}
-                    <span className="text-sm font-medium ml-1">
-                      {review.ratingPoint}/5
-                    </span>
-                  </div>
-
-                  {/* Comment */}
-                  <p className="text-gray-700 italic mb-3">
-                    "{review.reviewComment}"
-                  </p>
-
-                  {/* Actions */}
-                  {canDelete(review) && (
-                    <div className="flex justify-end pt-3 border-t border-gray-200">
-                      <button
-                        onClick={() => handleDelete(review)}
-                        className="text-red-600 flex items-center gap-2 hover:text-red-800 transition-colors"
-                      >
-                        <FaTrash size={18} />
-                        <span className="text-sm">Delete</span>
-                      </button>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </>
-        )}
+                  </motion.div>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </>
   );

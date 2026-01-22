@@ -6,8 +6,6 @@ import {
   FaUserTag,
   FaCalendar,
   FaEdit,
-  FaSave,
-  FaTimes,
   FaCamera,
 } from "react-icons/fa";
 import useAuth from "../../../hooks/useAuth";
@@ -67,7 +65,7 @@ const Profile = () => {
       {
         method: "POST",
         body: formData,
-      }
+      },
     );
 
     if (!res.ok) throw new Error("Image upload failed");
@@ -132,141 +130,140 @@ const Profile = () => {
 
   if (isRoleLoading) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500"></div>
+      <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+        <div className="animate-spin rounded-full h-14 w-14 border-t-4 border-cyan-400 border-opacity-80"></div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">My Profile</h1>
-          <button
-            onClick={() => setIsEditing(true)}
-            className="btn btn-outline btn-primary gap-2"
-          >
-            <FaEdit /> Edit Profile
-          </button>
-        </div>
-
-        <div className="card bg-base-200 shadow-xl">
-          <div className="card-body">
-            {/* Profile Header */}
-            <div className="flex flex-col md:flex-row items-center gap-6 mb-8">
-              <div className="avatar">
-                <div className="w-32 rounded-full ring ring-primary ring-offset-base-100 ring-offset-4">
-                  <img
-                    src={
-                      previewUrl ||
-                      user?.photoURL ||
-                      "https://i.pravatar.cc/200"
-                    }
-                    alt="Profile"
-                    className="object-cover"
-                  />
-                </div>
-              </div>
-              <div className="text-center md:text-left">
-                <h2 className="text-2xl font-bold mb-2">
-                  {user?.displayName || "User Name"}
-                </h2>
-                {role && !isRoleLoading && (
-                  <span className="badge badge-primary badge-lg capitalize">
-                    {role}
-                  </span>
-                )}
-              </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-100">
+      <div className="max-w-5xl mx-auto px-4 lg:px-6 py-10 lg:py-14">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45 }}
+        >
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+            <div>
+              <p className="text-xs uppercase tracking-[0.28em] text-cyan-300">
+                Account
+              </p>
+              <h1 className="text-3xl lg:text-4xl font-bold text-white">
+                My Profile
+              </h1>
+              <p className="text-slate-400 mt-1">
+                View and update your information.
+              </p>
             </div>
+            <button
+              onClick={() => setIsEditing(true)}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-500 text-slate-950 font-semibold shadow-lg shadow-cyan-500/30 hover:translate-y-[-1px] transition"
+            >
+              <FaEdit /> Edit Profile
+            </button>
+          </div>
 
-            <div className="divider"></div>
-
-            {/* Profile Info Grid */}
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="space-y-4">
-                <div className="flex items-center gap-3 p-4 bg-base-100 rounded-lg">
-                  <FaUser className="text-2xl text-primary" />
-                  <div>
-                    <p className="text-sm text-base-content/60">Full Name</p>
-                    <p className="font-semibold">
-                      {user?.displayName || "N/A"}
-                    </p>
+          <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden">
+            <div className="p-6 md:p-8">
+              <div className="flex flex-col md:flex-row items-center gap-6 md:gap-10 mb-8">
+                <div className="relative">
+                  <div className="w-32 h-32 rounded-full overflow-hidden border-2 border-white/20 shadow-lg bg-white/10">
+                    <img
+                      src={
+                        previewUrl ||
+                        user?.photoURL ||
+                        "https://i.pravatar.cc/200"
+                      }
+                      alt="Profile"
+                      className="w-full h-full object-cover"
+                    />
                   </div>
+                  <label className="absolute -bottom-2 -right-1 cursor-pointer inline-flex items-center gap-1 px-3 py-2 rounded-full bg-white/10 border border-white/20 text-xs text-white backdrop-blur">
+                    <FaCamera />
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handlePhotoChange}
+                    />
+                  </label>
                 </div>
 
-                <div className="flex items-center gap-3 p-4 bg-base-100 rounded-lg">
-                  <FaEnvelope className="text-2xl text-secondary" />
-                  <div>
-                    <p className="text-sm text-base-content/60">
-                      Email Address
-                    </p>
-                    <p className="font-semibold">{user?.email || "N/A"}</p>
+                <div className="text-center md:text-left space-y-2">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-400/30 text-cyan-200 text-xs uppercase tracking-[0.2em]">
+                    {role || "User"}
                   </div>
+                  <h2 className="text-2xl md:text-3xl font-bold text-white">
+                    {user?.displayName || "User Name"}
+                  </h2>
+                  <p className="text-slate-300 text-sm">
+                    Manage your personal details and account photo.
+                  </p>
                 </div>
               </div>
 
-              <div className="space-y-4">
-                <div className="flex items-center gap-3 p-4 bg-base-100 rounded-lg">
-                  <FaUserTag className="text-2xl text-accent" />
-                  <div>
-                    <p className="text-sm text-base-content/60">Role</p>
-                    <p className="font-semibold capitalize">
-                      {isRoleLoading ? "Loading..." : role || "user"}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3 p-4 bg-base-100 rounded-lg">
-                  <FaCalendar className="text-2xl text-success" />
-                  <div>
-                    <p className="text-sm text-base-content/60">Member Since</p>
-                    <p className="font-semibold">
-                      {createdAt
-                        ? format(createdAt, "MMMM d, yyyy")
-                        : "Unknown"}
-                    </p>
-                  </div>
-                </div>
+              <div className="grid md:grid-cols-2 gap-4">
+                <InfoTile
+                  icon={<FaUser />}
+                  label="Full Name"
+                  value={user?.displayName || "N/A"}
+                  tone="from-cyan-500/10 via-cyan-500/5"
+                />
+                <InfoTile
+                  icon={<FaEnvelope />}
+                  label="Email Address"
+                  value={user?.email || "N/A"}
+                  tone="from-emerald-500/10 via-emerald-500/5"
+                />
+                <InfoTile
+                  icon={<FaUserTag />}
+                  label="Role"
+                  value={role || "User"}
+                  tone="from-indigo-500/10 via-indigo-500/5"
+                />
+                <InfoTile
+                  icon={<FaCalendar />}
+                  label="Member Since"
+                  value={
+                    createdAt ? format(createdAt, "MMMM d, yyyy") : "Unknown"
+                  }
+                  tone="from-amber-500/10 via-amber-500/5"
+                />
               </div>
             </div>
           </div>
-        </div>
-      </motion.div>
+        </motion.div>
 
-      {/* Edit Profile Modal */}
-      {isEditing && (
-        <dialog open className="modal modal-bottom sm:modal-middle">
-          <div className="modal-box">
-            <h3 className="font-bold text-lg mb-6">Edit Profile</h3>
+        {isEditing && (
+          <dialog open className="modal modal-bottom sm:modal-middle">
+            <div className="modal-box bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 border border-white/10 text-slate-100 shadow-2xl">
+              <h3 className="font-bold text-xl mb-6 text-white">
+                Edit Profile
+              </h3>
 
-            <div className="space-y-5">
-              {/* Name Field */}
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text font-medium">Name</span>
-                </label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="input input-bordered w-full"
-                  placeholder="Your full name"
-                />
-              </div>
+              <div className="space-y-5">
+                <div className="form-control">
+                  <label className="label">
+                    <span className="text-sm text-slate-300">Name</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-white focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-500/30 outline-none"
+                    placeholder="Your full name"
+                  />
+                </div>
 
-              {/* Photo Upload */}
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text font-medium">Profile Photo</span>
-                </label>
-                <div className="flex items-center gap-4">
-                  <div className="avatar">
-                    <div className="w-20 rounded-full ring ring-primary ring-offset-2">
+                <div className="form-control">
+                  <label className="label">
+                    <span className="text-sm text-slate-300">
+                      Profile Photo
+                    </span>
+                  </label>
+                  <div className="flex items-center gap-4">
+                    <div className="w-20 h-20 rounded-full overflow-hidden border border-white/20 bg-white/10">
                       <img
                         src={
                           previewUrl ||
@@ -274,45 +271,67 @@ const Profile = () => {
                           "https://i.pravatar.cc/200"
                         }
                         alt="Preview"
+                        className="w-full h-full object-cover"
                       />
                     </div>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handlePhotoChange}
+                      className="file-input file-input-bordered w-full max-w-xs"
+                    />
                   </div>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handlePhotoChange}
-                    className="file-input file-input-bordered w-full max-w-xs"
-                  />
                 </div>
+              </div>
+
+              <div className="modal-action mt-8">
+                <button
+                  onClick={handleCancel}
+                  className="btn btn-ghost text-slate-200"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleUpdateProfile}
+                  disabled={loading}
+                  className="inline-flex items-center justify-center gap-2 px-5 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-500 text-slate-950 font-semibold shadow-lg shadow-cyan-500/30"
+                >
+                  {loading ? (
+                    <span className="loading loading-spinner"></span>
+                  ) : (
+                    "Save Changes"
+                  )}
+                </button>
               </div>
             </div>
 
-            <div className="modal-action mt-8">
-              <button onClick={handleCancel} className="btn btn-ghost">
-                Cancel
-              </button>
-              <button
-                onClick={handleUpdateProfile}
-                disabled={loading}
-                className="btn btn-primary min-w-32"
-              >
-                {loading ? (
-                  <span className="loading loading-spinner"></span>
-                ) : (
-                  "Save Changes"
-                )}
-              </button>
-            </div>
-          </div>
-
-          {/* Backdrop click to close */}
-          <form method="dialog" className="modal-backdrop">
-            <button onClick={handleCancel}>close</button>
-          </form>
-        </dialog>
-      )}
+            <form method="dialog" className="modal-backdrop">
+              <button onClick={handleCancel}>close</button>
+            </form>
+          </dialog>
+        )}
+      </div>
     </div>
   );
 };
+
+const InfoTile = ({ icon, label, value, tone }) => (
+  <div className="relative rounded-xl border border-white/10 bg-white/5 backdrop-blur-lg p-4 shadow-lg overflow-hidden">
+    <div
+      className={`absolute inset-0 bg-gradient-to-br ${tone} to-transparent pointer-events-none`}
+    />
+    <div className="relative flex items-start gap-3">
+      <div className="text-cyan-300 text-xl mt-1">{icon}</div>
+      <div>
+        <p className="text-xs uppercase tracking-[0.12em] text-slate-400">
+          {label}
+        </p>
+        <p className="text-lg font-semibold text-white mt-1 break-words">
+          {value}
+        </p>
+      </div>
+    </div>
+  </div>
+);
 
 export default Profile;

@@ -4,6 +4,7 @@ import axios from "axios";
 import useAxiosSecure from "../hooks/useAxiosSecure";
 import useAuth from "../hooks/useAuth";
 import toast from "react-hot-toast";
+import { motion } from "framer-motion";
 import {
   FaUniversity,
   FaMapMarkerAlt,
@@ -149,35 +150,44 @@ const ScholarshipDetails = () => {
   }
 
   return (
-    <div className="bg-gray-50 mt-16 sm:mt-20 px-4 sm:px-6 lg:px-10 py-10 dark:bg-base-300">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 px-4 sm:px-6 lg:px-10 py-12 mt-16 sm:mt-20 text-white">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
           {/* Scholarship Info */}
-          <div className="bg-white rounded-xl shadow p-4 sm:p-6 space-y-4 dark:bg-base-100">
-            <img
-              src={scholarship.universityImage || "/placeholder-university.jpg"}
-              alt={scholarship.universityName}
-              className="w-full h-48 sm:h-56 md:h-60 object-cover rounded-lg"
-            />
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="rounded-2xl border border-white/15 bg-white/5 backdrop-blur-xl p-4 sm:p-6 space-y-4 shadow-lg shadow-black/20"
+          >
+            <div className="relative overflow-hidden rounded-xl">
+              <img
+                src={
+                  scholarship.universityImage || "/placeholder-university.jpg"
+                }
+                alt={scholarship.universityName}
+                className="w-full h-52 sm:h-60 md:h-64 object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
+            </div>
 
             <div className="flex flex-wrap gap-2">
               {scholarship.universityWorldRank && (
-                <span className="badge badge-success gap-1 text-sm sm:text-base py-3">
+                <span className="px-3 py-2 rounded-full text-sm bg-emerald-500/20 text-emerald-200 border border-emerald-400/30 flex items-center gap-2">
                   <FaStar /> Rank #{scholarship.universityWorldRank}
                 </span>
               )}
-              <span className="badge badge-info text-sm sm:text-base py-3">
+              <span className="px-3 py-2 rounded-full text-sm bg-cyan-500/20 text-cyan-100 border border-cyan-400/30">
                 {scholarship.scholarshipCategory}
               </span>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-bold">
+            <h1 className="text-3xl sm:text-4xl font-black leading-tight">
               {scholarship.scholarshipName}
             </h1>
-            <p className="flex items-center gap-2 text-gray-600 text-sm sm:text-base">
+            <p className="flex items-center gap-2 text-slate-200/80 text-sm sm:text-base">
               <FaUniversity /> {scholarship.universityName}
             </p>
-          </div>
+          </motion.div>
 
           {/* Key Info Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -208,48 +218,66 @@ const ScholarshipDetails = () => {
           </div>
 
           {/* Description */}
-          <div className="bg-white rounded-xl shadow p-4 sm:p-6 dark:bg-base-100">
-            <h2 className="text-lg sm:text-xl font-bold mb-3 dark:text-gray-400">
-              Description
-            </h2>
-            <p className="text-gray-700 leading-relaxed text-sm sm:text-base dark:text-gray-400">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="rounded-2xl border border-white/15 bg-white/5 backdrop-blur-xl p-4 sm:p-6 shadow-lg shadow-black/20"
+          >
+            <h2 className="text-xl font-bold mb-3 text-white">Description</h2>
+            <p className="text-slate-200/80 leading-relaxed text-sm sm:text-base">
               {scholarship.scholarshipDescription || "No description provided."}
             </p>
-          </div>
+          </motion.div>
         </div>
 
         <div className="space-y-6">
           {/* Monthly Stipend */}
           {scholarship.stipendAmount && (
-            <div className="bg-emerald-100 border border-emerald-200 rounded-xl p-4 sm:p-6">
-              <p className="text-sm text-emerald-700">Monthly Stipend</p>
-              <p className="text-2xl sm:text-3xl font-bold text-emerald-800">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="rounded-2xl border border-emerald-400/30 bg-emerald-500/10 backdrop-blur-xl p-4 sm:p-6 shadow-lg shadow-black/20"
+            >
+              <p className="text-sm text-emerald-100">Monthly Stipend</p>
+              <p className="text-3xl font-black text-white">
                 {scholarship.stipendAmount}
               </p>
-            </div>
+            </motion.div>
           )}
 
           {/* Reviews */}
-          <div className="bg-white rounded-xl shadow p-4 sm:p-6 dark:bg-base-100">
-            <h2 className="text-xl font-bold mb-4">
-              Reviews ({reviews.length})
-            </h2>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="rounded-2xl border border-white/15 bg-white/5 backdrop-blur-xl p-4 sm:p-6 shadow-lg shadow-black/20"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold">Reviews ({reviews.length})</h2>
+              <div className="flex gap-2 text-amber-300 text-sm">
+                <FaStar /> <span>Real student feedback</span>
+              </div>
+            </div>
             {reviewsLoading ? (
-              <p className="text-center text-gray-500">Loading reviews...</p>
+              <p className="text-center text-slate-200/70">
+                Loading reviews...
+              </p>
             ) : reviews.length === 0 ? (
-              <p className="text-center text-gray-500">No reviews yet</p>
+              <p className="text-center text-slate-200/70">No reviews yet</p>
             ) : (
               <div className="relative">
                 <button
                   onClick={scrollLeft}
-                  className="hidden md:flex absolute -left-5 top-1/2 -translate-y-1/2 z-10 bg-green-100 shadow-lg rounded-full p-2"
+                  className="hidden md:flex absolute -left-5 top-1/2 -translate-y-1/2 z-10 bg-white/10 border border-white/20 shadow-xl rounded-full p-2 text-white hover:border-white/40"
                 >
                   <FaChevronLeft />
                 </button>
 
                 <button
                   onClick={scrollRight}
-                  className="hidden md:flex absolute -right-5 top-1/2 -translate-y-1/2 z-10 bg-green-100 shadow-lg rounded-full p-2"
+                  className="hidden md:flex absolute -right-5 top-1/2 -translate-y-1/2 z-10 bg-white/10 border border-white/20 shadow-xl rounded-full p-2 text-white hover:border-white/40"
                 >
                   <FaChevronRight />
                 </button>
@@ -261,18 +289,18 @@ const ScholarshipDetails = () => {
                   {reviews.map((review) => (
                     <div
                       key={review._id}
-                      className="min-w-full bg-gray-50 rounded-lg p-4 border flex gap-4 dark:bg-base-100"
+                      className="min-w-full rounded-xl border border-white/15 bg-white/5 backdrop-blur p-4 flex gap-4"
                     >
                       <img
                         src={reviewUsers[review.userEmail] || "/avatar.png"}
-                        className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover dark:opacity-50"
+                        className="w-12 h-12 rounded-full object-cover border border-white/20"
                       />
                       <div className="flex-1">
                         <div className="flex justify-between">
-                          <h4 className="font-semibold text-sm sm:text-base">
+                          <h4 className="font-semibold text-sm sm:text-base text-white">
                             {review.userName}
                           </h4>
-                          <span className="text-xs text-gray-400">
+                          <span className="text-xs text-slate-300">
                             {new Date(review.reviewDate).toLocaleDateString()}
                           </span>
                         </div>
@@ -284,14 +312,14 @@ const ScholarshipDetails = () => {
                               size={14}
                               className={
                                 i < review.ratingPoint
-                                  ? "text-yellow-400"
-                                  : "text-gray-300"
+                                  ? "text-amber-300"
+                                  : "text-slate-600"
                               }
                             />
                           ))}
                         </div>
 
-                        <p className="text-sm text-gray-700 dark:text-gray-400">
+                        <p className="text-sm text-slate-200/80">
                           {review.reviewComment}
                         </p>
                       </div>
@@ -300,11 +328,16 @@ const ScholarshipDetails = () => {
                 </div>
               </div>
             )}
-          </div>
+          </motion.div>
 
           {/* Cost Summary */}
-          <div className="bg-white rounded-xl shadow p-4 sm:p-6 space-y-4 dark:bg-base-100">
-            <h3 className="text-lg font-bold flex items-center gap-2">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="rounded-2xl border border-white/15 bg-white/5 backdrop-blur-xl p-4 sm:p-6 space-y-4 shadow-lg shadow-black/20"
+          >
+            <h3 className="text-lg font-bold flex items-center gap-2 text-white">
               <FaMoneyBillWave /> Cost Summary
             </h3>
             <CostRow label="Tuition Fees" value={scholarship.tuitionFees} />
@@ -320,9 +353,9 @@ const ScholarshipDetails = () => {
               label="Service Charge"
               value={`$${scholarship.serviceCharge || 0}`}
             />
-            <div className="pt-3 border-t">
-              <p className="text-sm text-gray-500">Total Cost</p>
-              <p className="text-xl sm:text-2xl font-bold">
+            <div className="pt-3 border-t border-white/10">
+              <p className="text-sm text-slate-200/70">Total Cost</p>
+              <p className="text-2xl font-black text-white">
                 $
                 {(
                   (scholarship.tuitionFees || 0) +
@@ -331,30 +364,48 @@ const ScholarshipDetails = () => {
                 ).toLocaleString()}
               </p>
             </div>
-          </div>
+          </motion.div>
 
           {/* Posted By */}
-          <div className="bg-white rounded-xl shadow p-4 sm:p-6 dark:bg-base-100">
-            <h3 className="font-bold flex items-center gap-2 mb-2">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="rounded-2xl border border-white/15 bg-white/5 backdrop-blur-xl p-4 sm:p-6 shadow-lg shadow-black/20"
+          >
+            <h3 className="font-bold flex items-center gap-2 mb-2 text-white">
               <FaUserTie /> Posted By
             </h3>
-            <p className="text-sm break-all">{scholarship.postedUserEmail}</p>
-          </div>
+            <p className="text-sm text-slate-200/80 break-all">
+              {scholarship.postedUserEmail}
+            </p>
+          </motion.div>
 
           {/* Apply Button */}
           {checkingApplication ? (
-            <button className="btn btn-disabled w-full">Checking...</button>
+            <button className="w-full py-3 rounded-xl font-semibold border border-white/20 bg-white/10 text-white">
+              Checking...
+            </button>
           ) : hasApplied ? (
-            <button className="btn btn-success w-full" disabled>
+            <button
+              className="w-full py-3 rounded-xl font-semibold border border-emerald-400/40 bg-emerald-500/20 text-emerald-100"
+              disabled
+            >
               Applied
             </button>
           ) : (
-            <button onClick={handleApply} className="btn btn-primary w-full">
+            <button
+              onClick={handleApply}
+              className="w-full py-3 rounded-xl font-semibold bg-gradient-to-r from-emerald-500 to-cyan-500 text-white hover:shadow-lg hover:shadow-emerald-500/40 shadow-lg shadow-black/30 transition-all"
+            >
               Apply Now
             </button>
           )}
 
-          <Link to="/" className="btn btn-outline w-full">
+          <Link
+            to="/"
+            className="w-full py-3 rounded-xl font-semibold border border-white/30 text-white backdrop-blur-sm bg-white/5 hover:border-white/50 hover:bg-white/10 transition-all flex items-center justify-center gap-2"
+          >
             <FaArrowLeft /> Back Home
           </Link>
         </div>
@@ -365,20 +416,25 @@ const ScholarshipDetails = () => {
 
 // ---------- InfoCard Component ----------
 const InfoCard = ({ icon, title, value }) => (
-  <div className="bg-white dark:bg-base-100 rounded-lg shadow p-4 flex gap-3">
-    <div className="text-primary text-lg sm:text-xl">{icon}</div>
+  <motion.div
+    initial={{ opacity: 0, y: 10 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true }}
+    className="rounded-2xl border border-white/15 bg-white/5 backdrop-blur-xl p-4 flex gap-3 shadow-lg shadow-black/15"
+  >
+    <div className="text-cyan-300 text-lg sm:text-xl">{icon}</div>
     <div>
-      <p className="text-xs sm:text-sm text-gray-500">{title}</p>
-      <p className="font-semibold text-sm sm:text-base">{value}</p>
+      <p className="text-xs sm:text-sm text-slate-300">{title}</p>
+      <p className="font-semibold text-sm sm:text-base text-white">{value}</p>
     </div>
-  </div>
+  </motion.div>
 );
 
 // ---------- CostRow Component ----------
 const CostRow = ({ label, value }) => (
-  <div className="flex justify-between text-sm">
-    <span className="text-gray-600 dark:text-gray-300">{label}</span>
-    <span className="font-medium">{value}</span>
+  <div className="flex justify-between text-sm text-slate-200/80">
+    <span>{label}</span>
+    <span className="font-semibold text-white">{value}</span>
   </div>
 );
 

@@ -1,14 +1,14 @@
-import { Link, Navigate, useLocation, useNavigate } from "react-router";
-import LoadingSpinner from "../components/shared/Loading";
-import useAuth from "../hooks/useAuth";
-import { FcGoogle } from "react-icons/fc";
-import { TbFidgetSpinner } from "react-icons/tb";
-import ScholarshipImage from "/scholar-cartoon.webp";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import useAxiosSecure from "../hooks/useAxiosSecure";
-import { useState } from "react";
+import { FcGoogle } from "react-icons/fc";
+import { TbFidgetSpinner } from "react-icons/tb";
 import { IoEye, IoEyeOff } from "react-icons/io5";
+
+import LoadingSpinner from "../components/shared/Loading";
+import useAuth from "../hooks/useAuth";
+import useAxiosSecure from "../hooks/useAxiosSecure";
 
 const image_hosting_key = import.meta.env.VITE_IMAGEBB_KEY;
 const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
@@ -36,7 +36,7 @@ const Register = () => {
   const saveUser = async (userData) => {
     const res = await axiosSecure.post(
       `${import.meta.env.VITE_API_URL}/users`,
-      userData
+      userData,
     );
     return res.data;
   };
@@ -115,23 +115,33 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white px-4 pt-20 dark:bg-base-300">
-      <div className="w-full max-w-6xl flex flex-col md:flex-row gap-6 py-20">
-        {/* Form */}
-        <div className="w-full md:w-1/2 bg-gray-100 p-6 md:p-8 rounded-lg dark:bg-base-100">
-          <div className="text-center">
-            <h1 className="text-3xl md:text-4xl font-bold">Register</h1>
-            <p className="text-sm text-gray-400 mt-1">
-              Sign up to access your account
-            </p>
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-100 flex items-center justify-center px-4 py-16">
+      <div className="w-full max-w-5xl grid md:grid-cols-2 gap-6 items-center pt-20">
+        <div className="glass-panel p-8 rounded-2xl border border-white/10 shadow-2xl bg-white/5 backdrop-blur-xl">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-cyan-500 to-emerald-500 flex items-center justify-center shadow-lg shadow-cyan-500/40">
+              <span className="text-xl font-bold text-slate-950">SS</span>
+            </div>
+            <div>
+              <p className="text-xs uppercase tracking-[0.3em] text-cyan-200">
+                Join us
+              </p>
+              <h1 className="text-3xl md:text-4xl font-bold text-white leading-tight">
+                Create account
+              </h1>
+            </div>
           </div>
+          <p className="text-sm text-slate-300 mb-6">
+            Register to manage your scholarship journey and sync progress across
+            devices.
+          </p>
 
-          <form onSubmit={handleSubmit} className="space-y-4 mt-6">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <input
               name="name"
               placeholder="Full Name"
               required
-              className="w-full px-3 py-2 rounded-md border bg-gray-200 dark:bg-base-200 dark:border-none"
+              className="w-full px-3 py-2 rounded-lg border border-white/15 bg-white/5 text-white focus:outline-none focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-500/30"
             />
 
             <input
@@ -139,7 +149,7 @@ const Register = () => {
               name="photo"
               accept="image/*"
               required
-              className="dark:bg-base-200 dark:border-none w-full px-3 py-2 rounded-md border bg-gray-200 file:bg-lime-500 file:text-white file:border-0 file:px-4 file:py-2"
+              className="w-full px-3 py-2 rounded-lg border border-white/15 bg-white/5 text-white file:bg-gradient-to-r file:from-cyan-500 file:to-emerald-500 file:text-slate-950 file:border-0 file:px-4 file:py-2 file:rounded-md focus:outline-none"
             />
 
             <input
@@ -147,7 +157,7 @@ const Register = () => {
               name="email"
               placeholder="Email"
               required
-              className="w-full px-3 py-2 rounded-md border bg-gray-200 dark:bg-base-200 dark:border-none"
+              className="w-full px-3 py-2 rounded-lg border border-white/15 bg-white/5 text-white focus:outline-none focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-500/30"
             />
 
             <div className="relative">
@@ -156,12 +166,12 @@ const Register = () => {
                 name="password"
                 placeholder="Password"
                 required
-                className="w-full px-3 py-2 rounded-md border bg-gray-200 dark:bg-base-200 dark:border-none"
+                className="w-full px-3 py-2 rounded-lg border border-white/15 bg-white/5 text-white focus:outline-none focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-500/30"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-300 hover:text-white"
               >
                 {showPassword ? <IoEyeOff /> : <IoEye />}
               </button>
@@ -170,7 +180,7 @@ const Register = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-lime-500 text-white py-3 rounded-md"
+              className="w-full bg-gradient-to-r from-cyan-500 to-emerald-500 text-slate-950 py-3 rounded-lg font-semibold shadow-lg shadow-cyan-500/30 hover:translate-y-[-1px] transition"
             >
               {loading ? (
                 <TbFidgetSpinner className="animate-spin mx-auto" />
@@ -180,39 +190,56 @@ const Register = () => {
             </button>
           </form>
 
-          <div className="flex items-center my-4">
-            <div className="flex-1 h-px bg-gray-300" />
-            <p className="px-3 text-sm text-gray-400">or</p>
-            <div className="flex-1 h-px bg-gray-300" />
+          <div className="flex items-center my-5">
+            <div className="flex-1 h-px bg-white/10" />
+            <p className="px-3 text-sm text-slate-400">or</p>
+            <div className="flex-1 h-px bg-white/10" />
           </div>
 
           <button
             onClick={handleGoogleSignIn}
-            className="w-full flex items-center justify-center gap-2 border rounded-md p-2 dark:border-none dark:bg-base-200"
+            className="w-full flex items-center justify-center gap-2 border border-white/15 rounded-lg p-3 cursor-pointer bg-white/5 hover:bg-white/10 text-white transition"
           >
             <FcGoogle size={26} />
-            Continue with Google
+            <span>Continue with Google</span>
           </button>
 
-          <p className="text-center text-sm text-gray-400 mt-4">
+          <p className="text-center text-sm text-slate-300 mt-4">
             Already have an account?{" "}
             <Link
               to="/login"
               state={from}
-              className="text-green-500 font-semibold"
+              className="text-cyan-200 font-semibold hover:text-white"
             >
               Login
             </Link>
           </p>
         </div>
 
-        {/* Image */}
-        <div className="hidden md:block md:w-1/2">
-          <img
-            src={ScholarshipImage}
-            alt="Scholarship"
-            className="w-full h-[500px] object-cover rounded-lg dark:opacity-70"
-          />
+        {/* Accent Panel */}
+        <div className="hidden md:flex flex-col justify-center gap-6 p-6 rounded-2xl border border-white/10 bg-gradient-to-br from-cyan-500/20 via-indigo-500/10 to-emerald-500/20 backdrop-blur-xl shadow-2xl">
+          <div className="p-4 rounded-2xl bg-white/10 border border-white/15 text-white shadow-lg max-w-xs">
+            <p className="text-xs uppercase tracking-[0.3em] text-cyan-100 mb-1">
+              Why join
+            </p>
+            <h3 className="text-xl font-semibold mb-2">Unlock more</h3>
+            <p className="text-sm text-slate-100/90">
+              Save scholarships, track applications, and receive tailored
+              updates in one place.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-3 max-w-lg">
+            {["Personalized", "Secure", "Synced", "24/7 Support"].map(
+              (item) => (
+                <div
+                  key={item}
+                  className="rounded-xl bg-white/10 border border-white/10 px-3 py-4 text-center text-sm text-white shadow-md"
+                >
+                  {item}
+                </div>
+              ),
+            )}
+          </div>
         </div>
       </div>
     </div>

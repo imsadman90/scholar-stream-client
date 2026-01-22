@@ -23,38 +23,50 @@ const NavBar = () => {
   const navigationType = useNavigationType();
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 py-3 bg-white shadow-lg px-5 h-20 dark:bg-base-300 dark:border-none">
-      <div className="flex items-center justify-between h-full">
+    <div className="fixed top-0 left-0 right-0 z-50 h-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-slate-900/85 via-slate-900/75 to-slate-900/85 backdrop-blur-xl border-b border-white/20 shadow-xl">
+      <div className="max-w-7xl mx-auto flex items-center justify-between gap-4 h-full">
         {/* Logo */}
         <Link to="/">
-          <div className="flex justify-center items-center gap-1">
-            <img src={scholarship} alt="Scholarship Logo" className="h-12" />
-            <h1 className="text-gray-800 font-bold font-serif italic">
-              <span className="text-2xl text-purple-800 dark:text-purple-500">
-                S
-              </span>
-              <span className="dark:text-gray-400">cholarStream</span>
-            </h1>
+          <div className="flex items-center gap-2">
+            <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-purple-500/30">
+              <img
+                src={scholarship}
+                alt="Scholarship Logo"
+                className="h-8 w-8 object-contain"
+              />
+            </div>
+            <div className="leading-none">
+              <p className="text-xs uppercase tracking-[0.35em] text-slate-300 font-semibold">
+                Scholar
+              </p>
+              <h1 className="text-xl sm:text-2xl font-black tracking-tight text-white">
+                Stream
+              </h1>
+            </div>
           </div>
         </Link>
 
         {/* Desktop Navigation Links */}
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden md:flex items-center gap-1 lg:gap-2 px-2 py-1 rounded-full bg-white/10 border border-white/20 shadow-inner backdrop-blur">
           <NavLink
             to="/"
             end
             className={({ isActive }) =>
-              NavLinkClass({
+              `${NavLinkClass({
                 isActive: isActive && navigationType !== "POP",
-              })
+              })} flex items-center gap-2 px-3 py-2 rounded-full text-sm font-semibold text-white hover:bg-white/15 transition`
             }
           >
-            <IoHomeOutline className="text-xl" />{" "}
-            <span className="dark:text-gray-200">Home</span>
+            <IoHomeOutline className="text-xl" /> <span>Home</span>
           </NavLink>
-          <NavLink to="/scholarships" className={NavLinkClass}>
+          <NavLink
+            to="/scholarships"
+            className={(props) =>
+              `${NavLinkClass(props)} flex items-center gap-2 px-3 py-2 rounded-full text-sm font-semibold text-white hover:bg-white/15 transition`
+            }
+          >
             <FcReadingEbook className="text-xl" />
-            <span className="dark:text-gray-200"> All Scholarships</span>
+            <span> All Scholarships</span>
           </NavLink>
 
           <button
@@ -62,48 +74,42 @@ const NavBar = () => {
               navigate("/", { state: { scrollTo: "contact" } });
               setIsOpen(false);
             }}
-            className="
-    relative flex items-center gap-2 font-medium
-    text-gray-700 dark:text-gray-200 hover:text-purple-600 transition-colors
-
-    after:content-['']
-    after:absolute
-    after:left-0
-    after:-bottom-1
-    after:h-[2px]
-    after:bg-purple-600
-    after:w-0
-    after:transition-all
-    after:duration-300
-    hover:after:w-full
-  "
+            className="relative flex items-center gap-2 px-3 py-2 rounded-full text-sm font-semibold text-white hover:text-cyan-300 transition-colors hover:bg-white/15 after:content-[''] after:absolute after:left-3 after:-bottom-1 after:h-[2px] after:bg-cyan-300 after:w-0 after:transition-all after:duration-300 hover:after:w-[60%]"
           >
             <Contact2 /> Contact
           </button>
 
           {user && (
             <>
-              <NavLink to="/dashboard" className={NavLinkClass}>
-                <MdDashboard className="text-xl" />{" "}
-                <span className="dark:text-gray-200">Dashboard</span>
+              <NavLink
+                to="/dashboard"
+                className={(props) =>
+                  `${NavLinkClass(props)} flex items-center gap-2 px-3 py-2 rounded-full text-sm font-semibold text-white hover:bg-white/15 transition`
+                }
+              >
+                <MdDashboard className="text-xl" /> <span>Dashboard</span>
               </NavLink>
-              <NavLink to="/dashboard/profile" className={NavLinkClass}>
-                <FaHome className="text-xl" />{" "}
-                <span className="dark:text-gray-200">Profile</span>
+              <NavLink
+                to="/dashboard/profile"
+                className={(props) =>
+                  `${NavLinkClass(props)} flex items-center gap-2 px-3 py-2 rounded-full text-sm font-semibold text-white hover:bg-white/15 transition`
+                }
+              >
+                <FaHome className="text-xl" /> <span>Profile</span>
               </NavLink>
             </>
           )}
         </div>
 
         {/* Desktop Auth Section */}
-        <div className="hidden md:flex items-center justify-end gap-4 min-w-30">
+        <div className="hidden md:flex items-center justify-end gap-3 min-w-30">
           {loading ? (
-            <div className="h-[50px] w-[50px] shadow-md border-l-2 rounded-full border-orange-500 animate-spin"></div>
+            <div className="h-[46px] w-[46px] border-2 border-white/30 border-t-white rounded-full animate-spin shadow-md"></div>
           ) : user ? (
             <div className="relative">
               <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center gap-3 p-2 rounded-full hover:shadow-md transition-shadow border border-gray-300"
+                className="flex items-center gap-3 p-2 rounded-full border border-white/30 bg-white/10 backdrop-blur hover:shadow-lg transition"
               >
                 <img
                   src={user?.photoURL || avatar}
@@ -114,18 +120,18 @@ const NavBar = () => {
 
               {/* Dropdown */}
               {isOpen && (
-                <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-base-200 dark:border-none rounded-xl shadow-2xl border overflow-hidden">
-                  <div className="px-5 py-4 border-b">
-                    <p className="font-semibold text-gray-800 dark:text-gray-400">
+                <div className="absolute right-0 mt-3 w-72 bg-slate-900/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 overflow-hidden">
+                  <div className="px-5 py-4 border-b border-white/20 bg-gradient-to-r from-slate-800/60 to-slate-900/60">
+                    <p className="font-semibold text-white">
                       {user.displayName || "User"}
                     </p>
-                    <p className="text-sm text-gray-500">{user.email}</p>
+                    <p className="text-sm text-slate-300">{user.email}</p>
                   </div>
 
                   <Link
                     to="/dashboard"
                     onClick={() => setIsOpen(false)}
-                    className="flex items-center gap-3 px-5 py-3 hover:bg-purple-50 text-purple-700 font-medium dark:hover:bg-base-300"
+                    className="flex items-center gap-3 px-5 py-3 hover:bg-white/10 text-cyan-200 font-semibold"
                   >
                     <MdDashboard /> Dashboard
                   </Link>
@@ -135,7 +141,7 @@ const NavBar = () => {
                       logOut();
                       setIsOpen(false);
                     }}
-                    className="w-full text-left flex items-center gap-3 px-5 py-3 hover:bg-red-50 dark:hover:bg-base-300 text-red-600 font-medium"
+                    className="w-full text-left flex items-center gap-3 px-5 py-3 hover:bg-white/10 text-red-300 font-semibold"
                   >
                     <TbLogout /> Logout
                   </button>
@@ -146,13 +152,13 @@ const NavBar = () => {
             <>
               <Link
                 to="/login"
-                className="px-6 py-2.5 text-purple-600 font-semibold hover:text-purple-700 transition"
+                className="px-4 py-2.5 text-sm font-semibold text-white hover:text-cyan-300 transition"
               >
                 Login
               </Link>
               <Link
                 to="/register"
-                className="px-6 py-2.5 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition shadow-md"
+                className="px-5 py-2.5 text-sm font-semibold rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg shadow-purple-500/30 hover:shadow-xl hover:brightness-110 transition"
               >
                 Sign Up
               </Link>
@@ -164,7 +170,7 @@ const NavBar = () => {
         <div className="md:hidden">
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="p-3 rounded-lg hover:bg-gray-100 transition"
+            className="p-3 rounded-xl border border-white/30 bg-white/10 backdrop-blur hover:shadow-md transition"
           >
             {user ? (
               <img
@@ -173,44 +179,43 @@ const NavBar = () => {
                 className="w-9 h-9 rounded-full object-cover"
               />
             ) : (
-              <FaBars className="text-2xl text-gray-700" />
+              <FaBars className="text-2xl text-white" />
             )}
           </button>
 
           {/* Mobile Dropdown Menu */}
           {isOpen && (
-            <div className="absolute top-16 right-4 w-72 bg-white rounded-xl shadow-2xl border overflow-hidden">
+            <div className="absolute top-16 right-4 w-[calc(100vw-2rem)] max-w-sm bg-slate-900/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 overflow-hidden">
               {/* Navigation Links */}
-              <div className="border-b">
+              <div className="border-b border-white/20">
                 <Link
                   to="/"
                   onClick={() => setIsOpen(false)}
-                  className="flex items-center gap-4 px-6 py-4 hover:bg-gray-50 transition"
+                  className="flex items-center gap-4 px-6 py-4 hover:bg-white/10 transition font-semibold text-white"
                 >
-                  <FaHome className="text-xl text-gray-600" /> Home
+                  <FaHome className="text-xl" /> Home
                 </Link>
                 <Link
                   to="/scholarships"
                   onClick={() => setIsOpen(false)}
-                  className="flex items-center gap-4 px-6 py-4 hover:bg-gray-50 transition"
+                  className="flex items-center gap-4 px-6 py-4 hover:bg-white/10 transition font-semibold text-white"
                 >
-                  <FaSchool className="text-xl text-gray-600" /> All
-                  Scholarships
+                  <FaSchool className="text-xl" /> All Scholarships
                 </Link>
               </div>
 
               {user ? (
                 <>
-                  <div className="px-6 py-4 border-b bg-gray-50">
-                    <p className="font-bold text-gray-800">
+                  <div className="px-6 py-4 border-b border-white/20 bg-gradient-to-r from-slate-800/60 to-slate-900/60">
+                    <p className="font-bold text-white">
                       {user.displayName || "User"}
                     </p>
-                    <p className="text-sm text-gray-600">{user.email}</p>
+                    <p className="text-sm text-slate-300">{user.email}</p>
                   </div>
                   <Link
                     to="/dashboard"
                     onClick={() => setIsOpen(false)}
-                    className="flex items-center gap-4 px-6 py-4 hover:bg-purple-50 text-purple-700 font-medium"
+                    className="flex items-center gap-4 px-6 py-4 hover:bg-white/10 text-cyan-200 font-semibold"
                   >
                     <MdDashboard /> Dashboard
                   </Link>
@@ -219,7 +224,7 @@ const NavBar = () => {
                       logOut();
                       setIsOpen(false);
                     }}
-                    className="w-full text-left flex items-center gap-4 px-6 py-4 hover:bg-red-50 text-red-600 font-medium"
+                    className="w-full text-left flex items-center gap-4 px-6 py-4 hover:bg-white/10 text-red-300 font-semibold"
                   >
                     <TbLogout /> Logout
                   </button>
@@ -229,14 +234,14 @@ const NavBar = () => {
                   <Link
                     to="/login"
                     onClick={() => setIsOpen(false)}
-                    className="block px-6 py-3.5 text-blue-600 font-medium hover:bg-blue-50"
+                    className="block px-6 py-3.5 text-white font-semibold hover:bg-white/10 transition"
                   >
                     Login
                   </Link>
                   <Link
                     to="/register"
                     onClick={() => setIsOpen(false)}
-                    className="block px-6 py-3.5 bg-purple-600 text-white font-medium hover:bg-purple-700 mx-4 rounded-lg text-center"
+                    className="block px-6 py-3.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-semibold hover:shadow-lg mx-4 rounded-full text-center transition"
                   >
                     Sign Up
                   </Link>

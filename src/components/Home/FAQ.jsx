@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
 import ContactPage from "../../pages/ContactPage";
 
 const FAQ = () => {
@@ -56,37 +57,49 @@ const FAQ = () => {
   };
 
   return (
-    <section id="faq" className="bg-gradient-to-b from-white via-blue-50/30 to-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 dark:bg-base-100 pt-20">
+    <section
+      id="faq"
+      className="bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 py-20"
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-16">
-          <span className="inline-block mb-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-full text-sm font-semibold">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/20 bg-white/10 backdrop-blur text-xs uppercase tracking-[0.25em] font-semibold text-cyan-200 mb-4">
             FAQ
-          </span>
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 dark:text-gray-400">
+          </div>
+          <h2 className="text-4xl md:text-5xl font-black text-white mb-4">
             Frequently Asked{" "}
-            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-cyan-300 to-purple-300 bg-clip-text text-transparent">
               Questions
             </span>
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto dark:text-gray-400">
+          <p className="text-lg text-slate-200/80 max-w-2xl mx-auto">
             Got questions? We've got answers! Find everything you need to know
             about our scholarship platform.
           </p>
-        </div>
+        </motion.div>
 
         {/* FAQ Items */}
-        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-20">
           {faqs.map((faq, index) => (
-            <div
+            <motion.div
               key={index}
-              className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 dark:bg-base-200 dark:border-none"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.05 }}
+              viewport={{ once: true }}
+              className="rounded-2xl border border-white/15 bg-white/5 backdrop-blur-xl overflow-hidden hover:shadow-xl shadow-lg shadow-black/20 transition-shadow"
             >
               <button
                 onClick={() => toggleFAQ(index)}
-                className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-gray-50 transition-colors dark:hover:bg-black/50"
+                className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-white/10 transition-colors"
               >
-                <span className="font-semibold text-gray-900 text-lg pr-8 dark:text-gray-400">
+                <span className="font-semibold text-white text-lg pr-8">
                   {faq.question}
                 </span>
                 <div
@@ -95,7 +108,7 @@ const FAQ = () => {
                   }`}
                 >
                   <svg
-                    className="w-6 h-6 text-blue-600"
+                    className="w-6 h-6 text-cyan-300"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -110,34 +123,38 @@ const FAQ = () => {
                 </div>
               </button>
 
-              <div
-                className={`transition-all duration-500 ease-in-out ${
-                  openIndexes.includes(index)
-                    ? "max-h-96 opacity-100"
-                    : "max-h-0 opacity-0"
-                }`}
+              <motion.div
+                initial={false}
+                animate={{
+                  height: openIndexes.includes(index) ? "auto" : 0,
+                  opacity: openIndexes.includes(index) ? 1 : 0,
+                }}
+                transition={{ duration: 0.3 }}
+                className="overflow-hidden"
               >
-                <div className="px-6 pb-5 text-gray-600 leading-relaxed border-t border-gray-100 pt-4 dark:text-gray-400">
+                <div className="px-6 pb-5 text-slate-200/80 leading-relaxed border-t border-white/10 pt-4">
                   {faq.answer}
                 </div>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           ))}
         </div>
 
         {/* CTA Section */}
-        <div className="flex flex-col space-y-3 items-center justify-center mt-20 mb-10 text-center">
-          <h1 className="text-4xl sm:text-5xl font-bold">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-4xl md:text-5xl font-black text-white mb-4">
             Still Have{" "}
-            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              Question
+            <span className="bg-gradient-to-r from-cyan-300 to-purple-300 bg-clip-text text-transparent">
+              Questions?
             </span>
-            ?
-          </h1>
-          <p className="text-gray-500 text-base sm:text-lg">
-            Please Contact Us
-          </p>
-        </div>
+          </h2>
+          <p className="text-slate-200/80 text-lg mb-8">Please Contact Us</p>
+        </motion.div>
 
         <ContactPage />
       </div>

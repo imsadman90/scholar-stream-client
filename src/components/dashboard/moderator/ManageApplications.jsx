@@ -2,13 +2,7 @@ import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { BiDollar } from "react-icons/bi";
-import {
-  FaSearch,
-  FaEye,
-  FaTrash,
-  FaCheck,
-  FaTimes,
-} from "react-icons/fa";
+import { FaSearch, FaEye, FaTrash, FaCheck, FaTimes } from "react-icons/fa";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
@@ -55,7 +49,6 @@ const ManageApplications = () => {
       toast.error("Failed to update status");
     }
   };
-  
 
   // Feedback Submit
   const handleFeedbackSubmit = async (feedback) => {
@@ -159,185 +152,228 @@ const ManageApplications = () => {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <span className="loading loading-spinner loading-lg text-primary"></span>
+      <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+        <span className="loading loading-spinner loading-lg text-cyan-400"></span>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-base-100 pt-8 pb-10">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-100 pt-8 pb-12">
       <div className="container mx-auto px-4 max-w-7xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <h1 className="text-4xl font-bold mb-8">Manage Applications</h1>
+          <div className="flex flex-col gap-6 mb-8">
+            <div>
+              <p className="text-xs uppercase tracking-[0.3em] text-cyan-300">
+                Moderator
+              </p>
+              <h1 className="text-3xl lg:text-4xl font-bold text-white">
+                Manage Applications
+              </h1>
+              <p className="text-slate-400 mt-1">
+                Review, update statuses, and leave feedback.
+              </p>
+            </div>
 
-          {/* Filters & Search */}
-          <div className="bg-base-200 rounded-xl p-6 shadow-lg mb-8">
-            <div className="grid md:grid-cols-3 gap-4">
-              <div className="relative">
-                <FaSearch className="absolute left-3 top-4 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search by name, email, university..."
-                  className="input input-bordered w-full pl-10"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </div>
+            {/* Filters & Search */}
+            <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-5 shadow-2xl">
+              <div className="grid md:grid-cols-3 gap-4">
+                <div className="relative">
+                  <FaSearch className="absolute left-3 top-3.5 text-slate-400" />
+                  <input
+                    type="text"
+                    placeholder="Search by name, email, university..."
+                    className="w-full rounded-xl border border-white/10 bg-white/5 px-10 py-2.5 text-slate-100 placeholder:text-slate-400 focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-500/30 outline-none"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </div>
 
-              <select
-                className="select select-bordered"
-                value={filterStatus}
-                onChange={(e) => setFilterStatus(e.target.value)}
-              >
-                <option value="all">All Status</option>
-                <option value="pending">Pending</option>
-                <option value="processing">Processing</option>
-                <option value="completed">Completed</option>
-                <option value="rejected">Rejected</option>
-              </select>
-
-              <select
-                className="select select-bordered"
-                value={filterCategory}
-                onChange={(e) => setFilterCategory(e.target.value)}
-              >
-                <option value="all">All Categories</option>
-                {categories.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
+                <select
+                  className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-slate-100 focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-500/30 outline-none"
+                  value={filterStatus}
+                  onChange={(e) => setFilterStatus(e.target.value)}
+                >
+                  <option className="bg-slate-900" value="all">
+                    All Status
                   </option>
-                ))}
-              </select>
+                  <option className="bg-slate-900" value="pending">
+                    Pending
+                  </option>
+                  <option className="bg-slate-900" value="processing">
+                    Processing
+                  </option>
+                  <option className="bg-slate-900" value="completed">
+                    Completed
+                  </option>
+                  <option className="bg-slate-900" value="rejected">
+                    Rejected
+                  </option>
+                </select>
+
+                <select
+                  className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-slate-100 focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-500/30 outline-none"
+                  value={filterCategory}
+                  onChange={(e) => setFilterCategory(e.target.value)}
+                >
+                  <option className="bg-slate-900" value="all">
+                    All Categories
+                  </option>
+                  {categories.map((cat) => (
+                    <option className="bg-slate-900" key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Stats Cards */}
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+              <StatCard
+                label="Total"
+                value={stats.total}
+                tone="from-cyan-500/80 via-cyan-500 to-emerald-500"
+              />
+              <StatCard
+                label="Pending"
+                value={stats.pending}
+                tone="from-amber-500/80 via-amber-500 to-orange-500"
+              />
+              <StatCard
+                label="Processing"
+                value={stats.processing}
+                tone="from-blue-500/80 via-blue-500 to-cyan-400"
+              />
+              <StatCard
+                label="Completed"
+                value={stats.completed}
+                tone="from-emerald-500/80 via-emerald-500 to-teal-400"
+              />
+              <StatCard
+                label="Rejected"
+                value={stats.rejected}
+                tone="from-rose-500/80 via-rose-500 to-orange-500"
+              />
             </div>
           </div>
 
-          {/* Stats Cards */}
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
-            <div className="bg-gradient-to-br from-primary to-primary/80 text-white rounded-lg p-4 text-center shadow-lg">
-              <p className="text-sm opacity-90">Total</p>
-              <p className="text-3xl font-bold">{stats.total}</p>
-            </div>
-            <div className="bg-gradient-to-br from-warning to-warning/80 text-white rounded-lg p-4 text-center shadow-lg">
-              <p className="text-sm opacity-90">Pending</p>
-              <p className="text-3xl font-bold">{stats.pending}</p>
-            </div>
-            <div className="bg-gradient-to-br from-info to-info/80 text-white rounded-lg p-4 text-center shadow-lg">
-              <p className="text-sm opacity-90">Processing</p>
-              <p className="text-3xl font-bold">{stats.processing}</p>
-            </div>
-            <div className="bg-gradient-to-br from-success to-success/80 text-white rounded-lg p-4 text-center shadow-lg">
-              <p className="text-sm opacity-90">Completed</p>
-              <p className="text-3xl font-bold">{stats.completed}</p>
-            </div>
-            <div className="bg-gradient-to-br from-error to-error/80 text-white rounded-lg p-4 text-center shadow-lg">
-              <p className="text-sm opacity-90">Rejected</p>
-              <p className="text-3xl font-bold">{stats.rejected}</p>
-            </div>
-          </div>
-
-          {/* Applications Table */}
-          <div className="overflow-x-auto bg-base-200 rounded-xl shadow-xl">
-            <table className="table w-full min-w-5xl">
+          {/* Applications Table (keep horizontal scroll) */}
+          <div className="overflow-x-auto rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl">
+            <table className="table w-full min-w-5xl text-slate-100">
               <thead>
-                <tr className="bg-primary text-white">
-                  <th>Applicant</th>
-                  <th>University</th>
-                  <th>Degree / Category</th>
-                  <th>Fees</th>
-                  <th>Payment</th>
-                  <th>Status</th>
-                  <th>Actions</th>
+                <tr className="bg-white/5 text-xs uppercase tracking-wide text-slate-300">
+                  <th className="px-4 py-3">Applicant</th>
+                  <th className="px-4 py-3">University</th>
+                  <th className="px-4 py-3">Degree / Category</th>
+                  <th className="px-4 py-3">Fees</th>
+                  <th className="px-4 py-3">Payment</th>
+                  <th className="px-4 py-3">Status</th>
+                  <th className="px-4 py-3">Actions</th>
                 </tr>
               </thead>
-              <tbody>
-                {filteredApplications.map((app) => (
-                  <tr key={app._id} className="hover:bg-base-300 transition">
-                    <td>
+              <tbody className="divide-y divide-white/5">
+                {filteredApplications.map((app, idx) => (
+                  <motion.tr
+                    key={app._id}
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.15, delay: idx * 0.015 }}
+                    className="hover:bg-white/5"
+                  >
+                    <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="avatar"></div>
+                        <div className="w-10 h-10 rounded-full bg-white/10 border border-white/15 flex items-center justify-center text-sm font-semibold text-white">
+                          {(app.userName || "?").slice(0, 1)}
+                        </div>
                         <div>
-                          <div className="font-bold">{app.userName}</div>
-                          <div className="text-sm opacity-70">
+                          <div className="font-semibold text-white">
+                            {app.userName}
+                          </div>
+                          <div className="text-xs text-slate-400">
                             {app.userEmail}
                           </div>
                         </div>
                       </div>
                     </td>
-                    <td className="font-semibold">{app.universityName}</td>
-                    <td>
-                      <div>
-                        <div className="badge badge-sm badge-primary">
-                          {app.degree}
-                        </div>
-                        <div className="text-md mt-1 opacity-70">
-                          {app.scholarshipCategory}
-                        </div>
-                      </div>
+                    <td className="px-4 py-3 font-semibold text-slate-100">
+                      {app.universityName}
                     </td>
-                    <td>
-                      <div className="flex items-center">
-                        <BiDollar />
-                        <span className="font-bold">
-                          {(app.applicationFees || 0) +
-                            (app.serviceCharge || 0)}
+                    <td className="px-4 py-3">
+                      <div className="flex flex-col gap-1">
+                        <span className="inline-flex items-center gap-2 px-2 py-1 rounded-lg bg-cyan-500/10 text-cyan-200 border border-cyan-400/30 text-xs w-fit">
+                          {app.degree}
+                        </span>
+                        <span className="text-sm text-slate-300">
+                          {app.scholarshipCategory}
                         </span>
                       </div>
                     </td>
-                    <td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-2 text-emerald-200 font-semibold">
+                        <BiDollar />
+                        {(
+                          Number(app.applicationFees || 0) +
+                          Number(app.serviceCharge || 0)
+                        ).toFixed(2)}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
                       {app.paymentStatus === "paid" ? (
-                        <div className="flex items-center gap-1 text-success font-semibold">
-                          <FaCheck />
-                          <span className="text-md">Paid</span>
+                        <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-lg bg-emerald-500/15 text-emerald-200 border border-emerald-400/30 text-sm font-semibold">
+                          <FaCheck /> Paid
                         </div>
                       ) : (
-                        <div className="flex items-center gap-1 text-error">
-                          <FaTimes />
-                          <span className="text-md font-semibold">Unpaid</span>
+                        <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-lg bg-rose-500/15 text-rose-200 border border-rose-400/30 text-sm font-semibold">
+                          <FaTimes /> Unpaid
                         </div>
                       )}
                     </td>
-                    <td className="min-w-31">
+                    <td className="px-4 py-3 min-w-31">
                       <select
-                        className={`select select-sm w-full max-w-xs font-bold ${
-                          app.applicationStatus === "completed"
-                            ? "text-green-500"
-                            : app.applicationStatus === "rejected"
-                            ? "text-red-500"
-                            : app.applicationStatus === "processing"
-                            ? "text-blue-500"
-                            : "text-yellow-500"
-                        }`}
+                        className="w-full rounded-lg border border-white/15 bg-white/5 px-2 py-2 text-sm text-slate-100 focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-500/30 outline-none"
                         value={app.applicationStatus || "pending"}
                         onChange={(e) =>
                           handleStatusUpdate(app._id, e.target.value)
                         }
                       >
-                        <option className="text-yellow-500" value="pending">
+                        <option
+                          className="bg-slate-900 text-amber-300"
+                          value="pending"
+                        >
                           Pending
                         </option>
-                        <option className="text-blue-500" value="processing">
+                        <option
+                          className="bg-slate-900 text-blue-300"
+                          value="processing"
+                        >
                           Processing
                         </option>
-                        <option className="text-green-500" value="completed">
+                        <option
+                          className="bg-slate-900 text-emerald-300"
+                          value="completed"
+                        >
                           Completed
                         </option>
-                        <option className="text-red-500" value="rejected">
+                        <option
+                          className="bg-slate-900 text-rose-300"
+                          value="rejected"
+                        >
                           Rejected
                         </option>
                       </select>
                     </td>
-                    <td className="flex items-center">
-                      <div className="flex">
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-2">
                         <button
                           onClick={() => {
                             openViewDetailsModal(app);
                             window.scrollTo({ top: 0, behavior: "smooth" });
                           }}
-                          className="btn btn-ghost btn-md text-primary"
+                          className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-cyan-400/30 bg-cyan-500/10 text-cyan-200 hover:bg-cyan-500/20 transition"
                           title="View Details"
                         >
                           <FaEye />
@@ -347,28 +383,28 @@ const ManageApplications = () => {
                             openFeedbackModal(app);
                             window.scrollTo({ top: 0, behavior: "smooth" });
                           }}
-                          className="btn btn-ghost btn-md text-info"
+                          className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-amber-400/30 bg-amber-500/10 text-amber-200 hover:bg-amber-500/20 transition"
                           title="Add Feedback"
                         >
                           <MdOutlineInsertComment />
                         </button>
                         <button
                           onClick={() => handleDelete(app._id)}
-                          className="btn btn-ghost btn-md text-error"
+                          className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-rose-400/30 bg-rose-500/10 text-rose-200 hover:bg-rose-500/20 transition"
                           title="Delete"
                         >
                           <FaTrash />
                         </button>
                       </div>
                     </td>
-                  </tr>
+                  </motion.tr>
                 ))}
               </tbody>
             </table>
 
             {filteredApplications.length === 0 && (
-              <div className="text-center py-12">
-                <p className="text-xl text-gray-500">No applications found</p>
+              <div className="text-center py-12 text-slate-400">
+                No applications found
               </div>
             )}
           </div>
@@ -393,3 +429,16 @@ const ManageApplications = () => {
 };
 
 export default ManageApplications;
+
+const StatCard = ({ label, value, tone }) => (
+  <div
+    className={`rounded-2xl bg-gradient-to-br ${tone} text-white shadow-2xl p-[1px]`}
+  >
+    <div className="rounded-2xl bg-slate-950/70 px-4 py-4 text-center">
+      <p className="text-xs uppercase tracking-[0.2em] text-white/70">
+        {label}
+      </p>
+      <p className="text-3xl font-bold mt-1">{value}</p>
+    </div>
+  </div>
+);

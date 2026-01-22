@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useAuth from "../../../hooks/useAuth";
 import toast from "react-hot-toast";
+import { motion } from "framer-motion";
 
 const image_hosting_key = import.meta.env.VITE_IMAGEBB_KEY;
 const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
@@ -80,258 +81,279 @@ const AddScholarship = () => {
 
   return (
     <>
-      <div className="container mx-auto px-4 py-12">
-        <h1 className="text-3xl font-bold text-center mb-8 text-primary">
-          Add New Scholarship
-        </h1>
-
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="bg-white rounded-xl shadow-xl p-8 max-w-5xl mx-auto dark:bg-base-100 dark:border dark:border-gray-500"
-        >
-          <div className="grid md:grid-cols-2 gap-6">
-            {/* Scholarship Name */}
-            <div>
-              <label className="label font-semibold mb-2">
-                Scholarship Name
-              </label>
-              <input
-                {...register("scholarshipName", { required: "Required" })}
-                type="text"
-                placeholder="e.g., Global Excellence Scholarship"
-                className="input input-bordered w-full"
-              />
-              {errors.scholarshipName && (
-                <span className="text-red-500 text-sm">
-                  {errors.scholarshipName.message}
-                </span>
-              )}
-            </div>
-
-            {/* University Name */}
-            <div>
-              <label className="label font-semibold mb-2">
-                University Name
-              </label>
-              <input
-                {...register("universityName", { required: "Required" })}
-                type="text"
-                placeholder="e.g., Harvard University"
-                className="input input-bordered w-full"
-              />
-            </div>
-
-            {/* University Image - File Upload */}
-            <div>
-              <label className="label font-semibold mb-2">
-                University Logo/Image
-              </label>
-              <input
-                {...register("universityImage", {
-                  // required: "Please upload an image",
-                })}
-                type="file"
-                accept="image/*"
-                className="file-input file-input-bordered w-full"
-              />
-              <small className="text-gray-500 mb-2">Or paste URL below</small>
-            </div>
-
-            {/* Or Image URL */}
-            <div>
-              <label className="label font-semibold mb-2">
-                Or Image URL (if not uploading)
-              </label>
-              <input
-                {...register("universityImageUrl")}
-                type="url"
-                placeholder="https://example.com/logo.jpg"
-                className="input input-bordered w-full"
-              />
-            </div>
-
-            {/* Country & City */}
-            <div>
-              <label className="label font-semibold mb-2">Country</label>
-              <input
-                {...register("universityCountry", { required: "Required" })}
-                type="text"
-                placeholder="USA"
-                className="input input-bordered w-full"
-              />
-            </div>
-            <div>
-              <label className="label font-semibold mb-2">City</label>
-              <input
-                {...register("universityCity", { required: "Required" })}
-                type="text"
-                placeholder="Cambridge"
-                className="input input-bordered w-full"
-              />
-            </div>
-
-            {/* World Rank */}
-            <div>
-              <label className="label font-semibold mb-2">World Rank</label>
-              <input
-                {...register("universityWorldRank", { required: "Required" })}
-                type="number"
-                placeholder="1"
-                className="input input-bordered w-full"
-              />
-            </div>
-
-            {/* Subject Category */}
-            <div>
-              <label className="label font-semibold mb-2">
-                Subject Category
-              </label>
-              <select
-                {...register("subjectCategory", { required: "Required" })}
-                className="select select-bordered w-full"
-              >
-                <option value="">Select Subject</option>
-                {[
-                  "Computer Science",
-                  "Engineering",
-                  "Business",
-                  "Medicine",
-                  "Law",
-                  "Arts",
-                  "Science",
-                  "Mathematics",
-                  "Physics",
-                  "Chemistry",
-                ].map((sub) => (
-                  <option key={sub} value={sub}>
-                    {sub}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Scholarship Category */}
-            <div>
-              <label className="label font-semibold mb-2">
-                Scholarship Type
-              </label>
-              <select
-                {...register("scholarshipCategory")}
-                className="select select-bordered w-full"
-              >
-                <option>Full fund</option>
-                <option>Partial</option>
-                <option>Self-fund</option>
-              </select>
-            </div>
-
-            {/* Degree */}
-            <div>
-              <label className="label font-semibold mb-2">Degree</label>
-              <select
-                {...register("degree")}
-                className="select select-bordered w-full"
-              >
-                <option>Diploma</option>
-                <option>Bachelor</option>
-                <option>Masters</option>
-                <option>PhD</option>
-              </select>
-            </div>
-
-            {/* Fees */}
-            <div>
-              <label className="label font-semibold mb-2">
-                Application Fees ($)
-              </label>
-              <input
-                {...register("applicationFees", { required: "Required" })}
-                type="number"
-                step="0.01"
-                placeholder="50"
-                className="input input-bordered w-full"
-              />
-            </div>
-            <div>
-              <label className="label font-semibold mb-2">
-                Service Charge ($)
-              </label>
-              <input
-                {...register("serviceCharge", { required: "Required" })}
-                type="number"
-                step="0.01"
-                placeholder="20"
-                className="input input-bordered w-full"
-              />
-            </div>
-
-            {/* Deadline */}
-            <div>
-              <label className="label font-semibold mb-2">
-                Application Deadline *
-              </label>
-              <input
-                {...register("applicationDeadline", { required: "Required" })}
-                type="date"
-                className="input input-bordered w-full"
-              />
-            </div>
-
-            {/* Optional Fields */}
-            <div>
-              <label className="label font-semibold mb-2">
-                Tuition Fees (Optional)
-              </label>
-              <input
-                {...register("tuitionFees")}
-                type="number"
-                placeholder="50000"
-                className="input input-bordered w-full"
-              />
-            </div>
-            <div>
-              <label className="label font-semibold mb-2">
-                Stipend (Optional)
-              </label>
-              <input
-                {...register("stipendAmount")}
-                type="text"
-                placeholder="$1500/month"
-                className="input input-bordered w-full"
-              />
-            </div>
-
-            {/* Description */}
-            <div className="md:col-span-2">
-              <label className="label font-semibold mb-2">Description</label>
-              <textarea
-                {...register("scholarshipDescription", {
-                  required: "Required",
-                })}
-                rows={5}
-                placeholder="Write full details..."
-                className="textarea textarea-bordered w-full"
-              />
-            </div>
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-100">
+        <div className="max-w-6xl mx-auto px-4 py-10 lg:py-14">
+          <div className="text-center mb-10">
+            <p className="text-xs uppercase tracking-[0.3em] text-cyan-300 mb-2">
+              Admin
+            </p>
+            <h1 className="text-3xl lg:text-4xl font-bold text-white">
+              Add New Scholarship
+            </h1>
+            <p className="text-slate-400 mt-2">
+              Publish scholarships with complete details, fees, and deadlines.
+            </p>
           </div>
 
-          <div className="mt-8 text-center">
-            <button
-              type="submit"
-              disabled={isPending}
-              className="btn btn-primary btn-wide text-lg"
-            >
-              {isPending ? (
-                <>
-                  <span className="loading loading-spinner"></span>
-                  Adding Scholarship...
-                </>
-              ) : (
-                "Add Scholarship"
-              )}
-            </button>
-          </div>
-        </form>
+          <motion.form
+            onSubmit={handleSubmit(onSubmit)}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.25 }}
+            className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl p-6 md:p-8"
+          >
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* Scholarship Name */}
+              <div>
+                <label className="block text-sm font-medium text-slate-200 mb-2">
+                  Scholarship Name
+                </label>
+                <input
+                  {...register("scholarshipName", { required: "Required" })}
+                  type="text"
+                  placeholder="Global Excellence Scholarship"
+                  className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-white focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-500/30 outline-none"
+                />
+                {errors.scholarshipName && (
+                  <span className="text-rose-400 text-xs">
+                    {errors.scholarshipName.message}
+                  </span>
+                )}
+              </div>
+
+              {/* University Name */}
+              <div>
+                <label className="block text-sm font-medium text-slate-200 mb-2">
+                  University Name
+                </label>
+                <input
+                  {...register("universityName", { required: "Required" })}
+                  type="text"
+                  placeholder="Harvard University"
+                  className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-white focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-500/30 outline-none"
+                />
+              </div>
+
+              {/* University Image - File Upload */}
+              <div>
+                <label className="block text-sm font-medium text-slate-200 mb-2">
+                  University Logo/Image
+                </label>
+                <input
+                  {...register("universityImage", {})}
+                  type="file"
+                  accept="image/*"
+                  className="w-full file:mr-3 file:rounded-md file:border-0 file:px-4 file:py-2 file:bg-gradient-to-r file:from-cyan-500 file:to-emerald-500 file:text-slate-950 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-white focus:outline-none"
+                />
+                <small className="text-slate-400">Or paste URL below</small>
+              </div>
+
+              {/* Or Image URL */}
+              <div>
+                <label className="block text-sm font-medium text-slate-200 mb-2">
+                  Image URL (optional)
+                </label>
+                <input
+                  {...register("universityImageUrl")}
+                  type="url"
+                  placeholder="https://example.com/logo.jpg"
+                  className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-white focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-500/30 outline-none"
+                />
+              </div>
+
+              {/* Country & City */}
+              <div>
+                <label className="block text-sm font-medium text-slate-200 mb-2">
+                  Country
+                </label>
+                <input
+                  {...register("universityCountry", { required: "Required" })}
+                  type="text"
+                  placeholder="USA"
+                  className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-white focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-500/30 outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-200 mb-2">
+                  City
+                </label>
+                <input
+                  {...register("universityCity", { required: "Required" })}
+                  type="text"
+                  placeholder="Cambridge"
+                  className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-white focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-500/30 outline-none"
+                />
+              </div>
+
+              {/* World Rank */}
+              <div>
+                <label className="block text-sm font-medium text-slate-200 mb-2">
+                  World Rank
+                </label>
+                <input
+                  {...register("universityWorldRank", { required: "Required" })}
+                  type="number"
+                  placeholder="1"
+                  className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-white focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-500/30 outline-none"
+                />
+              </div>
+
+              {/* Subject Category */}
+              <div>
+                <label className="block text-sm font-medium text-slate-200 mb-2">
+                  Subject Category
+                </label>
+                <select
+                  {...register("subjectCategory", { required: "Required" })}
+                  className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-white focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-500/30 outline-none"
+                >
+                  <option value="">Select Subject</option>
+                  {[
+                    "Computer Science",
+                    "Engineering",
+                    "Business",
+                    "Medicine",
+                    "Law",
+                    "Arts",
+                    "Science",
+                    "Mathematics",
+                    "Physics",
+                    "Chemistry",
+                  ].map((sub) => (
+                    <option key={sub} value={sub}>
+                      {sub}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Scholarship Category */}
+              <div>
+                <label className="block text-sm font-medium text-slate-200 mb-2">
+                  Scholarship Type
+                </label>
+                <select
+                  {...register("scholarshipCategory")}
+                  className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-white focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-500/30 outline-none"
+                >
+                  <option>Full fund</option>
+                  <option>Partial</option>
+                  <option>Self-fund</option>
+                </select>
+              </div>
+
+              {/* Degree */}
+              <div>
+                <label className="block text-sm font-medium text-slate-200 mb-2">
+                  Degree
+                </label>
+                <select
+                  {...register("degree")}
+                  className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-white focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-500/30 outline-none"
+                >
+                  <option>Diploma</option>
+                  <option>Bachelor</option>
+                  <option>Masters</option>
+                  <option>PhD</option>
+                </select>
+              </div>
+
+              {/* Fees */}
+              <div>
+                <label className="block text-sm font-medium text-slate-200 mb-2">
+                  Application Fees ($)
+                </label>
+                <input
+                  {...register("applicationFees", { required: "Required" })}
+                  type="number"
+                  step="0.01"
+                  placeholder="50"
+                  className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-white focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-500/30 outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-200 mb-2">
+                  Service Charge ($)
+                </label>
+                <input
+                  {...register("serviceCharge", { required: "Required" })}
+                  type="number"
+                  step="0.01"
+                  placeholder="20"
+                  className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-white focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-500/30 outline-none"
+                />
+              </div>
+
+              {/* Deadline */}
+              <div>
+                <label className="block text-sm font-medium text-slate-200 mb-2">
+                  Application Deadline *
+                </label>
+                <input
+                  {...register("applicationDeadline", { required: "Required" })}
+                  type="date"
+                  className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-white focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-500/30 outline-none"
+                />
+              </div>
+
+              {/* Optional Fields */}
+              <div>
+                <label className="block text-sm font-medium text-slate-200 mb-2">
+                  Tuition Fees (Optional)
+                </label>
+                <input
+                  {...register("tuitionFees")}
+                  type="number"
+                  placeholder="50000"
+                  className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-white focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-500/30 outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-200 mb-2">
+                  Stipend (Optional)
+                </label>
+                <input
+                  {...register("stipendAmount")}
+                  type="text"
+                  placeholder="$1500/month"
+                  className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-white focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-500/30 outline-none"
+                />
+              </div>
+
+              {/* Description */}
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-slate-200 mb-2">
+                  Description
+                </label>
+                <textarea
+                  {...register("scholarshipDescription", {
+                    required: "Required",
+                  })}
+                  rows={5}
+                  placeholder="Write full details..."
+                  className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-white focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-500/30 outline-none"
+                />
+              </div>
+            </div>
+
+            <div className="mt-8 text-center">
+              <button
+                type="submit"
+                disabled={isPending}
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-500 text-slate-950 font-semibold shadow-lg shadow-cyan-500/30 hover:translate-y-[-1px] transition"
+              >
+                {isPending ? (
+                  <>
+                    <span className="loading loading-spinner"></span>
+                    Adding Scholarship...
+                  </>
+                ) : (
+                  "Add Scholarship"
+                )}
+              </button>
+            </div>
+          </motion.form>
+        </div>
       </div>
     </>
   );
